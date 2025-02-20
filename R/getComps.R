@@ -51,7 +51,7 @@ getComps <- function(Pdata,
                      towid = c("SAMPLE_NO"),
                      weightid = "Final_Sample_Size_L",
                      verbose = TRUE) {
-  if(length(unique(Pdata[["SEX"]])) == 3) {
+  if(length(unique(Pdata[["SEX"]])) == 3 & verbose) {
     cli::cli_warn(
       "Sexed and unsexed fish are in the data and n_tows, n_fish, and n_stewart
       input sample size options will be calculated seperately for sexed and unsexed
