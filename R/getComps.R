@@ -10,6 +10,7 @@
 #' documentation for the pass-through arguments, i.e., `...`
 #'
 #' @inheritParams tableSample
+#' @inheritParams cleanPacFIN
 #' @param Comps The type of composition data to create. See the function call
 #'   for the available options. The first option listed is the default, which
 #'   creates conditional age-at-length compositions by adding both `lengthcm`
@@ -48,7 +49,16 @@ getComps <- function(Pdata,
                      Comps = c("LEN", "AGE", "AAL"),
                      defaults = c("fleet", "fishyr", "season"),
                      towid = c("SAMPLE_NO"),
-                     weightid = "Final_Sample_Size_L") {
+                     weightid = "Final_Sample_Size_L",
+                     verbose = TRUE) {
+  if(length(unique(Pdata[["SEX"]])) == 3) {
+    cli::cli_warn(
+      "Sexed and unsexed fish are in the data and n_tows, n_fish, and n_stewart
+      input sample size options will be calculated seperately for sexed and unsexed
+      fish. For single-sex models, it is recommended to set SEX = U for all records
+      prior to running this function."
+    )
+  }
   # Set up stratification
   usualSuspects <- defaults
 
