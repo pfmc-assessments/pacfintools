@@ -109,6 +109,17 @@ getComps <- function(Pdata,
     # By stratification and SEX count number of sampled fish
     dplyr::group_by(SEX, .add = TRUE) |>
     dplyr::mutate(n_fish = sum(FREQ)) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(towstrat))) |>
+    dplyr::mutate(
+      ratio = sum(unique(n_fish)) / n_tows,
+      stewart = dplyr::case_when(
+        ratio < 44 ~ n_tows + 0.138 * sum(unique(n_fish)),
+        .default = 7.06 * n_tows
+      ),
+      stewart = dplyr::case_when(
+        stewart > sum(unique(n_fish)) ~ sum(unique(n_fish)), .default = stewart
+      )
+    ) |>
     # By stratification, sex, and bin value count the weight
     dplyr::group_by(dplyr::across(
       dplyr::all_of(c(towstrat, type, "SEX"))
@@ -120,6 +131,7 @@ getComps <- function(Pdata,
       n_tows,
       SEX,
       n_fish,
+      stewart,
       weightid
     ) |>
     # Remove duplicated rows
