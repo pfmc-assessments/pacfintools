@@ -123,12 +123,12 @@ getComps <- function(Pdata,
     dplyr::group_by(dplyr::across(dplyr::all_of(towstrat))) |>
     dplyr::mutate(
       ratio = sum(unique(n_fish)) / n_tows,
-      stewart = dplyr::case_when(
+      n_stewart = dplyr::case_when(
         ratio < 44 ~ n_tows + 0.138 * sum(unique(n_fish)),
         .default = 7.06 * n_tows
       ),
-      stewart = dplyr::case_when(
-        stewart > sum(unique(n_fish)) ~ sum(unique(n_fish)), .default = stewart
+      n_stewart = dplyr::case_when(
+        n_stewart > sum(unique(n_fish)) ~ sum(unique(n_fish)), .default = n_stewart
       )
     ) |>
     # By stratification, sex, and bin value count the weight
@@ -142,7 +142,7 @@ getComps <- function(Pdata,
       n_tows,
       SEX,
       n_fish,
-      stewart,
+      n_stewart,
       weightid
     ) |>
     # Remove duplicated rows
@@ -161,12 +161,12 @@ getComps <- function(Pdata,
     dplyr::group_by(dplyr::across(dplyr::all_of(towstrat))) |>
     dplyr::mutate(
       ratio = sum(unique(n_fish)) / n_tows,
-      stewart = dplyr::case_when(
+      n_stewart = dplyr::case_when(
         ratio < 44 ~ n_tows + 0.138 * sum(unique(n_fish)),
         .default = 7.06 * n_tows
       ),
-      stewart = dplyr::case_when(
-        stewart > sum(unique(n_fish)) ~ sum(unique(n_fish)), .default = stewart
+      n_stewart = dplyr::case_when(
+        n_stewart > sum(unique(n_fish)) ~ sum(unique(n_fish)), .default = n_stewart
       )
     ) |>
     # By stratification, sex, and bin value count the weight
@@ -180,7 +180,7 @@ getComps <- function(Pdata,
       n_tows,
       SEX,
       n_fish,
-      stewart,
+      n_stewart,
       weightid
     ) |>
     # Remove duplicated rows
