@@ -20,13 +20,11 @@ are pulled using sql calls.}
 
 \item{fname}{A filename with the appropriate extension, used to save the
 function output to the disk. For example, \code{LenComps.csv} or
-\code{file.path(getwd(), "SampleSize.csv")}. Full, relative, or simple paths are
+\code{file.path(getwd(), "LenComps.csv")}. Full, relative, or simple paths are
 allowed because the argument is used as is, i.e., not redirected to a
 directory different than \code{\link[=getwd]{getwd()}}. Note that various functions within
 pacfintools have different default values for this input argument. If
-\code{NULL} in \code{writeComps}, then the resulting file name will be based on what
-type of composition data is being generated, i.e., \code{PacFIN_lengths.out},
-or \code{PacFIN_ages.out} for length or age data, respectively.}
+\code{NULL} in \code{writeComps}, then no csv file will be written to disk.}
 
 \item{strat}{A vector of column names to stratify the output over. For
 example, if you wish to summarize by ageing method, then the argument
