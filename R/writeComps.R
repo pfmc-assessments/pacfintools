@@ -10,13 +10,11 @@
 #' @param inComps A dataframe returned from [getComps()].
 #' @param fname A filename with the appropriate extension, used to save the
 #'   function output to the disk. For example, `LenComps.csv` or
-#'   `file.path(getwd(), "SampleSize.csv")`. Full, relative, or simple paths are
+#'   `file.path(getwd(), "LenComps.csv")`. Full, relative, or simple paths are
 #'   allowed because the argument is used as is, i.e., not redirected to a
 #'   directory different than [getwd()]. Note that various functions within
 #'   pacfintools have different default values for this input argument. If
-#'   `NULL` in `writeComps`, then the resulting file name will be based on what
-#'   type of composition data is being generated, i.e., `PacFIN_lengths.out`,
-#'   or `PacFIN_ages.out` for length or age data, respectively.
+#'   `NULL` in `writeComps`, then no csv file will be written to disk.
 #' @param abins,lbins Deprecated as of 0.2.10 to reduce complication in the code and
 #'   make it more intuitive for the user when running this function.
 #'   The binning structure to use for ages and lengths. For
@@ -87,11 +85,11 @@
 #' * `getComps()`
 #'
 writeComps <- function(inComps,
+                       comp_bins,
                        fname = NULL,
                        abins = lifecycle::deprecated(),
                        lbins = lifecycle::deprecated(),
-                       comp_bins = NULL,
-                       column_with_input_n = "n_tows",
+                       column_with_input_n = c("n_tows", "stewart", "n_fish"),
                        maxAge = lifecycle::deprecated(),
                        month = 7,
                        partition = 2,
@@ -153,6 +151,7 @@ writeComps <- function(inComps,
       "x" = "seasons = {sort(unique(inComps[['season']]))}"
     ))
   }
+  column_with_input_n <- match.arg(column_with_input_n, several.ok = FALSE)
   if (!"season" %in% names(inComps) &&
     length(month) != 1) {
     cli::cli_abort(c(
@@ -179,23 +178,18 @@ writeComps <- function(inComps,
     cli::cli_abort("lengthcm or Age are not columns in {.val inComps}")
   }
 
-  # Create fname if it is not give based on what types of comps we are doing
-  if (is.null(fname)) {
-    fname <- dplyr::case_when(
-      length(LEN) > 0 ~ glue::glue("PacFIN_length_comps_{min(comp_bins)}-{max(comp_bins)}.csv"),
-      length(AGE) > 0 ~ glue::glue("PacFIN_age_comps_{min(comp_bins)}-{max(comp_bins)}.csv")
-    )
-  }
-  if (verbose) {
+  if (!is.null(fname) & verbose) {
     cli::cli_bullets(c(
       "*" = "Writing composition data to {fname}."
     ))
   }
-  fs::dir_create(
-    path = dirname(normalizePath(fname, mustWork = FALSE)),
-    recurse = TRUE
-  )
-
+  if (!is.null(fname)) {
+    fs::dir_create(
+      path = dirname(normalizePath(fname, mustWork = FALSE)),
+      recurse = TRUE
+    ) 
+  }
+  
   type_loc <- ifelse(
     length(AGE) > 0,
     yes = AGE,
@@ -226,13 +220,6 @@ writeComps <- function(inComps,
         comp = 0
       )
     )
-
-  if (is.null(comp_bins)) {
-    if (verbose) {
-      cli::cli_alert_info("No composition bins provided, using data as-is.")
-    }
-    comp_bins <- sort(unique(inComps[["comp_type"]]))
-  }
 
   bins <- c(comp_bins, Inf)
   # add extra, dummy bin because all.inside = TRUE
@@ -307,14 +294,16 @@ writeComps <- function(inComps,
     returned_composition_data <- wide_composition_data
   }
 
-  utils::write.table(
-    file = fname,
-    returned_composition_data,
-    sep = ",",
-    col.names = TRUE,
-    row.names = FALSE,
-    append = FALSE
-  )
+  if (!is.null(fname)) {
+    utils::write.table(
+      file = fname,
+      returned_composition_data,
+      sep = ",",
+      col.names = TRUE,
+      row.names = FALSE,
+      append = FALSE
+    )  
+  }
 
   invisible(returned_composition_data)
 } # End function writeComps
