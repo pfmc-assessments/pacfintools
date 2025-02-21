@@ -20,9 +20,7 @@
 #'   The binning structure to use for ages and lengths. For
 #'   both arguments, the default is `NULL` which leads to the natural bins of
 #'   the data being used, i.e., no additional binning is performed.
-#' @param comp_bins The binning structure to use for ages and lengths. The default
-#'   is `NULL` which leads to the natural bins of the data being used, i.e.,
-#'    no additional binning is performed.
+#' @param comp_bins The binning structure to use for ages and lengths.
 #' @param column_with_input_n A string providing the column name with the
 #'   appropriate value for the input sample size that will be given to Stock
 #'   Synthesis as input_n (what we and {nwfscSurvey} provide as a column name)

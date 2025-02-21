@@ -10,7 +10,7 @@ writeComps(
   fname = NULL,
   abins = lifecycle::deprecated(),
   lbins = lifecycle::deprecated(),
-  column_with_input_n = c("n_tows", "stewart", "n_fish"),
+  column_with_input_n = c("n_tows", "n_stewart", "n_fish"),
   maxAge = lifecycle::deprecated(),
   month = 7,
   partition = 2,
@@ -25,9 +25,7 @@ writeComps(
 \arguments{
 \item{inComps}{A dataframe returned from \code{\link[=getComps]{getComps()}}.}
 
-\item{comp_bins}{The binning structure to use for ages and lengths. The default
-is \code{NULL} which leads to the natural bins of the data being used, i.e.,
-no additional binning is performed.}
+\item{comp_bins}{The binning structure to use for ages and lengths.}
 
 \item{fname}{A filename with the appropriate extension, used to save the
 function output to the disk. For example, \code{LenComps.csv} or
