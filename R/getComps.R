@@ -116,19 +116,13 @@ getComps <- function(Pdata,
     dplyr::filter(SEX != "U") |>
     # By stratification variable count # of tows
     dplyr::group_by(dplyr::across(dplyr::all_of(towstrat))) |>
-    dplyr::mutate(n_tows = dplyr::n_distinct(uniqueid)) |>
-    # By stratification and SEX count number of sampled fish
-    dplyr::group_by(SEX, .add = TRUE) |>
-    dplyr::mutate(n_fish = sum(FREQ)) |>
-    dplyr::group_by(dplyr::across(dplyr::all_of(towstrat))) |>
     dplyr::mutate(
+      n_tows = dplyr::n_distinct(uniqueid),
+      n_fish = sum(FREQ),
       ratio = sum(unique(n_fish)) / n_tows,
       n_stewart = dplyr::case_when(
         ratio < 44 ~ n_tows + 0.138 * sum(unique(n_fish)),
         .default = 7.06 * n_tows
-      ),
-      n_stewart = dplyr::case_when(
-        n_stewart > sum(unique(n_fish)) ~ sum(unique(n_fish)), .default = n_stewart
       )
     ) |>
     # By stratification, sex, and bin value count the weight
@@ -154,19 +148,13 @@ getComps <- function(Pdata,
     dplyr::filter(SEX == "U") |>
     # By stratification variable count # of tows
     dplyr::group_by(dplyr::across(dplyr::all_of(towstrat))) |>
-    dplyr::mutate(n_tows = dplyr::n_distinct(uniqueid)) |>
-    # By stratification and SEX count number of sampled fish
-    dplyr::group_by(SEX, .add = TRUE) |>
-    dplyr::mutate(n_fish = sum(FREQ)) |>
-    dplyr::group_by(dplyr::across(dplyr::all_of(towstrat))) |>
     dplyr::mutate(
+      n_tows = dplyr::n_distinct(uniqueid),
+      n_fish = sum(FREQ),
       ratio = sum(unique(n_fish)) / n_tows,
       n_stewart = dplyr::case_when(
         ratio < 44 ~ n_tows + 0.138 * sum(unique(n_fish)),
         .default = 7.06 * n_tows
-      ),
-      n_stewart = dplyr::case_when(
-        n_stewart > sum(unique(n_fish)) ~ sum(unique(n_fish)), .default = n_stewart
       )
     ) |>
     # By stratification, sex, and bin value count the weight
