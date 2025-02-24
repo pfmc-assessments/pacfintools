@@ -166,6 +166,9 @@ writeComps <- function(inComps,
   if (!column_with_input_n %in% colnames(inComps)) {
     cli::cli_abort("{.var {column_with_input_n}} should be a column")
   }
+  if (is.null(fname) & verbose) {
+    cli::cli_alert_info("Output will not be saved because fname = NULL.")
+  }
 
   Names <- names(inComps)
   AGE <- which(Names == "Age")
