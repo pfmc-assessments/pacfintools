@@ -79,13 +79,11 @@ are pulled using sql calls.</p></dd>
 <dt id="arg-fname">fname<a class="anchor" aria-label="anchor" href="#arg-fname"></a></dt>
 <dd><p>A filename with the appropriate extension, used to save the
 function output to the disk. For example, <code>LenComps.csv</code> or
-<code>file.path(getwd(), "SampleSize.csv")</code>. Full, relative, or simple paths are
+<code>file.path(getwd(), "LenComps.csv")</code>. Full, relative, or simple paths are
 allowed because the argument is used as is, i.e., not redirected to a
 directory different than <code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd()</a></code>. Note that various functions within
 pacfintools have different default values for this input argument. If
-<code>NULL</code> in <code>writeComps</code>, then the resulting file name will be based on what
-type of composition data is being generated, i.e., <code>PacFIN_lengths.out</code>,
-or <code>PacFIN_ages.out</code> for length or age data, respectively.</p></dd>
+<code>NULL</code> in <code>writeComps</code>, then no csv file will be written to disk.</p></dd>
 
 
 <dt id="arg-strat">strat<a class="anchor" aria-label="anchor" href="#arg-strat"></a></dt>

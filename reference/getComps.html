@@ -62,7 +62,8 @@ groupings.</p>
 <span>  Comps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LEN"</span>, <span class="st">"AGE"</span>, <span class="st">"AAL"</span><span class="op">)</span>,</span>
 <span>  defaults <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fleet"</span>, <span class="st">"fishyr"</span>, <span class="st">"season"</span><span class="op">)</span>,</span>
 <span>  towid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SAMPLE_NO"</span><span class="op">)</span>,</span>
-<span>  weightid <span class="op">=</span> <span class="st">"Final_Sample_Size_L"</span></span>
+<span>  weightid <span class="op">=</span> <span class="st">"Final_Sample_Size_L"</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -111,6 +112,14 @@ sample sizes found for age data, i.e., <code>weightid = "Final_Sample_Size_A"</c
 You can pass <code>weightid</code> any column that exists in <code>Pdata</code>. Legacy code did
 not allow you to name the column and <code>Final_Sample_Size</code> was hard coded in
 the function.</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>A logical specifying if output should be written to the
+screen or not. Good for testing and exploring your data but can be turned
+off when output indicates information that you already know. The printing
+of output to the screen does not affect any of the returned objects. The
+default is to always print to the screen, i.e., <code>verbose = TRUE</code>.</p></dd>
 
 </dl></div>
     <div id="value">
