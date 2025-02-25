@@ -10,6 +10,7 @@
 #' documentation for the pass-through arguments, i.e., `...`
 #'
 #' @inheritParams tableSample
+#' @inheritParams cleanPacFIN
 #' @param Comps The type of composition data to create. See the function call
 #'   for the available options. The first option listed is the default, which
 #'   creates conditional age-at-length compositions by adding both `lengthcm`
@@ -48,7 +49,16 @@ getComps <- function(Pdata,
                      Comps = c("LEN", "AGE", "AAL"),
                      defaults = c("fleet", "fishyr", "season"),
                      towid = c("SAMPLE_NO"),
-                     weightid = "Final_Sample_Size_L") {
+                     weightid = "Final_Sample_Size_L",
+                     verbose = TRUE) {
+  if(length(unique(Pdata[["SEX"]])) == 3 & verbose) {
+    cli::cli_warn(
+      "Sexed and unsexed fish are in the data and n_tows, n_fish, and n_stewart
+      input sample size options will be calculated seperately for sexed and unsexed
+      fish. For single-sex models, it is recommended to set SEX = U for all records
+      prior to running this function."
+    )
+  }
   # Set up stratification
   usualSuspects <- defaults
 
@@ -102,13 +112,22 @@ getComps <- function(Pdata,
   )
 
   # Determine the number of tows for each combination of sex available
-  Pdata |>
+  comps <- Pdata |>
+    dplyr::mutate(
+      sex_group = dplyr::case_when(SEX == "U" ~ "U", .default = "B")
+    ) |>
+    #dplyr::filter(SEX != "U") |>
     # By stratification variable count # of tows
-    dplyr::group_by(dplyr::across(dplyr::all_of(towstrat))) |>
-    dplyr::mutate(n_tows = dplyr::n_distinct(uniqueid)) |>
-    # By stratification and SEX count number of sampled fish
-    dplyr::group_by(SEX, .add = TRUE) |>
-    dplyr::mutate(n_fish = sum(FREQ)) |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(towstrat)), sex_group) |>
+    dplyr::mutate(
+      n_tows = dplyr::n_distinct(uniqueid),
+      n_fish = sum(FREQ),
+      ratio = sum(unique(n_fish)) / n_tows,
+      n_stewart = dplyr::case_when(
+        ratio < 44 ~ n_tows + 0.138 * sum(unique(n_fish)),
+        .default = 7.06 * n_tows
+      )
+    ) |>
     # By stratification, sex, and bin value count the weight
     dplyr::group_by(dplyr::across(
       dplyr::all_of(c(towstrat, type, "SEX"))
@@ -120,16 +139,13 @@ getComps <- function(Pdata,
       n_tows,
       SEX,
       n_fish,
+      n_stewart,
       weightid
     ) |>
     # Remove duplicated rows
     dplyr::distinct() |>
     # Give n_fish by sex and weight by sex in 6 separate columns
     dplyr::rename(comp = weightid)
-  #  |>
-  # tidyr::pivot_wider(
-  #   names_from = SEX,
-  #   values_from = c("n_fish", "comp"),
-  #   values_fill = 0
-  # )
+  
+  return(comps)
 }

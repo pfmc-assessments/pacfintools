@@ -10,21 +10,17 @@
 #' @param inComps A dataframe returned from [getComps()].
 #' @param fname A filename with the appropriate extension, used to save the
 #'   function output to the disk. For example, `LenComps.csv` or
-#'   `file.path(getwd(), "SampleSize.csv")`. Full, relative, or simple paths are
+#'   `file.path(getwd(), "LenComps.csv")`. Full, relative, or simple paths are
 #'   allowed because the argument is used as is, i.e., not redirected to a
 #'   directory different than [getwd()]. Note that various functions within
 #'   pacfintools have different default values for this input argument. If
-#'   `NULL` in `writeComps`, then the resulting file name will be based on what
-#'   type of composition data is being generated, i.e., `PacFIN_lengths.out`,
-#'   or `PacFIN_ages.out` for length or age data, respectively.
+#'   `NULL` in `writeComps`, then no csv file will be written to disk.
 #' @param abins,lbins Deprecated as of 0.2.10 to reduce complication in the code and
 #'   make it more intuitive for the user when running this function.
 #'   The binning structure to use for ages and lengths. For
 #'   both arguments, the default is `NULL` which leads to the natural bins of
 #'   the data being used, i.e., no additional binning is performed.
-#' @param comp_bins The binning structure to use for ages and lengths. The default
-#'   is `NULL` which leads to the natural bins of the data being used, i.e.,
-#'    no additional binning is performed.
+#' @param comp_bins The binning structure to use for ages and lengths.
 #' @param column_with_input_n A string providing the column name with the
 #'   appropriate value for the input sample size that will be given to Stock
 #'   Synthesis as input_n (what we and {nwfscSurvey} provide as a column name)
@@ -87,11 +83,11 @@
 #' * `getComps()`
 #'
 writeComps <- function(inComps,
+                       comp_bins,
                        fname = NULL,
                        abins = lifecycle::deprecated(),
                        lbins = lifecycle::deprecated(),
-                       comp_bins = NULL,
-                       column_with_input_n = "n_tows",
+                       column_with_input_n = c("n_tows", "n_stewart", "n_fish"),
                        maxAge = lifecycle::deprecated(),
                        month = 7,
                        partition = 2,
@@ -153,6 +149,7 @@ writeComps <- function(inComps,
       "x" = "seasons = {sort(unique(inComps[['season']]))}"
     ))
   }
+  column_with_input_n <- match.arg(column_with_input_n, several.ok = FALSE)
   if (!"season" %in% names(inComps) &&
     length(month) != 1) {
     cli::cli_abort(c(
@@ -179,29 +176,35 @@ writeComps <- function(inComps,
     cli::cli_abort("lengthcm or Age are not columns in {.val inComps}")
   }
 
-  # Create fname if it is not give based on what types of comps we are doing
-  if (is.null(fname)) {
-    fname <- dplyr::case_when(
-      length(LEN) > 0 ~ glue::glue("PacFIN_length_comps_{min(comp_bins)}-{max(comp_bins)}.csv"),
-      length(AGE) > 0 ~ glue::glue("PacFIN_age_comps_{min(comp_bins)}-{max(comp_bins)}.csv")
-    )
-  }
-  if (verbose) {
+  if (!is.null(fname) & verbose) {
     cli::cli_bullets(c(
       "*" = "Writing composition data to {fname}."
     ))
   }
-  fs::dir_create(
-    path = dirname(normalizePath(fname, mustWork = FALSE)),
-    recurse = TRUE
-  )
-
+  if (is.null(fname) & verbose) {
+    cli::cli_bullets(c(
+      "*" = "No fname passed to the function, output will not be saved."
+    ))
+  }
+  if (!is.null(fname)) {
+    fs::dir_create(
+      path = dirname(normalizePath(fname, mustWork = FALSE)),
+      recurse = TRUE
+    ) 
+  }
+  
   type_loc <- ifelse(
     length(AGE) > 0,
     yes = AGE,
     no = LEN
   )
   colnames(inComps)[type_loc] <- "comp_type"
+  
+  bins <- c(comp_bins, Inf)
+  inComps_bins <- inComps |>
+    dplyr::mutate(
+      bins = bins[findInterval(comp_type, bins, all.inside = TRUE)]
+    )
 
   # Modify inComps to include all bins in comp_bins
   check_bin_width <- diff(comp_bins)
@@ -215,29 +218,23 @@ writeComps <- function(inComps,
   grid <- inComps |>
     tibble::tibble() |>
     tidyr::expand(fishyr, fleet, season, SEX, tidyr::full_seq(comp_bins, bin_width))
-  colnames(grid)[ncol(grid)] <- "comp_type"
-  expanded_comps <- inComps |>
+  colnames(grid)[ncol(grid)] <- "bins"
+  expanded_comps <- inComps_bins |>
     dplyr::right_join(grid) |>
     tibble::tibble() |>
-    tidyr::complete(fishyr, fleet, season, comp_type,
+    tidyr::complete(fishyr, fleet, season, bins,
       fill = list(
         n_tows = 0,
         n_fish = 0,
+        n_stewart = 0,
         comp = 0
       )
     )
 
-  if (is.null(comp_bins)) {
-    if (verbose) {
-      cli::cli_alert_info("No composition bins provided, using data as-is.")
-    }
-    comp_bins <- sort(unique(inComps[["comp_type"]]))
-  }
-
-  bins <- c(comp_bins, Inf)
+  #bins <- c(comp_bins, Inf)
   # add extra, dummy bin because all.inside = TRUE
-  expanded_comps$bin <- findInterval(expanded_comps[["comp_type"]], bins, all.inside = TRUE)
-  target <- "bin"
+  #expanded_comps$bin <- findInterval(expanded_comps[["comp_type"]], bins, all.inside = TRUE)
+  target <- "bins"
   key_names <- c(Names[1:(type_loc - 1)])
 
   # letter to paste with the bin to make f1 f2 f3 m1 m2 m3 for
@@ -259,11 +256,15 @@ writeComps <- function(inComps,
     dplyr::mutate(
       # Create the f1 f2 ... m1 m2 ... or u1 u2 ... labels to move to wide
       # columns later
-      sex_length = sprintf(
-        fmt = "%s%05d",
-        ifelse(SEX == "U", sex_label_left_side, tolower(SEX)),
-        get(paste0(target, "s"))[!!dplyr::sym(target)]
+      sex_length = dplyr::case_when(
+        SEX == "U" ~ paste0(sex_label_left_side, bins),
+        .default = paste0(tolower(SEX), bins)
       ),
+      #sex_length = sprintf(
+      #  fmt = "%s%05d",
+      #  ifelse(SEX == "U", sex_label_left_side, tolower(SEX)),
+      #  get(paste0(target, "s"))[!!dplyr::sym(target)]
+      #),
       # Relabel males as females in sex so they get cast to the right when
       # making a wide data frame
       SEX = ifelse(SEX == "M", "F", SEX)
@@ -307,14 +308,16 @@ writeComps <- function(inComps,
     returned_composition_data <- wide_composition_data
   }
 
-  utils::write.table(
-    file = fname,
-    returned_composition_data,
-    sep = ",",
-    col.names = TRUE,
-    row.names = FALSE,
-    append = FALSE
-  )
+  if (!is.null(fname)) {
+    utils::write.table(
+      file = fname,
+      returned_composition_data,
+      sep = ",",
+      col.names = TRUE,
+      row.names = FALSE,
+      append = FALSE
+    )  
+  }
 
   invisible(returned_composition_data)
 } # End function writeComps

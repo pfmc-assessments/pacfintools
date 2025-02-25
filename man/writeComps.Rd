@@ -6,11 +6,11 @@
 \usage{
 writeComps(
   inComps,
+  comp_bins,
   fname = NULL,
   abins = lifecycle::deprecated(),
   lbins = lifecycle::deprecated(),
-  comp_bins = NULL,
-  column_with_input_n = "n_tows",
+  column_with_input_n = c("n_tows", "n_stewart", "n_fish"),
   maxAge = lifecycle::deprecated(),
   month = 7,
   partition = 2,
@@ -25,25 +25,21 @@ writeComps(
 \arguments{
 \item{inComps}{A dataframe returned from \code{\link[=getComps]{getComps()}}.}
 
+\item{comp_bins}{The binning structure to use for ages and lengths.}
+
 \item{fname}{A filename with the appropriate extension, used to save the
 function output to the disk. For example, \code{LenComps.csv} or
-\code{file.path(getwd(), "SampleSize.csv")}. Full, relative, or simple paths are
+\code{file.path(getwd(), "LenComps.csv")}. Full, relative, or simple paths are
 allowed because the argument is used as is, i.e., not redirected to a
 directory different than \code{\link[=getwd]{getwd()}}. Note that various functions within
 pacfintools have different default values for this input argument. If
-\code{NULL} in \code{writeComps}, then the resulting file name will be based on what
-type of composition data is being generated, i.e., \code{PacFIN_lengths.out},
-or \code{PacFIN_ages.out} for length or age data, respectively.}
+\code{NULL} in \code{writeComps}, then no csv file will be written to disk.}
 
 \item{abins, lbins}{Deprecated as of 0.2.10 to reduce complication in the code and
 make it more intuitive for the user when running this function.
 The binning structure to use for ages and lengths. For
 both arguments, the default is \code{NULL} which leads to the natural bins of
 the data being used, i.e., no additional binning is performed.}
-
-\item{comp_bins}{The binning structure to use for ages and lengths. The default
-is \code{NULL} which leads to the natural bins of the data being used, i.e.,
-no additional binning is performed.}
 
 \item{column_with_input_n}{A string providing the column name with the
 appropriate value for the input sample size that will be given to Stock
