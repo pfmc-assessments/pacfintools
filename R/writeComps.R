@@ -166,9 +166,6 @@ writeComps <- function(inComps,
   if (!column_with_input_n %in% colnames(inComps)) {
     cli::cli_abort("{.var {column_with_input_n}} should be a column")
   }
-  if (is.null(fname) & verbose) {
-    cli::cli_alert_info("Output will not be saved because fname = NULL.")
-  }
 
   Names <- names(inComps)
   AGE <- which(Names == "Age")
@@ -184,6 +181,11 @@ writeComps <- function(inComps,
       "*" = "Writing composition data to {fname}."
     ))
   }
+  if (is.null(fname) & verbose) {
+    cli::cli_bullets(c(
+      "*" = "No fname passed to the function, output will not be saved."
+    ))
+  }
   if (!is.null(fname)) {
     fs::dir_create(
       path = dirname(normalizePath(fname, mustWork = FALSE)),
@@ -197,6 +199,12 @@ writeComps <- function(inComps,
     no = LEN
   )
   colnames(inComps)[type_loc] <- "comp_type"
+  
+  bins <- c(comp_bins, Inf)
+  inComps_bins <- inComps |>
+    dplyr::mutate(
+      bins = bins[findInterval(comp_type, bins, all.inside = TRUE)]
+    )
 
   # Modify inComps to include all bins in comp_bins
   check_bin_width <- diff(comp_bins)
@@ -210,22 +218,23 @@ writeComps <- function(inComps,
   grid <- inComps |>
     tibble::tibble() |>
     tidyr::expand(fishyr, fleet, season, SEX, tidyr::full_seq(comp_bins, bin_width))
-  colnames(grid)[ncol(grid)] <- "comp_type"
-  expanded_comps <- inComps |>
+  colnames(grid)[ncol(grid)] <- "bins"
+  expanded_comps <- inComps_bins |>
     dplyr::right_join(grid) |>
     tibble::tibble() |>
-    tidyr::complete(fishyr, fleet, season, comp_type,
+    tidyr::complete(fishyr, fleet, season, bins,
       fill = list(
         n_tows = 0,
         n_fish = 0,
+        n_stewart = 0,
         comp = 0
       )
     )
 
-  bins <- c(comp_bins, Inf)
+  #bins <- c(comp_bins, Inf)
   # add extra, dummy bin because all.inside = TRUE
-  expanded_comps$bin <- findInterval(expanded_comps[["comp_type"]], bins, all.inside = TRUE)
-  target <- "bin"
+  #expanded_comps$bin <- findInterval(expanded_comps[["comp_type"]], bins, all.inside = TRUE)
+  target <- "bins"
   key_names <- c(Names[1:(type_loc - 1)])
 
   # letter to paste with the bin to make f1 f2 f3 m1 m2 m3 for
@@ -247,11 +256,15 @@ writeComps <- function(inComps,
     dplyr::mutate(
       # Create the f1 f2 ... m1 m2 ... or u1 u2 ... labels to move to wide
       # columns later
-      sex_length = sprintf(
-        fmt = "%s%05d",
-        ifelse(SEX == "U", sex_label_left_side, tolower(SEX)),
-        get(paste0(target, "s"))[!!dplyr::sym(target)]
+      sex_length = dplyr::case_when(
+        SEX == "U" ~ paste0(sex_label_left_side, bins),
+        .default = paste0(tolower(SEX), bins)
       ),
+      #sex_length = sprintf(
+      #  fmt = "%s%05d",
+      #  ifelse(SEX == "U", sex_label_left_side, tolower(SEX)),
+      #  get(paste0(target, "s"))[!!dplyr::sym(target)]
+      #),
       # Relabel males as females in sex so they get cast to the right when
       # making a wide data frame
       SEX = ifelse(SEX == "M", "F", SEX)
