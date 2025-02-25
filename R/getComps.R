@@ -51,7 +51,7 @@ getComps <- function(Pdata,
                      towid = c("SAMPLE_NO"),
                      weightid = "Final_Sample_Size_L",
                      verbose = TRUE) {
-  if(length(unique(Pdata[["SEX"]])) == 3 & verbose) {
+  if (length(unique(Pdata[["SEX"]])) == 3 & verbose) {
     cli::cli_warn(
       "Sexed and unsexed fish are in the data and n_tows, n_fish, and n_stewart
       input sample size options will be calculated seperately for sexed and unsexed
@@ -116,7 +116,7 @@ getComps <- function(Pdata,
     dplyr::mutate(
       sex_group = dplyr::case_when(SEX == "U" ~ "U", .default = "B")
     ) |>
-    #dplyr::filter(SEX != "U") |>
+    # dplyr::filter(SEX != "U") |>
     # By stratification variable count # of tows
     dplyr::group_by(dplyr::across(dplyr::all_of(towstrat)), sex_group) |>
     dplyr::mutate(
@@ -146,6 +146,6 @@ getComps <- function(Pdata,
     dplyr::distinct() |>
     # Give n_fish by sex and weight by sex in 6 separate columns
     dplyr::rename(comp = weightid)
-  
+
   return(comps)
 }
