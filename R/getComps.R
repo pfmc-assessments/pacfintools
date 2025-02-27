@@ -7,7 +7,9 @@
 #' This function uses the expansions created in [getExpansion_1()] and
 #' [getExpansion_2()] using `"weightid"`. Thus, whatever column name is passed
 #' to `weightid` will be used as the weight for each group. See the
-#' documentation for the pass-through arguments, i.e., `...`
+#' documentation for the pass-through arguments, i.e., `...`. If you are 
+#' interested in generating unexpanded comps, then use the [get_raw_comps()]
+#' function from the nwfscSurvey package.
 #'
 #' @inheritParams tableSample
 #' @inheritParams cleanPacFIN
