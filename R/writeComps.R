@@ -257,8 +257,8 @@ writeComps <- function(inComps,
       # Create the f1 f2 ... m1 m2 ... or u1 u2 ... labels to move to wide
       # columns later
       sex_length = dplyr::case_when(
-        SEX == "U" ~ paste0(sex_label_left_side, bins),
-        .default = paste0(tolower(SEX), bins)
+        SEX == "U" ~ sprintf(fmt = "%s%05d", sex_label_left_side, bins),
+        .default = sprintf(fmt = "%s%05d", tolower(SEX), bins)
       ),
       #sex_length = sprintf(
       #  fmt = "%s%05d",
