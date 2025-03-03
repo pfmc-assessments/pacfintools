@@ -190,16 +190,16 @@ writeComps <- function(inComps,
     fs::dir_create(
       path = dirname(normalizePath(fname, mustWork = FALSE)),
       recurse = TRUE
-    ) 
+    )
   }
-  
+
   type_loc <- ifelse(
     length(AGE) > 0,
     yes = AGE,
     no = LEN
   )
   colnames(inComps)[type_loc] <- "comp_type"
-  
+
   bins <- c(comp_bins, Inf)
   inComps_bins <- inComps |>
     dplyr::mutate(
@@ -231,9 +231,9 @@ writeComps <- function(inComps,
       )
     )
 
-  #bins <- c(comp_bins, Inf)
+  # bins <- c(comp_bins, Inf)
   # add extra, dummy bin because all.inside = TRUE
-  #expanded_comps$bin <- findInterval(expanded_comps[["comp_type"]], bins, all.inside = TRUE)
+  # expanded_comps$bin <- findInterval(expanded_comps[["comp_type"]], bins, all.inside = TRUE)
   target <- "bins"
   key_names <- c(Names[1:(type_loc - 1)])
 
@@ -260,11 +260,11 @@ writeComps <- function(inComps,
         SEX == "U" ~ sprintf(fmt = "%s%05d", sex_label_left_side, bins),
         .default = sprintf(fmt = "%s%05d", tolower(SEX), bins)
       ),
-      #sex_length = sprintf(
+      # sex_length = sprintf(
       #  fmt = "%s%05d",
       #  ifelse(SEX == "U", sex_label_left_side, tolower(SEX)),
       #  get(paste0(target, "s"))[!!dplyr::sym(target)]
-      #),
+      # ),
       # Relabel males as females in sex so they get cast to the right when
       # making a wide data frame
       SEX = ifelse(SEX == "M", "F", SEX)
@@ -316,7 +316,7 @@ writeComps <- function(inComps,
       col.names = TRUE,
       row.names = FALSE,
       append = FALSE
-    )  
+    )
   }
 
   invisible(returned_composition_data)

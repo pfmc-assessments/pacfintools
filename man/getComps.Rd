@@ -70,7 +70,9 @@ groupings.
 This function uses the expansions created in \code{\link[=getExpansion_1]{getExpansion_1()}} and
 \code{\link[=getExpansion_2]{getExpansion_2()}} using \code{"weightid"}. Thus, whatever column name is passed
 to \code{weightid} will be used as the weight for each group. See the
-documentation for the pass-through arguments, i.e., \code{...}
+documentation for the pass-through arguments, i.e., \code{...}. If you are
+interested in generating unexpanded comps, then use the \code{\link[=get_raw_comps]{get_raw_comps()}}
+function from the nwfscSurvey package.
 }
 \seealso{
 \itemize{
