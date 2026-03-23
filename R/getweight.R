@@ -1,12 +1,12 @@
-#' Calculate weight from length and the weight-length relationship
+#' Calculate weight from length and the weight--length relationship
 #'
-#' Estimate fish weights from potentially sex-specific weight-length
+#' Estimate fish weights from potentially sex-specific weight--length
 #' relationship parameters returned from [getWLpars].
 #'
 #' @param length A vector of fish lengths in mm.
 #' @param sex A vector of sexes for each entry in \code{length}.
 #' Entries must be one of the following: 'U', 'F', 'M', or 'H'.
-#' @param pars A data frame of parameters for the weight-length
+#' @param pars A data frame of parameters for the weight--length
 #' relationship as determined from empirical data. The data frame
 #' must have columns of \code{'A'} and \code{'B'}, as well as
 #' rows named \code{'U'}, at a minimum, \code{'F'}, and \code{'M'}.
@@ -24,7 +24,7 @@
 #' @return A vector of measurements in the unit specified using
 #' `unit.out`. If weights were provided, then the weights are also
 #' the output. If lengths were provided, then they are converted
-#' to weights. Where, weights are determined from lengths and weight-length
+#' to weights. Where, weights are determined from lengths and weight--length
 #' parameters input to the function.
 #' Weights are in the same units used to calculate things, i.e., kg.
 #'
@@ -34,7 +34,6 @@ getweight <- function(length,
                       unit.out = c("lb", "kg"),
                       weight,
                       unit.in) {
-
   unit.out <- match.arg(unit.out, several.ok = FALSE)
 
   #### Option # 1 ... Change units of weight
@@ -51,17 +50,20 @@ getweight <- function(length,
       }
     }
     if (any(unit.in == "H", na.rm = TRUE)) {
-      message("FISH_WEIGHT units of H are changed to G for ",
-        sum(unit.in == "H", na.rm = TRUE), " fish.")
+      message(
+        "FISH_WEIGHT units of H are changed to G for ",
+        sum(unit.in == "H", na.rm = TRUE), " fish."
+      )
       unit.in[unit.in == "H"] <- "G"
     }
     transformweight <- weight * mapply(switch, unit.in,
-        MoreArgs = list(
-          G = 0.00220462,
-          KG = 2.20462,
-          UNK = 0.00220462,
-          0.00220462)
-        )
+      MoreArgs = list(
+        G = 0.00220462,
+        KG = 2.20462,
+        UNK = 0.00220462,
+        0.00220462
+      )
+    )
     if (unit.out == "kg") {
       transformweight <- transformweight * 0.453592
     }
@@ -71,8 +73,12 @@ getweight <- function(length,
   #### Option # 2 ... a * (length / 10)^b * 2.20462 [length = cm; weight = kg]
   #### Checks
   stopifnot(all(sex %in% c(NA, "U", "F", "M", "H")))
-  if (length(length) != length(sex)) stop("The vectors, length and",
-    " sex, must be equal in length.")
+  if (length(length) != length(sex)) {
+    stop(
+      "The vectors, length and",
+      " sex, must be equal in length."
+    )
+  }
   if (is.matrix(pars)) pars <- data.frame(pars)
   if ((!"H" %in% row.names(pars)) & "H" %in% sex & "all" %in% row.names(pars)) {
     pars["H", ] <- pars["all", ]
@@ -95,4 +101,4 @@ getweight <- function(length,
 
   #### return
   return(calcweight)
-  }
+}

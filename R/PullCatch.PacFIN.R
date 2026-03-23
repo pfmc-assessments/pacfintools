@@ -16,7 +16,7 @@
 #' you only want nominal catch for one or if you only wanted nominal catch.
 #' Nominal species code will be searched for using [PullNominal.PacFIN()] if
 #' the input value for `addnominal` is `TRUE`.
-#' @template verbose
+#' @inheritParams cleanPacFIN
 #'
 #' @return
 #' A `.RData` file is saved with the object inside the file stored as
@@ -83,13 +83,13 @@ PullCatch.PacFIN <- function(pacfin_species_code,
   # Input checks
   stopifnot(
     "`addnominal` must be a logical." =
-    is.logical(addnominal) &&
-    length(addnominal) == 1
+      is.logical(addnominal) &&
+        length(addnominal) == 1
   )
   stopifnot(
     "`verbose` must be a logical." =
-    is.logical(verbose) &&
-    length(verbose) == 1
+      is.logical(verbose) &&
+        length(verbose) == 1
   )
   file_species_code <- paste(pacfin_species_code, collapse = "--")
 

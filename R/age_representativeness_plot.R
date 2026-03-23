@@ -18,13 +18,13 @@
 #' @param wait2plot A logical specifying if you want R to ask you to confirm
 #' page changes between plots. The default is \code{FALSE} and it will also
 #' be \code{FALSE} if plots are saved to the disk.
-#' 
+#'
 #' @details
-#' Output on figures include K-S p-value, which is the p-value output from 
-#' \code{\link{ks.test}} and is colored red if <.05 and green if >=.05, and 
-#' \code{expression(hat(b))}, which is the bhattacharyya coefficient calculated 
+#' Output on figures include K-S p-value, which is the p-value output from
+#' \code{\link{ks.test}} and is colored red if <.05 and green if >=.05, and
+#' \code{expression(hat(b))}, which is the bhattacharyya coefficient calculated
 #' as \code{sum(sqrt(pi1*pi2))} where pi1 and pi2 are the proportion of data in
-#' bin i for each of the two distributions. 
+#' bin i for each of the two distributions.
 #'
 #' @return
 #' Several plots, potentially, are printed to the screen or saved to the disk
@@ -177,7 +177,7 @@ age_representativeness_plot <- function(bio,
 #' extracted from the survey-data warehouse.
 #'
 #' @param data A data frame with names matching those from PacFIN.
-#' @template verbose
+#' @inheritParams cleanPacFIN
 #' @return A data frame with names similar to those exported by the survey-data
 #' warehouse. No column are actually removed, columns are only added.
 #' @export

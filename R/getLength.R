@@ -4,8 +4,8 @@
 #' Lengths are converted for skates from type R and A to actual lengths.
 #' Other, more standard lengths, are filtered for types in `keep`.
 #'
-#' @template Pdata
-#' @template verbose
+#' @inheritParams cleanPacFIN
+#' @inheritParams cleanPacFIN
 #' @param keep A vector of values that represent what you want to keep. Values
 #'   of `NA`, `""`, and numeric values are acceptable. Often, it is helpful to
 #'   run `unique(, useNA = "always") on the relevant data prior to running the
@@ -18,7 +18,6 @@
 getLength <- function(Pdata,
                       verbose = TRUE,
                       keep) {
-
   # Initial checks
   # Early return
   if (all(is.na(Pdata[["FISH_LENGTH"]]))) {
@@ -76,12 +75,14 @@ getLength <- function(Pdata,
   # will eventually be removed (todo).
   check.calt <- which(
     Pdata[[var_spid]] == "DSRK" &
-    Pdata[[var_state]] == "C" &
-    Pdata[[var_fish_length_type]] == "F"
+      Pdata[[var_state]] == "C" &
+      Pdata[[var_fish_length_type]] == "F"
   )
   if (length(check.calt) > 0) {
-    message("Changing ", length(check.calt), " CA FISH_LENGTH_TYPE == 'F' to 'T'.",
-      " Vlada is working on getting these entries fixed in PacFIN.")
+    message(
+      "Changing ", length(check.calt), " CA FISH_LENGTH_TYPE == 'F' to 'T'.",
+      " Vlada is working on getting these entries fixed in PacFIN."
+    )
     Pdata[check.calt, var_fish_length_type] <- "T"
   }
   rm(check.calt)
@@ -102,8 +103,10 @@ getLength <- function(Pdata,
   # Spiny dogfish (Squalus suckleyi; DSRK)
   check.dogfish <- Pdata[[var_spid]] == "DSRK" & !is.na(Pdata[["FORK_LENGTH"]])
   if (sum(check.dogfish) > 0 & verbose) {
-    message(sum(check.dogfish), " fork lengths were converted to total lengths using\n",
-      "Tribuzio and Kruse (2012).")
+    message(
+      sum(check.dogfish), " fork lengths were converted to total lengths using\n",
+      "Tribuzio and Kruse (2012)."
+    )
   }
   Pdata[check.dogfish, "FORK_LENGTH"] <-
     ifelse(Pdata[check.dogfish, "FISH_LENGTH_UNITS"] == "MM", 12.2, 1.22) +
@@ -146,14 +149,14 @@ getLength <- function(Pdata,
   # Work with dorsal length
   if (
     verbose &
-    "D" %in% keep &
-    length(grep("D", Pdata[[var_fish_length_type]]) > 0)
-    ) {
+      "D" %in% keep &
+      length(grep("D", Pdata[[var_fish_length_type]]) > 0)
+  ) {
     message("Using dorsal lengths, are you sure you want dorsal lengths?")
   }
   Pdata$length <- ifelse(
     "D" %in% keep & Pdata[[var_fish_length_type]] == "D" &
-    Pdata$FORK_LENGTH != Pdata$FISH_LENGTH,
+      Pdata$FORK_LENGTH != Pdata$FISH_LENGTH,
     Pdata$FORK_LENGTH, Pdata$length
   )
 

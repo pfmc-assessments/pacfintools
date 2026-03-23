@@ -7,11 +7,10 @@
 getState(Pdata, source = c("AGENCY_CODE", "SOURCE_AGID"), verbose = TRUE)
 }
 \arguments{
-\item{Pdata}{A data frame of biological samples
-originating from the
-Pacific Fishieries Information Network (PacFIN) data warehouse,
-which originated in 2014. Data are pulled using sql calls, see
-\code{\link{PullBDS.PacFIN}()}.}
+\item{Pdata}{A data frame returned from \code{\link[=PullBDS.PacFIN]{PullBDS.PacFIN()}} containing
+biological samples. These data are stored in the Pacific Fishieries
+Information Network (PacFIN) data warehouse, which originated in 2014 and
+are pulled using sql calls.}
 
 \item{source}{The column name where state information is located in
 \code{Pdata}. See the function call for options, where only the first
@@ -37,7 +36,7 @@ Create a categorical column that specifies which state each row is from.
 With the creation of the comprehensive bds table in PacFIN, the column called
 \code{SAMPLE_AGENCY} was deprecated; more specifically, the column is
 available but filled with \code{NULL} values.
-Thus, PacFIN.Utilities no longer maintains \code{SAMPLE_AGENCY} that was being converted
+Thus, pacfintools no longer maintains \code{SAMPLE_AGENCY} that was being converted
 to \code{SOURCE_AGID} and all identification of
 state records should be based on \code{AGENCY_CODE} or \code{SOURCE_AGID}, where the latter is
 just the converted column name (see \link{cleanColumns}).
@@ -70,9 +69,10 @@ please contact the package maintainer.
 \examples{
 data <- data.frame(
   AGENCY_CODE = rep(c("W", "O", "C"), each = 2),
-  info = 1:6)
+  info = 1:6
+)
 testthat::expect_true(
-all(getState(data)[["state"]] == rep(c("WA", "OR", "CA"), each = 2))
+  all(getState(data)[["state"]] == rep(c("WA", "OR", "CA"), each = 2))
 )
 
 }

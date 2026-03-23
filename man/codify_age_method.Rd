@@ -40,6 +40,7 @@ and burn can be "B", "BB", or 1.
 \item 6-length;
 \item 9-unable;
 \item 10-break and bake;
+\item 11-break and bake and burn;
 }
 }
 

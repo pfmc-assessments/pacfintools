@@ -7,11 +7,10 @@
 getAge(Pdata, verbose = TRUE, keep, col.bestage = lifecycle::deprecated())
 }
 \arguments{
-\item{Pdata}{A data frame of biological samples
-originating from the
-Pacific Fishieries Information Network (PacFIN) data warehouse,
-which originated in 2014. Data are pulled using sql calls, see
-\code{\link{PullBDS.PacFIN}()}.}
+\item{Pdata}{A data frame returned from \code{\link[=PullBDS.PacFIN]{PullBDS.PacFIN()}} containing
+biological samples. These data are stored in the Pacific Fishieries
+Information Network (PacFIN) data warehouse, which originated in 2014 and
+are pulled using sql calls.}
 
 \item{verbose}{A logical specifying if output should be written to the
 screen or not. Good for testing and exploring your data but can be turned
@@ -72,7 +71,7 @@ package starting with version 0.2.6.
 \subsection{Washington}{
 
 Washington uses the following order of operations to assign the best age
-given there are multiple reads. See \href{http://www.github.com/pfmc-assessments/PacFIN.Utilities/issues/49}{issue #49} for a
+given there are multiple reads. See \href{http://www.github.com/pfmc-assessments/pacfintools/issues/49}{issue #49} for a
 semi-detailed discussion. Note, that they will never report more than three
 reads because that is the limitation of their database.
 \itemize{

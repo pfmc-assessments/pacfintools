@@ -6,7 +6,7 @@
 #' With the creation of the comprehensive bds table in PacFIN, the column called
 #' `SAMPLE_AGENCY` was deprecated; more specifically, the column is
 #' available but filled with `NULL` values.
-#' Thus, PacFIN.Utilities no longer maintains `SAMPLE_AGENCY` that was being converted
+#' Thus, pacfintools no longer maintains `SAMPLE_AGENCY` that was being converted
 #' to `SOURCE_AGID` and all identification of
 #' state records should be based on `AGENCY_CODE` or `SOURCE_AGID`, where the latter is
 #' just the converted column name (see [cleanColumns]).
@@ -27,19 +27,24 @@
 #' * WA: 1C, 2A, 2B, 2C, 2E, 2F, 3A, 3B, 3C, 3N, 3S
 #' * OR: 1C, 2A, 2B, 2C, 2E, 2F, 3A, 3B, CS
 #' * CA: 1A, 1B, 1C
-#' Rather than supporting one or the other, users are now left to deciphering which
-#' PSMFC areas they want to assign to which states on there own. Hopefully, the guidance
-#' above will be helpful. If you see the need to use PSMFC_CATCH_AREA_CODE to set states
+#' 
+#' However, the look-up table for [PacFIN Catch Area Code](https://apex.psmfc.org/pacfin/f?p=501:817:3123899543376:INITIAL)
+#' indicates that they should be:
+#' * WA: 3A, 3B, 3C, 3S
+#' * OR: 2A, 2B, 2C, 2E, 2F, 3A
+#' * CA: 1A, 1B, 1C
+#' 
+#' If you see the need to use PSMFC_CATCH_AREA_CODE to set states
 #' please contact the package maintainer.
 #'
 #' @export
 #' @seealso [cleanPacFIN] calls `getState`.
 #'
-#' @template Pdata
+#' @inheritParams cleanPacFIN
 #' @param source The column name where state information is located in
 #' \code{Pdata}. See the function call for options, where only the first
 #' value will be used.
-#' @template verbose
+#' @inheritParams cleanPacFIN
 #'
 #' @return The input data frame is returned with an additional column,
 #' `state`, which is filled with two-character values identifying the state or
@@ -50,18 +55,20 @@
 #' @examples
 #' data <- data.frame(
 #'   AGENCY_CODE = rep(c("W", "O", "C"), each = 2),
-#'   info = 1:6)
+#'   info = 1:6
+#' )
 #' testthat::expect_true(
-#' all(getState(data)[["state"]] == rep(c("WA", "OR", "CA"), each = 2))
+#'   all(getState(data)[["state"]] == rep(c("WA", "OR", "CA"), each = 2))
 #' )
 #'
-getState <- function (Pdata,
-                      source = c("AGENCY_CODE", "SOURCE_AGID"),
-                      verbose = TRUE) {
-
+getState <- function(Pdata,
+                     source = c("AGENCY_CODE", "SOURCE_AGID"),
+                     verbose = TRUE) {
   if (any(source %in% c("PSMFC_CATCH_AREA_CODE", "PSMFC_ARID"))) {
-    stop("'PSMFC_CATCH_AREA_CODE' and 'PSMFC_ARID' are no longer supported ",
-      "inputs to getState(source = ).")
+    stop(
+      "'PSMFC_CATCH_AREA_CODE' and 'PSMFC_ARID' are no longer supported ",
+      "inputs to getState(source = )."
+    )
   }
   source <- match.arg(source, several.ok = FALSE)
   colid <- match(source, colnames(Pdata))
@@ -71,24 +78,27 @@ getState <- function (Pdata,
 
   Pdata$state <- as.character(Pdata[, source])
 
-  Pdata[, "state"] <- vapply(Pdata[, "state"], FUN = switch,
+  Pdata[, "state"] <- vapply(Pdata[, "state"],
+    FUN = switch,
     FUN.VALUE = "character",
     C = "CA", CalCOM = "CA", CALCOM = "CA",
     O = "OR",
     W = "WA",
-    "UNK")
+    "UNK"
+  )
 
   states <- c("OR", "CA", "WA")
 
   nostate <- sum(!Pdata[, "state"] %in% states)
 
   if (verbose) {
-    message("\nThere are ", nostate,
+    message(
+      "\nThere are ", nostate,
       " records for which the state (i.e., 'CA', 'OR', 'WA')",
-      "\ncould not be assigned and were labeled as 'UNK'.")
+      "\ncould not be assigned and were labeled as 'UNK'."
+    )
     utils::capture.output(type = "message", table(Pdata[, "state"]))
   } # End if verbose
 
   return(Pdata)
-
 }

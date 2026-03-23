@@ -36,7 +36,7 @@
 #' ### Washington
 #' Washington uses the following order of operations to assign the best age
 #' given there are multiple reads. See [issue
-#' #49](http://www.github.com/pfmc-assessments/PacFIN.Utilities/issues/49) for a
+#' #49](http://www.github.com/pfmc-assessments/pacfintools/issues/49) for a
 #' semi-detailed discussion. Note, that they will never report more than three
 #' reads because that is the limitation of their database.
 #' * age1 if only one read;
@@ -74,8 +74,8 @@
 #' * for older fish where the discrepancy cannot be resolved, age1 is used
 #'   because it had the freshest otolith and potentially used the better half.
 #'
-#' @template Pdata
-#' @template verbose
+#' @inheritParams cleanPacFIN
+#' @inheritParams cleanPacFIN
 #' @param keep A vector of strings, integers, `NA`, and empty strings (e.g.,
 #'   `""`) representing the `AGE_METHOD`s you want to keep. All entries will be
 #'   converted to character values using [codify_age_method()]. To keep the best
@@ -221,11 +221,9 @@ getAge <- function(Pdata,
       dplyr::filter(
         is.na(rlang::eval_tidy(dplyr::sym(column_with_age))),
         all_ages != ""
-      ) %>%
-      NROW() %>%
-      {
-        glue::glue("{.} rows were missing a final age")
-      }
+      ) |>
+      NROW()
+    text_n_missing_final <- glue::glue("{text_n_missing_final} rows were missing a final age")
     names(text_n_missing_final) <- ifelse(
       substr(text_n_missing_final, 1, 1) == "0",
       "v",
