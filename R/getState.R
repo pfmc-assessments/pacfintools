@@ -27,13 +27,13 @@
 #' * WA: 1C, 2A, 2B, 2C, 2E, 2F, 3A, 3B, 3C, 3N, 3S
 #' * OR: 1C, 2A, 2B, 2C, 2E, 2F, 3A, 3B, CS
 #' * CA: 1A, 1B, 1C
-#' 
+#'
 #' However, the look-up table for [PacFIN Catch Area Code](https://apex.psmfc.org/pacfin/f?p=501:817:3123899543376:INITIAL)
 #' indicates that they should be:
 #' * WA: 3A, 3B, 3C, 3S
 #' * OR: 2A, 2B, 2C, 2E, 2F, 3A
 #' * CA: 1A, 1B, 1C
-#' 
+#'
 #' If you see the need to use PSMFC_CATCH_AREA_CODE to set states
 #' please contact the package maintainer.
 #'
