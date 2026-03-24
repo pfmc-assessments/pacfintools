@@ -112,12 +112,14 @@ exclusive to a state. Previous code set areas <code>1[a-z]</code> to Washington,
 The <a href="https://pacfin.psmfc.org/wp-content/uploads/2019/03/PacFIN_Comprehensive_BDS_Commercial.pdf" class="external-link">PacFIN documentation</a>
 suggests that the following area codes can be assigned to the following states:</p><ul><li><p>WA: 1C, 2A, 2B, 2C, 2E, 2F, 3A, 3B, 3C, 3N, 3S</p></li>
 <li><p>OR: 1C, 2A, 2B, 2C, 2E, 2F, 3A, 3B, CS</p></li>
-<li><p>CA: 1A, 1B, 1C
-Rather than supporting one or the other, users are now left to deciphering which
-PSMFC areas they want to assign to which states on there own. Hopefully, the guidance
-above will be helpful. If you see the need to use PSMFC_CATCH_AREA_CODE to set states
-please contact the package maintainer.</p></li>
-</ul></div>
+<li><p>CA: 1A, 1B, 1C</p></li>
+</ul><p>However, the look-up table for <a href="https://apex.psmfc.org/pacfin/f?p=501:817:3123899543376:INITIAL" class="external-link">PacFIN Catch Area Code</a>
+indicates that they should be:</p><ul><li><p>WA: 3A, 3B, 3C, 3S</p></li>
+<li><p>OR: 2A, 2B, 2C, 2E, 2F, 3A</p></li>
+<li><p>CA: 1A, 1B, 1C</p></li>
+</ul><p>If you see the need to use PSMFC_CATCH_AREA_CODE to set states
+please contact the package maintainer.</p>
+    </div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><a href="cleanPacFIN.html">cleanPacFIN</a> calls <code>getState</code>.</p></div>
