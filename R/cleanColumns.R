@@ -94,8 +94,8 @@ cleanColumns.bds <- function(data) {
   # CRW: Columns have been collapsed to have
   # TOTAL_WGT for CA and RWT_LBS for WA.
   data$RWT_LBS <- data$TOTAL_WGT
-  data <- data |>
-    dplyr::select(-dplyr::matches("VESSEL|AGE_[SR]|^NUM|LOAD|COMMON|_ID|agedby"))
+  data <- data %>%
+    dplyr::select(-dplyr::matches("VESSEL|AGE_[R]|^NUM|LOAD|COMMON|_ID|agedby"))
 
   return(data)
 }

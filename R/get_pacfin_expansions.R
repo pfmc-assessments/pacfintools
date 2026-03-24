@@ -100,15 +100,16 @@
 #' @author Chantel R. Wetzel
 #'
 get_pacfin_expansions <- function(
-    Pdata,
-    Catch,
-    weight_length_estimates,
-    stratification.cols,
-    Units = "MT",
-    maxExp = 0.95,
-    Exp_WA = TRUE,
-    verbose = TRUE,
-    savedir = NULL) {
+  Pdata,
+  Catch,
+  weight_length_estimates,
+  stratification.cols,
+  Units = "MT",
+  maxExp = 0.95,
+  Exp_WA = TRUE,
+  verbose = TRUE,
+  savedir = NULL
+) {
   nwfscSurvey::check_dir(dir = savedir, verbose = verbose)
 
   # Check weight-length data frame

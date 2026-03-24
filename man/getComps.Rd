@@ -10,7 +10,8 @@ getComps(
   Comps = c("LEN", "AGE", "AAL"),
   defaults = c("fleet", "fishyr", "season"),
   towid = c("SAMPLE_NO"),
-  weightid = "Final_Sample_Size_L"
+  weightid = "Final_Sample_Size_L",
+  verbose = TRUE
 )
 }
 \arguments{
@@ -44,6 +45,12 @@ sample sizes found for age data, i.e., \code{weightid = "Final_Sample_Size_A"}.
 You can pass \code{weightid} any column that exists in \code{Pdata}. Legacy code did
 not allow you to name the column and \code{Final_Sample_Size} was hard coded in
 the function.}
+
+\item{verbose}{A logical specifying if output should be written to the
+screen or not. Good for testing and exploring your data but can be turned
+off when output indicates information that you already know. The printing
+of output to the screen does not affect any of the returned objects. The
+default is to always print to the screen, i.e., \code{verbose = TRUE}.}
 }
 \value{
 A long data frame of weights for each grouping structure. Columns identifying
@@ -63,7 +70,9 @@ groupings.
 This function uses the expansions created in \code{\link[=getExpansion_1]{getExpansion_1()}} and
 \code{\link[=getExpansion_2]{getExpansion_2()}} using \code{"weightid"}. Thus, whatever column name is passed
 to \code{weightid} will be used as the weight for each group. See the
-documentation for the pass-through arguments, i.e., \code{...}
+documentation for the pass-through arguments, i.e., \code{...}. If you are
+interested in generating unexpanded comps, then use the \code{\link[nwfscSurvey:get_raw_comps]{nwfscSurvey::get_raw_comps()}}
+function from the nwfscSurvey package.
 }
 \seealso{
 \itemize{

@@ -6,7 +6,7 @@
 #' With the creation of the comprehensive bds table in PacFIN, the column called
 #' `SAMPLE_AGENCY` was deprecated; more specifically, the column is
 #' available but filled with `NULL` values.
-#' Thus, PacFIN.Utilities no longer maintains `SAMPLE_AGENCY` that was being converted
+#' Thus, pacfintools no longer maintains `SAMPLE_AGENCY` that was being converted
 #' to `SOURCE_AGID` and all identification of
 #' state records should be based on `AGENCY_CODE` or `SOURCE_AGID`, where the latter is
 #' just the converted column name (see [cleanColumns]).
@@ -27,9 +27,14 @@
 #' * WA: 1C, 2A, 2B, 2C, 2E, 2F, 3A, 3B, 3C, 3N, 3S
 #' * OR: 1C, 2A, 2B, 2C, 2E, 2F, 3A, 3B, CS
 #' * CA: 1A, 1B, 1C
-#' Rather than supporting one or the other, users are now left to deciphering which
-#' PSMFC areas they want to assign to which states on there own. Hopefully, the guidance
-#' above will be helpful. If you see the need to use PSMFC_CATCH_AREA_CODE to set states
+#'
+#' However, the look-up table for [PacFIN Catch Area Code](https://apex.psmfc.org/pacfin/f?p=501:817:3123899543376:INITIAL)
+#' indicates that they should be:
+#' * WA: 3A, 3B, 3C, 3S
+#' * OR: 2A, 2B, 2C, 2E, 2F, 3A
+#' * CA: 1A, 1B, 1C
+#'
+#' If you see the need to use PSMFC_CATCH_AREA_CODE to set states
 #' please contact the package maintainer.
 #'
 #' @export

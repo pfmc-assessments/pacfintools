@@ -133,11 +133,12 @@ getExpansion_2 <- function(Pdata,
   Catch <- Catch[, c(yearcol, seq(1:NCOL(Catch))[-yearcol])]
   Catchgears <- sort(names(Catch)[-1])
   Pstrat <- sort(unique(Pdata$stratification))
-
   if (!identical(Pstrat, Catchgears)) {
-    cli::cli_inform("Catch: ", paste(collapse = ", ", Catchgears))
-    cli::cli_inform("Data: ", paste(collapse = ", ", Pstrat))
-    cli::cli_abort("Mismatch between dataset and catch.")
+    out_message <- paste(collapse = ", ", Catchgears)
+    cli::cli_inform("Catch names: {out_message}")
+    out_message <- paste(collapse = ", ", Pstrat)
+    cli::cli_inform("Data strata: {out_message}")
+    cli::cli_abort("Mismatch between strata in dataset and names in catch.")
 
     if (sum(Pstrat %in% Catchgears) == 0) {
       cli::cli_abort(
@@ -274,8 +275,8 @@ getExpansion_2 <- function(Pdata,
       ),
       "i" = glue::glue(
         "Maximum second-stage age expansion capped at the {maxExp} quantile of {round(max(Pdata$Final_Sample_Size_A), 2)}"
-      ))
-    )
+      )
+    ))
   }
 
   if (nNA > 0) {

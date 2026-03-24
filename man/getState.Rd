@@ -36,7 +36,7 @@ Create a categorical column that specifies which state each row is from.
 With the creation of the comprehensive bds table in PacFIN, the column called
 \code{SAMPLE_AGENCY} was deprecated; more specifically, the column is
 available but filled with \code{NULL} values.
-Thus, PacFIN.Utilities no longer maintains \code{SAMPLE_AGENCY} that was being converted
+Thus, pacfintools no longer maintains \code{SAMPLE_AGENCY} that was being converted
 to \code{SOURCE_AGID} and all identification of
 state records should be based on \code{AGENCY_CODE} or \code{SOURCE_AGID}, where the latter is
 just the converted column name (see \link{cleanColumns}).
@@ -60,11 +60,18 @@ suggests that the following area codes can be assigned to the following states:
 \item WA: 1C, 2A, 2B, 2C, 2E, 2F, 3A, 3B, 3C, 3N, 3S
 \item OR: 1C, 2A, 2B, 2C, 2E, 2F, 3A, 3B, CS
 \item CA: 1A, 1B, 1C
-Rather than supporting one or the other, users are now left to deciphering which
-PSMFC areas they want to assign to which states on there own. Hopefully, the guidance
-above will be helpful. If you see the need to use PSMFC_CATCH_AREA_CODE to set states
-please contact the package maintainer.
 }
+
+However, the look-up table for \href{https://apex.psmfc.org/pacfin/f?p=501:817:3123899543376:INITIAL}{PacFIN Catch Area Code}
+indicates that they should be:
+\itemize{
+\item WA: 3A, 3B, 3C, 3S
+\item OR: 2A, 2B, 2C, 2E, 2F, 3A
+\item CA: 1A, 1B, 1C
+}
+
+If you see the need to use PSMFC_CATCH_AREA_CODE to set states
+please contact the package maintainer.
 }
 \examples{
 data <- data.frame(

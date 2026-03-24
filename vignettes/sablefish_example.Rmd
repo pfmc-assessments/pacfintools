@@ -8,7 +8,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Working through PacFIN data can be complex. This examples guides you through working up the data for sablefish. The fish ticket data contains information on catches and is labeled `catch.pacfin` within this vignette. The biological data that contains information on lengths and ages is labeled `bds.pacfin`. These names are standard for every data set that is downloaded and saved from PacFIN using `PacFIN.Utilities` extraction code.
+Working through PacFIN data can be complex. This examples guides you through working up the data for sablefish. The fish ticket data contains information on catches and is labeled `catch.pacfin` within this vignette. The biological data that contains information on lengths and ages is labeled `bds.pacfin`. These names are standard for every data set that is downloaded and saved from PacFIN using `pacfintools` extraction code.
 
 Before working up any of the data, a few items need to be clarified. Such as what gear types you would like to use and what bins should be used for the biological data. As well as which files you would like to load.
 
@@ -129,14 +129,13 @@ is shown below.
 
 ```{r modify-length-data, eval = FALSE}
 bds_cleaned <- bds_cleaned |>
-    # Set any length with an age to NA to avoid double use of data
-    # in the model via marginals.
-    dplyr::mutate(
-      lengthcm = dplyr::case_when(
-        !is.na(Age) ~ NA, is.na(Age) ~ lengthcm
-      )
+  # Set any length with an age to NA to avoid double use of data
+  # in the model via marginals.
+  dplyr::mutate(
+    lengthcm = dplyr::case_when(
+      !is.na(Age) ~ NA, is.na(Age) ~ lengthcm
     )
-
+  )
 ```
 
 `cleanPacFIN()` filters out data and adds additional columns that are used in the data processing.  One of the columns added, `fleet`, is used to separate the data by model fleet. The default values in `fleet` are set to the gear names defined by `keep_gears` in `cleanPacFIN()`.  The values in this column should be modified by the user, if necessary.
