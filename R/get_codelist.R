@@ -35,15 +35,15 @@
 #'   \item{COUNCIL : }{the management council that the area falls within}
 #'   \item{PCID : }{character port code}
 #'   \item{AGID : }{agency code, e.g., "W" for Washington}
-#'   \item{PORT : }{numberic port code}
+#'   \item{AGENCY_PORT_CODE  : }{numberic port code}
 #'   \item{SHORT : }{short description}
 #'   \item{DESCRIPTION : }{long, detailed description}
 #' }
 #' @examples
 #' availablegrids <- get_codelist("GRID")
-#' availableports <- get_codelist("PORT")
+#' availableports <- get_codelist("AGENCY_PORT_CODE")
 #'
-get_codelist <- function(x = c("GRID", "INPFC", "PORT")) {
+get_codelist <- function(x = c("GRID", "INPFC", "AGENCY_PORT_CODE")) {
   x <- match.arg(x, several.ok = FALSE)
   UseMethod("get_codelist", object = structure(list(), class = x))
 }
@@ -52,8 +52,10 @@ get_codelist <- function(x = c("GRID", "INPFC", "PORT")) {
 #'
 get_codelist.GRID <- function(x) {
   url <- "https://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/gr.txt"
-  all <- utils::read.fwf(url(url),
-    skip = 5, widths = c(5, 5, 6, 10, 38, 9),
+  all <- utils::read.fwf(
+    url(url),
+    skip = 5,
+    widths = c(5, 5, 6, 10, 38, 9),
     blank.lines.skip = TRUE
   )
   colnames(all) <- toupper(gsub("^\\s+|\\s+$| Name", "", all[1, ]))
@@ -61,7 +63,8 @@ get_codelist.GRID <- function(x) {
   all <- all[-1 * seq(grep("\\.\\.\\.", all[, 3]), NROW(all)), ]
   all <- all[!grepl("^\\s+$", all[, 1]), ]
   all[, c("TYPE", "GRID", "GROUP")] <- t(apply(
-    all[, c("TYPE", "GRID", "GROUP")], 1,
+    all[, c("TYPE", "GRID", "GROUP")],
+    1,
     function(x) gsub("^\\s*|\\s*$", "", x)
   ))
   all <- all[, -which(colnames(all) == "ENTERED")]
@@ -94,7 +97,7 @@ get_codelist.PORT <- function(x) {
     header = FALSE,
     blank.lines.skip = TRUE
   )
-  colnames(all) <- c("PCID", "AGID", "PORT", "DESCRIPTION")
-  all <- all[!is.na(all[["PORT"]]), ]
+  colnames(all) <- c("PCID", "AGID", "AGENCY_PORT_CODE ", "DESCRIPTION")
+  all <- all[!is.na(all[["AGENCY_PORT_CODE "]]), ]
   return(all)
 }
