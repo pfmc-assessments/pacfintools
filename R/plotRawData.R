@@ -51,8 +51,8 @@ plotRawData <- function(rawData, fname = NULL) {
   meanLen.yr <- tapply(len$len, list(len$SAMPLE_YEAR), mean)
   meanLen <- tapply(len$len, list(len$SAMPLE_NO, len$SAMPLE_YEAR), mean)
 
-  age <- rawData[!is.na(rawData$FISH_AGE_YEARS_FINAL), ]
-  age$Age <- age$FISH_AGE_YEARS_FINAL
+  age <- rawData[!is.na(rawData$FINAL_FISH_AGE_IN_YEARS), ]
+  age$Age <- age$FINAL_FISH_AGE_IN_YEARS
   atows <- age[!duplicated(age$SAMPLE_NO), ]
   meanAge <- tapply(age$Age, list(age$SAMPLE_NO, age$SAMPLE_YEAR), mean)
 

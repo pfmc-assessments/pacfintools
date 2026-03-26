@@ -4,7 +4,7 @@
 #' function works with data from the West Coast Groundfish Bottom Trawl
 #' Survey extracted by the nwfscSurvey package as well as PacFIN data.
 #' Must include either the columns Year, Length_cm, and Age, or,
-#' for PacFIN data, SAMPLE_YEAR, FISH_LENGTH, and FISH_AGE_YEARS_FINAL.
+#' for PacFIN data, SAMPLE_YEAR, FISH_LENGTH, and FINAL_FISH_AGE_IN_YEARS.
 #' Additional columns can be present.
 #' @param xlim The x limits for the histogram
 #' @param ylim The y limits for the histogram
@@ -271,8 +271,8 @@ changecol_pacfin <- function(data, verbose = TRUE) {
   }
   # Age column
   if (!"Age" %in% colnames(data)) {
-    if ("FISH_AGE_YEARS_FINAL" %in% colnames(data)) {
-      data[, "Age"] <- data[, "FISH_AGE_YEARS_FINAL"]
+    if ("FINAL_FISH_AGE_IN_YEARS" %in% colnames(data)) {
+      data[, "Age"] <- data[, "FINAL_FISH_AGE_IN_YEARS"]
     }
     if (any("AGE" %in% colnames(data))) {
       data <- dplyr::rename("Age" = "AGE")
@@ -280,7 +280,7 @@ changecol_pacfin <- function(data, verbose = TRUE) {
     if (!"Age" %in% colnames(data)) {
       stop(
         "A fish-age column was not found in your data\n",
-        "Age or FISH_AGE_YEARS_FINAL work."
+        "Age or FINAL_FISH_AGE_IN_YEARS work."
       )
     }
   }
