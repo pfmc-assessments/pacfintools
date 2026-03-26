@@ -115,7 +115,7 @@ getGearGroup <- function(Pdata, spp = NULL, verbose = TRUE) {
 
   #### Create geargroup
   Pdata[, "geargroup"] <- GearTable[
-    match(Pdata[, "PACFIN_GEAR_CODE"], GearTable[, "PACFIN_GEAR_CODE"]),
+    match(Pdata[, "PACFIN_GEAR_CODE"], GearTable[, "GRID"]),
     "GROUP"
   ]
   Pdata[, "geargroup"] <- ifelse(

@@ -20,9 +20,7 @@
 #'   groupings and how they link to `"PACFIN_GEAR_CODE"` within your data. The vector
 #'   supplied to this argument should consist of only options available in
 #'   `unique(GearTable[["GROUP"]])`.
-#'   `PACFIN_GEAR_CODE` is a legacy term from PacFIN, now identified as `PACFIN_GEAR_CODE`
-#'   in the biological and fish ticket data, where GR is short for gear and ID
-#'   is short for identification. Typical entries will include character values
+#'  Typical entries will include character values
 #'   such as `HKL`, `POT`, `TWL`, where the latter is short for all non-shrimp
 #'   trawls and `TWS` is shrimp trawls. Other gear identification codes and
 #'   their definitions include `DRG` which is dredge gear, `MSC` which is all
@@ -233,7 +231,7 @@ cleanPacFIN <- function(
   Pdata[Pdata$state == "CA" & is.na(Pdata$SAMPLE_TYPE), "SAMPLE_TYPE"] <- "M"
 
   #### Sex
-  Pdata[, "SEX_CODE"] <- nwfscSurvey::codify_sex(Pdata[, "SEX"])
+  Pdata[, "SEX_CODE"] <- nwfscSurvey::codify_sex(Pdata[, "SEX_CODE"])
 
   #### Lengths
   Pdata[, "length"] <- getLength(
@@ -265,9 +263,9 @@ cleanPacFIN <- function(
   # Remove bad OR samples
   Pdata$SAMPLE_TYPE[Pdata$SAMPLE_NUMBER %in% paste0("OR", badORnums)] <- "S"
   # Via Chantel, from Ali at ODFW, do not keep b/c they don't have EXPANDED_SAMPLE_WEIGHT or FTID
-  if ("SAMPLE_QUALITY" %in% colnames(Pdata)) {
-    Pdata[Pdata[["SAMPLE_QUALITY"]] == 63, "SAMPLE_TYPE"] <- "S"
-  }
+  #if ("SAMPLE_QUALITY" %in% colnames(Pdata)) {
+  #  Pdata[Pdata[["SAMPLE_QUALITY"]] == 63, "SAMPLE_TYPE"] <- "S"
+  #}
 
   #### Summary and return
   # bad records: keep TRUEs

@@ -29,7 +29,7 @@ convertlength_skate <- function(Pdata, returntype = c("all", "estimated")) {
       value = TRUE
     )[1]
     apply(
-      data[, c(var_SEX_CODE, var_fish_length_type)],
+      data[, c(var_sex, var_fish_length_type)],
       MARGIN = 1,
       FUN = paste,
       collapse = "_"
