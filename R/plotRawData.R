@@ -45,7 +45,7 @@ plotRawData <- function(rawData, fname = NULL) {
 
   len <- rawData[!is.na(rawData$FISH_LENGTH), ]
   len$len <- floor(len$FISH_LENGTH / 10)
-  len$depth_mid <- (len$DEPTH_MIN + len$DEPTH_MAXIMUM_FATHOMS) / 2
+  len$depth_mid <- (len$DEPTH_MINIMUM_FATHOMS + len$DEPTH_MAXIMUM_FATHOMS) / 2
   ltows <- len[!duplicated(len$SAMPLE_NO), ]
 
   meanLen.yr <- tapply(len$len, list(len$SAMPLE_YEAR), mean)
