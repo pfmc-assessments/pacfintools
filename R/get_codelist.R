@@ -33,7 +33,7 @@
 #'   \item{INPFC : }{International North Pacific Fisheries Commission (INPFC) Area code used in PacFIN}
 #'   \item{TYPE : }{classification of tree structure, i.e., if it is a subarea}
 #'   \item{COUNCIL : }{the management council that the area falls within}
-#'   \item{PCID : }{character port code}
+#'   \item{ PACFIN_PORT_CODE  : }{character port code}
 #'   \item{AGID : }{agency code, e.g., "W" for Washington}
 #'   \item{AGENCY_PORT_CODE  : }{numberic port code}
 #'   \item{SHORT : }{short description}
@@ -97,7 +97,12 @@ get_codelist.PORT <- function(x) {
     header = FALSE,
     blank.lines.skip = TRUE
   )
-  colnames(all) <- c("PCID", "AGID", "AGENCY_PORT_CODE", "DESCRIPTION")
+  colnames(all) <- c(
+    " PACFIN_PORT_CODE ",
+    "AGID",
+    "AGENCY_PORT_CODE",
+    "DESCRIPTION"
+  )
   all <- all[!is.na(all[["AGENCY_PORT_CODE"]]), ]
   return(all)
 }
