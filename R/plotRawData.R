@@ -58,16 +58,16 @@ plotRawData <- function(rawData, fname = NULL) {
 
   # Print tables
 
-  # cat("Lengths for which FISH_LENGTH_TYPE is T:  ")
-  # print(len[len$FISH_LENGTH_TYPE=="T",])
+  # cat("Lengths for which FISH_LENGTH_TYPE_CODE is T:  ")
+  # print(len[len$FISH_LENGTH_TYPE_CODE=="T",])
   # cat("\n\n")
 
   cat("Records per SAMPLE_YEAR\n\n")
   print(table(rawData$SAMPLE_YEAR, useNA = "ifany"))
   cat("\n\n")
 
-  cat("FISH_LENGTH_TYPE\n")
-  print(table(rawData$FISH_LENGTH_TYPE, useNA = "ifany"))
+  cat("FISH_LENGTH_TYPE_CODE\n")
+  print(table(rawData$FISH_LENGTH_TYPE_CODE, useNA = "ifany"))
   cat("\n\n")
 
   cat("FISH_LENGTH\n")
@@ -79,7 +79,7 @@ plotRawData <- function(rawData, fname = NULL) {
   cat("\n\n")
 
   cat("FISH_LENGTH for lengthed fish\n")
-  print(table(len$FISH_LENGTH_TYPE, useNA = "ifany"))
+  print(table(len$FISH_LENGTH_TYPE_CODE, useNA = "ifany"))
   cat("\n\n")
 
   cat("SAMPLE_YEAR vs AGENCY_CODE for lengthed fish\n")

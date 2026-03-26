@@ -69,7 +69,7 @@ getLength <- function(Pdata, verbose = TRUE, keep) {
     )
   }
 
-  # Check for "F" FISH_LENGTH_TYPE from California for spiny dogfish, a hack that
+  # Check for "F" FISH_LENGTH_TYPE_CODE from California for spiny dogfish, a hack that
   # will eventually be removed (todo).
   check.calt <- which(
     Pdata[[var_spid]] == "DSRK" &

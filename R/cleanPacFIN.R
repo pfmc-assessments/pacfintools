@@ -193,7 +193,7 @@ cleanPacFIN <- function(
   Pdata[, "fleet"] <- Pdata[, "geargroup"] # match(Pdata$geargroup, keep_gears)
   if (missing(keep_length_type)) {
     keep_length_type <- sort(unique(c(
-      Pdata[, "FISH_LENGTH_TYPE"],
+      Pdata[, "FISH_LENGTH_TYPE_CODE"],
       "",
       "A",
       "D",
