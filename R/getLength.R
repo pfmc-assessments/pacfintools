@@ -114,7 +114,7 @@ getLength <- function(Pdata, verbose = TRUE, keep) {
     1.07 * Pdata[check.dogfish, "FORK_LENGTH"]
 
   # Fix incorrect FISH_LENGTH_UNITS for hake
-  if (length(grep("PWHT", Pdata[["SPID"]])) > 0) {
+  if (length(grep("PWHT", Pdata[["PACFIN_SPECIES_CODE"]])) > 0) {
     if (verbose) {
       message("Still fixing WA FISH_LENGTH_UNITS")
     }
@@ -137,7 +137,7 @@ getLength <- function(Pdata, verbose = TRUE, keep) {
   # Work with skate data
   # A is disc width
   # R is inter-spiracle width for skates (used by WDFW)
-  if (all(Pdata$SPID %in% c("LSKT", "BSKT"))) {
+  if (all(Pdata$PACFIN_SPECIES_CODE %in% c("LSKT", "BSKT"))) {
     Pdata$length <- ifelse(
       "A" %in% keep & Pdata[[var_fish_length_type]] == "A",
       width2length,

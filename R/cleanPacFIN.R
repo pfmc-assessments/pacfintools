@@ -17,10 +17,10 @@
 #'   If the argument is missing, which is the default, then all found gear
 #'   groups are maintained and ordered alphabetically. For more details see
 #'   [getGearGroup()], which lists a link where you can find the available gear
-#'   groupings and how they link to `"GRID"` within your data. The vector
+#'   groupings and how they link to `"PACFIN_GEAR_CODE"` within your data. The vector
 #'   supplied to this argument should consist of only options available in
 #'   `unique(GearTable[["GROUP"]])`.
-#'   `GRID` is a legacy term from PacFIN, now identified as `PACFIN_GEAR_CODE`
+#'   `PACFIN_GEAR_CODE` is a legacy term from PacFIN, now identified as `PACFIN_GEAR_CODE`
 #'   in the biological and fish ticket data, where GR is short for gear and ID
 #'   is short for identification. Typical entries will include character values
 #'   such as `HKL`, `POT`, `TWL`, where the latter is short for all non-shrimp
@@ -96,7 +96,7 @@
 #' * state: initialized from AGENCY_CODE.  Change using [getState]
 #' * length: length in mm, where `NA` indicates length is not available
 #' * lengthcm: floored cm from FORK_LENGTH when available, otherwise FISH_LENGTH
-#' * geargroup: the gear group associated with each [GRID](http://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/gr.txt)
+#' * geargroup: the gear group associated with each [PACFIN_GEAR_CODE](http://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/gr.txt)
 #' * weightkg: fish weight in kg from FISH_WEIGHT and FISH_WEIGHT_UNITS
 #'
 #' @details
@@ -318,7 +318,7 @@ cleanPacFIN <- function(
     message("N records: ", NROW(Pdata))
     message("N remaining if CLEAN: ", sum(bad[, "keep"]))
     message("N removed if CLEAN: ", NROW(Pdata) - sum(bad[, "keep"]))
-    if (check_pacfin_species_code_calcom(Pdata$SPID)) {
+    if (check_pacfin_species_code_calcom(Pdata$PACFIN_SPECIES_CODE)) {
       if (check_calcom) {
         cli::cli_alert_success(
           "Data are from a flatfish and CalCOM data are present"

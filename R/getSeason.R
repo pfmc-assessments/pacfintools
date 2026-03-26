@@ -105,7 +105,7 @@ getSeason <- function(
       tmp,
       col = grDevices::rainbow(NROW(tmp)),
       legend.text = paste("Season", rownames(tmp)),
-      main = unique(Pdata$SPID),
+      main = unique(Pdata$PACFIN_SPECIES_CODE),
       xlab = "Year",
       ylab = "Count",
       bty = "n"

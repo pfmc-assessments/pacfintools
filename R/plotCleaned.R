@@ -24,7 +24,7 @@
 #'
 plotCleaned <- function(Pdata, savedir = getwd()) {
   #### Checks
-  SPID <- sort(unique(Pdata$SPID))
+  SPID <- sort(unique(Pdata$PACFIN_SPECIES_CODE))
   if (length(SPID) > 1) {
     warning(
       "plotCleaned is only meant to work with one species;",

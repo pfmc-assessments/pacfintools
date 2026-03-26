@@ -26,7 +26,7 @@ plotRawData <- function(rawData, fname = NULL) {
   if (is.null(fname)) {
     # Set up filenames for txt, pdf
 
-    species <- sort(unique(rawData$SPID))
+    species <- sort(unique(rawData$PACFIN_SPECIES_CODE))
     pdffile <- paste("Diags.", species, ".pdf", sep = "")
     txtfile <- paste("Diags.", species, ".txt", sep = "")
   } else {
