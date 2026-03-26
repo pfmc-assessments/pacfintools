@@ -22,6 +22,7 @@
 #'
 #' @author Kelli F. Johnson
 #' @export
+#' @import magrittr
 #' @return A data frame of weight--length parameters by sex.
 #' Parameters A and B are in the appropriate units to input
 #' into Stock Synthesis Wtlen_1_Fem and Wtlen_2_Fem, or
