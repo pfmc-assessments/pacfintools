@@ -168,7 +168,7 @@ EF1_Denominator <- function(
         ifelse(all(is.na(length)), 0, 1)
     ) |>
     dplyr::ungroup() |>
-    dplyr::group_by(SAMPLE_NO, CLUSTER_NO) |>
+    dplyr::group_by(SAMPLE_NO, CLUSTER_SEQUENCE_NUMBER) |>
     # Do the same for CLUSTER_WGT
     dplyr::mutate(
       Wt_Sampled_2_A = (-1 *
