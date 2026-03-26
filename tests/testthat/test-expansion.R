@@ -58,4 +58,46 @@ test_that("Expand biological data", {
     round(sum(expanded_comps[, "Final_Sample_Size_A"]), 0),
     1899150
   )
+
+  length_comps_long <- getComps(
+    Pdata = expanded_comps |> dplyr::filter(!is.na(lengthcm)),
+    Comps = "LEN",
+    weightid = "Final_Sample_Size_L",
+    verbose = FALSE
+  )
+  expect_equal(nrow(length_comps_long), 1499)
+  expect_equal(ncol(length_comps_long), 9)
+  expect_equal(round(sum(length_comps_long[, "comp"]), 0), 9168900)
+
+  length_composition_data <- writeComps(
+    inComps = length_comps_long,
+    column_with_input_n = "n_stewart",
+    comp_bins = seq(18, 90, by = 2),
+    verbose = FALSE
+  )
+  expect_equal(nrow(length_composition_data), 6)
+  expect_equal(ncol(length_composition_data), 80)
+  expect_equal(sum(length_composition_data$input_n), 6567.254, tolerance = 1e-3)
+  expect_equal(sum(length_composition_data[, 7:80]), 9168900, tolerance = 1e-3)
+
+  age_comps_long <- getComps(
+    Pdata = dplyr::filter(expanded_comps, !is.na(Age)),
+    Comps = "AGE",
+    weightid = "Final_Sample_Size_A",
+    verbose = FALSE
+  )
+  expect_equal(nrow(age_comps_long), 701)
+  expect_equal(ncol(age_comps_long), 9)
+  expect_equal(round(sum(age_comps_long[, "comp"]), 0), 1445082)
+
+  age_composition_data <- writeComps(
+    inComps = age_comps_long,
+    comp_bins = 0:50,
+    column_with_input_n = "n_tows",
+    verbose = FALSE
+  )
+  expect_equal(nrow(age_composition_data), 17)
+  expect_equal(ncol(age_composition_data), 111)
+  expect_equal(sum(age_composition_data$input_n), 371, tolerance = 1e-3)
+  expect_equal(sum(age_composition_data[, 10:111]), 1445082, tolerance = 1e-3)
 })
