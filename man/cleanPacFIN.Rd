@@ -33,10 +33,10 @@ to label as unique fleets. Order matters and will define fleet numbering.
 If the argument is missing, which is the default, then all found gear
 groups are maintained and ordered alphabetically. For more details see
 \code{\link[=getGearGroup]{getGearGroup()}}, which lists a link where you can find the available gear
-groupings and how they link to \code{"GRID"} within your data. The vector
+groupings and how they link to \code{"PACFIN_GEAR_CODE"} within your data. The vector
 supplied to this argument should consist of only options available in
 \code{unique(GearTable[["GROUP"]])}.
-\code{GRID} is a legacy term from PacFIN, now identified as \code{PACFIN_GEAR_CODE}
+\code{PACFIN_GEAR_CODE} is a legacy term from PacFIN, now identified as \code{PACFIN_GEAR_CODE}
 in the biological and fish ticket data, where GR is short for gear and ID
 is short for identification. Typical entries will include character values
 such as \code{HKL}, \code{POT}, \code{TWL}, where the latter is short for all non-shrimp
@@ -120,10 +120,10 @@ specified, with added columns
 \item fleet: initialized to 1
 \item fishery: initialized to 1
 \item season: initialized to 1.  Change using \link{getSeason}
-\item state: initialized from SOURCE_AGID.  Change using \link{getState}
+\item state: initialized from AGENCY_CODE.  Change using \link{getState}
 \item length: length in mm, where \code{NA} indicates length is not available
 \item lengthcm: floored cm from FORK_LENGTH when available, otherwise FISH_LENGTH
-\item geargroup: the gear group associated with each \href{http://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/gr.txt}{GRID}
+\item geargroup: the gear group associated with each \href{http://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/gr.txt}{PACFIN_GEAR_CODE}
 \item weightkg: fish weight in kg from FISH_WEIGHT and FISH_WEIGHT_UNITS
 }
 }
@@ -139,7 +139,7 @@ US West Coast stock assessments.
 The original fields in the returned data are left untouched,
 with the exception of
 \itemize{
-\item \code{SEX}: modified using \code{\link[nwfscSurvey:codify_sex]{nwfscSurvey::codify_sex()}} and upon return will
+\item \code{SEX_CODE}: modified using \code{\link[nwfscSurvey:codify_sex]{nwfscSurvey::codify_sex()}} and upon return will
 only include character values such that fish with an unidentified sex are
 now \code{"U"}.
 \item Age: the best ages to use going forward rather than just the first age read.

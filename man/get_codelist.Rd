@@ -4,7 +4,7 @@
 \alias{get_codelist}
 \title{Get a list of available options, e.g., code_list, from PacFIN}
 \usage{
-get_codelist(x = c("GRID", "INPFC", "AGENCY_PORT_CODE"))
+get_codelist(x = c("PACFIN_GEAR_CODE", "INPFC", "AGENCY_PORT_CODE"))
 }
 \arguments{
 \item{x}{A character value specifying which code_list you want.
@@ -17,13 +17,13 @@ A data frame with the following potential columns, where the
 column names are always in all caps:
 \itemize{
 \item{TYPE : }{integer value of 1 (gear code), 2 (gear group), or 3 (all)}
-\item{GRID : }{three letter grid or gear type code}
+\item{PACFIN_GEAR_CODE : }{three letter grid or gear type code}
 \item{GROUP : }{three letter gear grouping code}
 \item{ARID : }{mapping of sub area to areas}
 \item{INPFC : }{International North Pacific Fisheries Commission (INPFC) Area code used in PacFIN}
 \item{TYPE : }{classification of tree structure, i.e., if it is a subarea}
 \item{COUNCIL : }{the management council that the area falls within}
-\item{PCID : }{character port code}
+\item{ PACFIN_PORT_CODE  : }{character port code}
 \item{AGID : }{agency code, e.g., "W" for Washington}
 \item{AGENCY_PORT_CODE  : }{numberic port code}
 \item{SHORT : }{short description}
@@ -50,7 +50,7 @@ any of this functionality, feel free to submit a pull request and
 thank you in advance for collaborating.
 }
 \examples{
-availablegrids <- get_codelist("GRID")
+availablegrids <- get_codelist("PACFIN_GEAR_CODE")
 availableports <- get_codelist("AGENCY_PORT_CODE")
 
 }

@@ -45,10 +45,10 @@ they would both use the same landing weight.
 }
 \details{
 Previously, \code{Trip_Sampled_Lbs} was calculated differently for each state.
-For California, \code{Species_Percent_Sampled * TOTAL_WGT}.
-For Oregon, \code{Pdata$EXP_WT} and if missing, the same as California.
-For Washington, \code{Pdata$RWT_LBS}, \code{Pdata$TOTAL_WGT}, \code{RWT_LBS}, or
-\code{median(Pdata$TOTAL_WGT)}.
+For California, \code{Species_Percent_Sampled * WEIGHT_OF_LANDING_LBS}.
+For Oregon, \code{Pdata$EXPANDED_SAMPLE_WEIGHT} and if missing, the same as California.
+For Washington, \code{Pdata$WEIGHT_OF_LANDING_LBS}, \code{Pdata$WEIGHT_OF_LANDING_LBS}, or
+\code{median(Pdata$WEIGHT_OF_LANDING_LBS)}.
 Then, if all else failed, per-year, state-specific medians.
 
 Now, PacFIN works hard behind the scenes to provide species-specific landing

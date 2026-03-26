@@ -8,8 +8,8 @@ getGearGroup(Pdata, spp = NULL, verbose = TRUE)
 }
 \arguments{
 \item{Pdata}{A data frame, typically one extracted from PacFIN but for this
-function just one column is needed, \code{GRID}. If a newer data pull is used,
-the function will change \code{PACFIN_GEAR_CODE} to \code{GRID} for you.}
+function just one column is needed, \code{PACFIN_GEAR_CODE}. If a newer data pull is used,
+the function will change \code{PACFIN_GEAR_CODE} to \code{PACFIN_GEAR_CODE} for you.}
 
 \item{spp}{A character string giving the species name to ensure that the
 methods are species specific. Leave \code{NULL} if generic methods work for
@@ -29,7 +29,7 @@ added to \code{Pdata}. No original columns are modified in the process.
 \description{
 Data from the PacFIN \href{http://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/gr.txt}{gear table}
 is used to create a column in \code{Pdata} called \code{geargroup}, where
-\verb{Pdata[["GRID"]] is recoded to }geargroup` according to the gear group listed
+\verb{Pdata[["PACFIN_GEAR_CODE"]] is recoded to }geargroup` according to the gear group listed
 in the table.
 }
 \details{
@@ -42,7 +42,7 @@ to the matching available in the table pulled from online.
 }
 \examples{
 gears <- c("PRT", "FPT", "TWL", "MDP")
-X <- getGearGroup(data.frame(GRID = gears), verbose = TRUE)
+X <- getGearGroup(data.frame(PACFIN_GEAR_CODE = gears), verbose = TRUE)
 table(X[["geargroup"]])
 
 }

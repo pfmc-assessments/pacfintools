@@ -24,9 +24,9 @@
 #' California sample weights were previously based on the column labeled
 #' `SPECIES_WEIGHT`. Now, California data is parsed by PacFIN to furnish
 #' species-specific cluster weights. Prior, cluster weights included the weight
-#' of all species in the sample. Now, `CLUSTER_WEIGHT` is the weight in that
+#' of all species in the sample. Now, `CLUSTER_WEIGHT_LBS` is the weight in that
 #' cluster for the species of interest. This was verified for dover sole by
-#' Kelli F. Johnson in February of 2021. Thus, the code uses `CLUSTER_WEIGHT`
+#' Kelli F. Johnson in February of 2021. Thus, the code uses `CLUSTER_WEIGHT_LBS`
 #' rather than `SPECIES_WEIGHT` now.
 #' **todo**: determine if this should be the only cluster-specific value going forward?
 #'

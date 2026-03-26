@@ -9,7 +9,7 @@ checkLenAge(
   Par = list(K = 0.13, Linf = 55, L0 = 15, CV0 = 0.1, CV1 = 0.1),
   len_col = "lengthcm",
   age_col = "Age",
-  sex_col = "SEX",
+  sex_col = "SEX_CODE",
   mult = 1,
   keepAll = TRUE,
   sdFactor = 4,
