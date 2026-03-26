@@ -112,14 +112,14 @@ plotCleaned <- function(Pdata, savedir = getwd()) {
     args.legend = list(x = "topleft", bty = "n", ncol = ceiling(nGRID / 4))
   )
 
-  if (!all(is.na(Pdata[, "DEPTH_AVG"]))) {
+  if (!all(is.na(Pdata[, "DEPTH_AVERAGE_FATHOMS"]))) {
     grDevices::png(file.path(savedir, "PacFIN_comp_depth.png"))
     on.exit(grDevices::dev.off(), add = TRUE, after = FALSE)
     graphics::boxplot(
-      Pdata$DEPTH_AVG ~ Pdata$fishyr,
+      Pdata$DEPTH_AVERAGE_FATHOMS ~ Pdata$fishyr,
       ylab = expression(bar(Depth)),
       frame.plot = FALSE,
-      ylim = c(0, max(Pdata$DEPTH_AVG, na.rm = TRUE))
+      ylim = c(0, max(Pdata$DEPTH_AVERAGE_FATHOMS, na.rm = TRUE))
     )
   }
 

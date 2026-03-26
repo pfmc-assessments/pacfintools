@@ -94,16 +94,16 @@ plotRawData <- function(rawData, fname = NULL) {
   print(table(round(len$FISH_LENGTH / 10 - floor(len$FISH_LENGTH / 10), 1)))
   cat("\n\n")
 
-  cat("DEPTH_AVG for lengthed fish\n")
-  print(table(is.na(len$DEPTH_AVG)))
+  cat("DEPTH_AVERAGE_FATHOMS for lengthed fish\n")
+  print(table(is.na(len$DEPTH_AVERAGE_FATHOMS)))
   cat("\n\n")
 
   cat("SAMPLE_YEAR vs. AGENCY_CODE for SAMPLE_NOs with lengthed fish\n")
   print(table(ltows$SAMPLE_YEAR, ltows$AGENCY_CODE))
   cat("\n\n")
 
-  cat("DEPTH_AVG for SAMPLE_NOs with lengthed fish\n")
-  print(table(is.na(ltows$DEPTH_AVG), useNA = "ifany"))
+  cat("DEPTH_AVERAGE_FATHOMS for SAMPLE_NOs with lengthed fish\n")
+  print(table(is.na(ltows$DEPTH_AVERAGE_FATHOMS), useNA = "ifany"))
   cat("\n\n")
 
   cat("Number of aged fish\n")
@@ -152,16 +152,20 @@ plotRawData <- function(rawData, fname = NULL) {
   )
 
   plot(
-    len$DEPTH_AVG,
+    len$DEPTH_AVERAGE_FATHOMS,
     len$depth_mid,
     xlim = c(0, 400),
     ylim = c(0, 400),
-    xlab = "DEPTH_AVG",
+    xlab = "DEPTH_AVERAGE_FATHOMS",
     ylab = "Depth_mid"
   )
   graphics::abline(a = 0, b = 1)
 
-  graphics::hist(ltows$DEPTH_AVG, xlab = "", main = "DEPTH_AVG")
+  graphics::hist(
+    ltows$DEPTH_AVERAGE_FATHOMS,
+    xlab = "",
+    main = "DEPTH_AVERAGE_FATHOMS"
+  )
 
   graphics::hist(age$Age, nclass = 30, xlab = "", main = "Age")
 
