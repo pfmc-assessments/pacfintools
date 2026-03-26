@@ -1,6 +1,6 @@
-#' Check Sample Numbers for Grade
+#' Check Sample Numbers for PACFIN_GRADE_CODE
 #'
-#' Ensure that each sample number has only one grade of fish in it.
+#' Ensure that each sample number has only one PACFIN_GRADE_CODE of fish in it.
 #'
 #' @inheritParams cleanPacFIN
 #'
@@ -9,7 +9,7 @@
 #'
 checkGrade <- function(Pdata) {
   out <- tapply(
-    Pdata$GRADE,
+    Pdata$PACFIN_GRADE_CODE,
     Pdata$SAMPLE_NO,
     function(x) length(unique(x)) == 1
   )
