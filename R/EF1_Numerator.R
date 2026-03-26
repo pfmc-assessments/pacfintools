@@ -7,10 +7,10 @@
 #'
 #' @details
 #' Previously, `Trip_Sampled_Lbs` was calculated differently for each state.
-#' For California, `Species_Percent_Sampled * TOTAL_WGT`.
+#' For California, `Species_Percent_Sampled * WEIGHT_OF_LANDING_LBS`.
 #' For Oregon, `Pdata$EXPANDED_SAMPLE_WEIGHT` and if missing, the same as California.
-#' For Washington, `Pdata$RWT_LBS`, `Pdata$TOTAL_WGT`, `RWT_LBS`, or
-#' `median(Pdata$TOTAL_WGT)`.
+#' For Washington, `Pdata$WEIGHT_OF_LANDING_LBS`, `Pdata$WEIGHT_OF_LANDING_LBS`, or
+#' `median(Pdata$WEIGHT_OF_LANDING_LBS)`.
 #' Then, if all else failed, per-year, state-specific medians.
 #'
 #' Now, PacFIN works hard behind the scenes to provide species-specific landing
@@ -49,7 +49,7 @@ EF1_Numerator <- function(
   }
   Pdata$Trip_Sampled_Lbs <- dplyr::coalesce(
     Pdata[["EXPANDED_SAMPLE_WEIGHT"]],
-    Pdata[["RWT_LBS"]]
+    Pdata[["WEIGHT_OF_LANDING_LBS"]]
   )
 
   if (verbose) {

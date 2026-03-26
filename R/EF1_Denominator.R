@@ -156,14 +156,14 @@ EF1_Denominator <- function(
     dplyr::mutate(
       Wt_Sampled_1_A = (-1 *
         sum(ifelse(is.na(Age), bestweight, 0)) +
-        FEMALES_WGT +
-        MALES_WGT +
+        WEIGHT_OF_FEMALES_LBS +
+        WEIGHT_OF_MALES_LBS +
         UNK_WT) *
         ifelse(all(is.na(Age)), 0, 1),
       Wt_Sampled_1_L = (-1 *
         sum(ifelse(is.na(length), bestweight, 0)) +
-        FEMALES_WGT +
-        MALES_WGT +
+        WEIGHT_OF_FEMALES_LBS +
+        WEIGHT_OF_MALES_LBS +
         UNK_WT) *
         ifelse(all(is.na(length)), 0, 1)
     ) |>
