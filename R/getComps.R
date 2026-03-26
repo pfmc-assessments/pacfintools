@@ -55,11 +55,11 @@ getComps <- function(
   weightid = "Final_Sample_Size_L",
   verbose = TRUE
 ) {
-  if (length(unique(Pdata[["SEX"]])) == 3 & verbose) {
+  if (length(unique(Pdata[["SEX_CODE"]])) == 3 & verbose) {
     cli::cli_warn(
       "Sexed and unsexed fish are in the data and n_tows, n_fish, and n_stewart
       input sample size options will be calculated seperately for sexed and unsexed
-      fish. For single-sex models, it is recommended to set SEX = U for all records
+      fish. For single-sex models, it is recommended to set SEX_CODE = U for all records
       prior to running this function."
     )
   }
@@ -92,13 +92,13 @@ getComps <- function(
   if (!type %in% colnames(Pdata)) {
     cli::cli_abort("{.var {type}} isn't a column in Pdata.")
   }
-  # Only a column named "SEX" works in all caps
-  good_column_for_sex <- grep("SEX", colnames(Pdata))
+  # Only a column named "SEX_CODE" works in all caps
+  good_column_for_sex <- grep("SEX_CODE", colnames(Pdata))
   if (length(good_column_for_sex) == 0) {
-    Pdata[, "SEX"] <- "U"
+    Pdata[, "SEX_CODE"] <- "U"
     cli::cli_bullets(c(
-      "x" = "SEX (case-specific) was missing from the column names of Pdata.",
-      "i" = "A SEX column was added with all rows set to 'U' for unsexed fish."
+      "x" = "SEX_CODE (case-specific) was missing from the column names of Pdata.",
+      "i" = "A SEX_CODE column was added with all rows set to 'U' for unsexed fish."
     ))
   }
   # OBSERVED_FREQUENCY... stores the number of fish that sum to the weightid
@@ -120,9 +120,9 @@ getComps <- function(
   # Determine the number of tows for each combination of sex available
   comps <- Pdata |>
     dplyr::mutate(
-      sex_group = dplyr::case_when(SEX == "U" ~ "U", .default = "B")
+      sex_group = dplyr::case_when(SEX_CODE == "U" ~ "U", .default = "B")
     ) |>
-    # dplyr::filter(SEX != "U") |>
+    # dplyr::filter(SEX_CODE != "U") |>
     # By stratification variable count # of tows
     dplyr::group_by(dplyr::across(dplyr::all_of(towstrat)), sex_group) |>
     dplyr::mutate(
@@ -136,14 +136,14 @@ getComps <- function(
     ) |>
     # By stratification, sex, and bin value count the weight
     dplyr::group_by(dplyr::across(
-      dplyr::all_of(c(towstrat, type, "SEX"))
+      dplyr::all_of(c(towstrat, type, "SEX_CODE"))
     )) |>
     dplyr::mutate(dplyr::across(c(weightid), .fns = sum)) |>
     # Get rid of extraneous columns
     dplyr::select(
       dplyr::all_of(c(towstrat, type)),
       n_tows,
-      SEX,
+      SEX_CODE,
       n_fish,
       n_stewart,
       weightid

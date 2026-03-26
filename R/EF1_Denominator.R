@@ -108,7 +108,7 @@ EF1_Denominator <- function(
   #       are in getExpansion_1?
   Pdata$LW_Calc_Wt <- getweight(
     length = Pdata$length,
-    sex = Pdata$SEX,
+    sex = Pdata$SEX_CODE,
     pars = data.frame(
       "A" = c("females" = fa, "males" = ma, "all" = ua),
       "B" = c("females" = fb, "males" = mb, "all" = ub)
@@ -148,8 +148,8 @@ EF1_Denominator <- function(
         na.rm = TRUE,
         ifelse(is.na(Age), NA, bestweight)
       ),
-      UNK_WT = sum(ifelse(SEX == "U", bestweight, 0)),
-      UNK_NUM = sum(SEX == "U")
+      UNK_WT = sum(ifelse(SEX_CODE == "U", bestweight, 0)),
+      UNK_NUM = sum(SEX_CODE == "U")
     ) |>
     # Back out the weight of fish that have no length or Age for each
     # specific sample weight, if all are NA in sample, then set to 0.
@@ -245,7 +245,7 @@ EF1_Denominator <- function(
     }
     gg <- plotWL(
       Pdata[, "lengthcm"],
-      Pdata[, "SEX"],
+      Pdata[, "SEX_CODE"],
       Pdata[, "weightkg"],
       Pdata[, "LW_Calc_Wt"] * 0.453592
     )

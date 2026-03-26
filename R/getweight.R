@@ -103,13 +103,13 @@ getweight <- function(
   if (!"males" %in% rownames(pars)) {
     pars["M", ] <- pars["all", ]
   }
-  pars$SEX <- rownames(pars)
-  pars$SEX <- gsub("(^f|^m).+", "\\U\\1", pars$SEX, perl = TRUE)
-  pars$SEX <- gsub("all", "U", pars$SEX)
+  pars$SEX_CODE <- rownames(pars)
+  pars$SEX_CODE <- gsub("(^f|^m).+", "\\U\\1", pars$SEX_CODE, perl = TRUE)
+  pars$SEX_CODE <- gsub("all", "U", pars$SEX_CODE)
 
   #### Calculate weight assuming length is in mm
-  calcweight <- (pars[match(sex, pars[, "SEX"]), "A"] *
-    (length / 10)^(pars[match(sex, pars[, "SEX"]), "B"]))
+  calcweight <- (pars[match(sex, pars[, "SEX_CODE"]), "A"] *
+    (length / 10)^(pars[match(sex, pars[, "SEX_CODE"]), "B"]))
   if (unit.out == "lb") {
     calcweight <- calcweight * 2.20462
   }

@@ -22,14 +22,14 @@
 #'
 convertlength_skate <- function(Pdata, returntype = c("all", "estimated")) {
   matchcol <- function(data) {
-    var_sex <- grep("SEX", colnames(data), value = TRUE)[1]
+    var_sex <- grep("SEX_CODE", colnames(data), value = TRUE)[1]
     var_fish_length_type <- grep(
       "FISH_LENGTH_TYPE_CODE",
       colnames(data),
       value = TRUE
     )[1]
     apply(
-      data[, c(var_sex, var_fish_length_type)],
+      data[, c(var_SEX_CODE, var_fish_length_type)],
       MARGIN = 1,
       FUN = paste,
       collapse = "_"
@@ -39,7 +39,7 @@ convertlength_skate <- function(Pdata, returntype = c("all", "estimated")) {
 
   # Conversion parameters
   discpar <- data.frame(
-    "SEX" = rep(c("F", "M", "U"), 2),
+    "SEX_CODE" = rep(c("F", "M", "U"), 2),
     "FISH_LENGTH_TYPE_CODE" = c(rep("A", 3), rep("R", 3)),
     "multiply" = c(c(1.4021, 1.4058, 1.4044), c(12.538, 13.172, 12.538)),
     "add" = c(c(9.117, 5.2334, 7.005), c(70.48, 35.21, 70.48))

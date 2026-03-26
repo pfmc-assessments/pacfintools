@@ -57,7 +57,7 @@ checkLenAge <- function(
   ),
   len_col = "lengthcm",
   age_col = "Age",
-  sex_col = "SEX",
+  sex_col = "SEX_CODE",
   mult = 1,
   keepAll = TRUE,
   sdFactor = 4,

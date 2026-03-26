@@ -226,7 +226,7 @@ writeComps <- function(
       fishyr,
       fleet,
       season,
-      SEX,
+      SEX_CODE,
       tidyr::full_seq(comp_bins, bin_width)
     )
   colnames(grid)[ncol(grid)] <- "bins"
@@ -255,15 +255,15 @@ writeComps <- function(
   # letter to paste with the bin to make f1 f2 f3 m1 m2 m3 for
   # a two sex model or u1 u2 u3 if just unsexed fish
   sex_label_left_side <- dplyr::case_when(
-    all(c("M", "F", "U") %in% inComps[["SEX"]]) ~ "f",
-    "F" %in% inComps[["SEX"]] ~ "f",
-    "U" %in% inComps[["SEX"]] ~ "u"
+    all(c("M", "F", "U") %in% inComps[["SEX_CODE"]]) ~ "f",
+    "F" %in% inComps[["SEX_CODE"]] ~ "f",
+    "U" %in% inComps[["SEX_CODE"]] ~ "u"
   )
 
   wide_composition_data <- expanded_comps |>
     dplyr::group_by(
       dplyr::across(dplyr::all_of(
-        c(key_names, column_with_input_n, "SEX", target)
+        c(key_names, column_with_input_n, "SEX_CODE", target)
       ))
     ) |>
     dplyr::summarize(comp = round(sum(comp), digits = digits)) |>
@@ -272,8 +272,8 @@ writeComps <- function(
       # Create the f1 f2 ... m1 m2 ... or u1 u2 ... labels to move to wide
       # columns later
       sex_length = dplyr::case_when(
-        SEX == "U" ~ sprintf(fmt = "%s%05d", sex_label_left_side, bins),
-        .default = sprintf(fmt = "%s%05d", tolower(SEX), bins)
+        SEX_CODE == "U" ~ sprintf(fmt = "%s%05d", sex_label_left_side, bins),
+        .default = sprintf(fmt = "%s%05d", tolower(SEX_CODE), bins)
       ),
       # sex_length = sprintf(
       #  fmt = "%s%05d",
@@ -282,26 +282,26 @@ writeComps <- function(
       # ),
       # Relabel males as females in sex so they get cast to the right when
       # making a wide data frame
-      SEX = ifelse(SEX == "M", "F", SEX)
+      SEX_CODE = ifelse(SEX_CODE == "M", "F", SEX_CODE)
     ) |>
     dplyr::arrange(fleet, sex_length) |>
     tidyr::pivot_wider(
-      id_cols = c(key_names, column_with_input_n, "SEX"),
+      id_cols = c(key_names, column_with_input_n, "SEX_CODE"),
       names_from = "sex_length",
       values_from = "comp",
       names_sort = TRUE,
       values_fill = 0
     ) |>
-    dplyr::arrange(SEX) |>
+    dplyr::arrange(SEX_CODE) |>
     dplyr::mutate(
       season = factor(season, labels = month),
       # Males and females with sex-ratio preserved are 3 and unsexed
       # fish with males and females combined are 0 in a two-sex model
-      SEX = ifelse(SEX == "F", 3, 0),
+      SEX_CODE = ifelse(SEX_CODE == "F", 3, 0),
       partition = partition
     ) |>
     dplyr::rename(
-      "sex" = "SEX",
+      "sex" = "SEX_CODE",
       "month" = season,
       year = fishyr,
       input_n = column_with_input_n
