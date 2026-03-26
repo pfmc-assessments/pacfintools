@@ -18,8 +18,8 @@ cleanColumns <- function(data) {
     data <- cleanColumns.bds(data)
   }
 
-  data <- data %>%
-    dplyr::select(-dplyr::matches("DESC|COLUMN")) %>%
+  data <- data |>
+    dplyr::select(-dplyr::matches("DESC|COLUMN")) |>
     data.frame()
 
   return(data)
@@ -80,13 +80,17 @@ cleanColumns.bds <- function(data) {
     WEIGHT_OF_MALES_LBS          MALES_WGT
     WEIGHT_OF_LANDING_LBS        TOTAL_WGT
     ",
-      quiet = TRUE, what = "", strip.white = TRUE
+      quiet = TRUE,
+      what = "",
+      strip.white = TRUE
     ),
-    ncol = 2, byrow = TRUE
+    ncol = 2,
+    byrow = TRUE
   )
   colnames(master) <- c("raw", "vdrfd")
   matches <- match(colnames(data), master[, "raw"])
-  colnames(data) <- ifelse(is.na(matches),
+  colnames(data) <- ifelse(
+    is.na(matches),
     colnames(data),
     master[matches, "vdrfd"]
   )
@@ -94,7 +98,7 @@ cleanColumns.bds <- function(data) {
   # CRW: Columns have been collapsed to have
   # TOTAL_WGT for CA and RWT_LBS for WA.
   data$RWT_LBS <- data$TOTAL_WGT
-  data <- data %>%
+  data <- data |>
     dplyr::select(-dplyr::matches("VESSEL|AGE_[R]|^NUM|LOAD|COMMON|_ID|agedby"))
 
   return(data)
@@ -112,8 +116,10 @@ cleanColumns.bds <- function(data) {
 #'
 cleanColumns.catch <- function(data) {
   #### REMOVE columns that are redundant and make things cluttered
-  data <- data %>%
-    dplyr::select(dplyr::matches("LANDING|AGENCY|GEAR|AREA|_MT|_LBS|PORT|^[RCF].+_CODE"))
+  data <- data |>
+    dplyr::select(dplyr::matches(
+      "LANDING|AGENCY|GEAR|AREA|_MT|_LBS|PORT|^[RCF].+_CODE"
+    ))
 
   return(data)
 }
