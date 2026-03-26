@@ -264,7 +264,7 @@ cleanPacFIN <- function(
   #### Bad samples
   # Remove bad OR samples
   Pdata$SAMPLE_TYPE[Pdata$SAMPLE_NO %in% paste0("OR", badORnums)] <- "S"
-  # Via Chantel, from Ali at ODFW, do not keep b/c they don't have exp_wt or FTID
+  # Via Chantel, from Ali at ODFW, do not keep b/c they don't have EXPANDED_SAMPLE_WEIGHT or FTID
   if ("SAMPLE_QUALITY" %in% colnames(Pdata)) {
     Pdata[Pdata[["SAMPLE_QUALITY"]] == 63, "SAMPLE_TYPE"] <- "S"
   }
@@ -278,7 +278,10 @@ cleanPacFIN <- function(
   bad[, "goodsno"] <- !is.na(Pdata$SAMPLE_NO)
   bad[, "goodstate"] <- Pdata[, "state"] %in% keep_states
   bad[, "goodgear"] <- Pdata[, "geargroup"] %in% keep_gears
-  bad[, "goodEXP_WT"] <- !(is.na(Pdata[["EXP_WT"]]) & Pdata[["state"]] == "OR")
+  bad[, "goodEXPANDED_SAMPLE_WEIGHT"] <- !(is.na(Pdata[[
+    "EXPANDED_SAMPLE_WEIGHT"
+  ]]) &
+    Pdata[["state"]] == "OR")
   bad[, "keep"] <- apply(bad[, grep("^good", colnames(bad))], 1, all)
 
   # Report removals
@@ -310,7 +313,7 @@ cleanPacFIN <- function(
     )
     message(
       "N sample weights not available for OR: ",
-      sum(!bad[, "goodEXP_WT"])
+      sum(!bad[, "goodEXPANDED_SAMPLE_WEIGHT"])
     )
     message("N records: ", NROW(Pdata))
     message("N remaining if CLEAN: ", sum(bad[, "keep"]))

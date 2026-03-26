@@ -40,7 +40,7 @@ Many samples were collected by Oregon using non-traditional sampling protocols i
 On March 19, 2019, Oregon made a correction to PacFIN that properly designated a collection of special-permit samples as SPxxx samples rather than ORxxx samples. The SPxxx sample number provides a flag to stock assessment scientists that the sample should not be used. Prior to 2019, these samples from the late 1970s and early 1980s were included in the data utilized from PacFIN for age and length compositions. The incorrect sample numbers can be found in the object labeled `badORnums`.
 
 ### Sample weights
-Oregon and California have gone to great lengths to provide correct species-specific weights of samples. This information is stored in `Pdata[, "EXP_WT"]` and `Pdata[, "SPECIES_WGT"]`, respectively. All Oregon and California samples that are missing this information are removed from the data set expanded to create compositions. 
+Oregon and California have gone to great lengths to provide correct species-specific weights of samples. This information is stored in `Pdata[, "EXPANDED_SAMPLE_WEIGHT"]` and `Pdata[, "SPECIES_WGT"]`, respectively. All Oregon and California samples that are missing this information are removed from the data set expanded to create compositions. 
 
 ## Expansion
 Expansions are performed to account for fish that were not sampled or when sampling is unequal across stratums. Expansions are calculated twice, first for fish with lengths and second for fish with ages because less fish are typically aged than lengthed and weights used for the expansions should only include fish that provide information. For example, if 10 fish were lengthed but only five fish were aged the expansion for the ages should only be based on the weight of the aged fish. 
@@ -58,8 +58,8 @@ Unfortunately, the species-specific weight for a given tow or trip is not always
   * Year- and gear-specific median tow or trip total weights are assigned to all samples that don't have a tow or trip weight.
 
 ##### Oregon
-  * `EXP_WT` is provided by Oregon as a measure of the weight the sample should be expanded to and defaults to the landing weight.
-  * Years prior to 1973 are often missing `EXP_WT`, and for these instances, the weight is calculated in the same manner as the default method for California. 
+  * `EXPANDED_SAMPLE_WEIGHT` is provided by Oregon as a measure of the weight the sample should be expanded to and defaults to the landing weight.
+  * Years prior to 1973 are often missing `EXPANDED_SAMPLE_WEIGHT`, and for these instances, the weight is calculated in the same manner as the default method for California. 
   * Year- and gear-specific median tow or trip total weights are assigned to all samples that don't have a tow or trip weight.
 
 ##### California

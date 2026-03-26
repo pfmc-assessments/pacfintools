@@ -8,7 +8,7 @@
 #' @details
 #' Previously, `Trip_Sampled_Lbs` was calculated differently for each state.
 #' For California, `Species_Percent_Sampled * TOTAL_WGT`.
-#' For Oregon, `Pdata$EXP_WT` and if missing, the same as California.
+#' For Oregon, `Pdata$EXPANDED_SAMPLE_WEIGHT` and if missing, the same as California.
 #' For Washington, `Pdata$RWT_LBS`, `Pdata$TOTAL_WGT`, `RWT_LBS`, or
 #' `median(Pdata$TOTAL_WGT)`.
 #' Then, if all else failed, per-year, state-specific medians.
@@ -48,7 +48,7 @@ EF1_Numerator <- function(
     )
   }
   Pdata$Trip_Sampled_Lbs <- dplyr::coalesce(
-    Pdata[["EXP_WT"]],
+    Pdata[["EXPANDED_SAMPLE_WEIGHT"]],
     Pdata[["RWT_LBS"]]
   )
 
