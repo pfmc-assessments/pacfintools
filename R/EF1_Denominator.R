@@ -19,7 +19,7 @@
 #' the fish were not weighed themselves. The weight of unsexed fish is calculated
 #' internally by the code and added to the female and male weight.
 #' **todo**: Let Oregon know that this calculation is being done and they may want
-#' to provide UNK_WGT.
+#' to provide WEIGHT_OF_UNKNOWN_LBS.
 #'
 #' California sample weights were previously based on the column labeled
 #' `SPECIES_WEIGHT`. Now, California data is parsed by PacFIN to furnish
@@ -148,7 +148,7 @@ EF1_Denominator <- function(
         na.rm = TRUE,
         ifelse(is.na(Age), NA, bestweight)
       ),
-      UNK_WT = sum(ifelse(SEX_CODE == "U", bestweight, 0)),
+      WEIGHT_OF_UNKNOWN_LBS = sum(ifelse(SEX_CODE == "U", bestweight, 0)),
       UNK_NUM = sum(SEX_CODE == "U")
     ) |>
     # Back out the weight of fish that have no length or Age for each
@@ -158,13 +158,13 @@ EF1_Denominator <- function(
         sum(ifelse(is.na(Age), bestweight, 0)) +
         WEIGHT_OF_FEMALES_LBS +
         WEIGHT_OF_MALES_LBS +
-        UNK_WT) *
+        WEIGHT_OF_UNKNOWN_LBS) *
         ifelse(all(is.na(Age)), 0, 1),
       Wt_Sampled_1_L = (-1 *
         sum(ifelse(is.na(length), bestweight, 0)) +
         WEIGHT_OF_FEMALES_LBS +
         WEIGHT_OF_MALES_LBS +
-        UNK_WT) *
+        WEIGHT_OF_UNKNOWN_LBS) *
         ifelse(all(is.na(length)), 0, 1)
     ) |>
     dplyr::ungroup() |>
