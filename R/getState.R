@@ -7,8 +7,8 @@
 #' `SAMPLE_AGENCY` was deprecated; more specifically, the column is
 #' available but filled with `NULL` values.
 #' Thus, pacfintools no longer maintains `SAMPLE_AGENCY` that was being converted
-#' to `SOURCE_AGID` and all identification of
-#' state records should be based on `AGENCY_CODE` or `SOURCE_AGID`, where the latter is
+#' to `AGENCY_CODE` and all identification of
+#' state records should be based on `AGENCY_CODE` or `AGENCY_CODE`, where the latter is
 #' just the converted column name (see [cleanColumns]).
 #' `AGENCY_CODE` is a column created by PacFIN to identify which agency provided
 #' the data. In the 2019 sablefish data there were four unique values in `AGENCY_CODE`,
@@ -63,7 +63,7 @@
 #'
 getState <- function(
   Pdata,
-  source = c("AGENCY_CODE", "SOURCE_AGID"),
+  source = c("AGENCY_CODE", "AGENCY_CODE"),
   verbose = TRUE
 ) {
   if (any(source %in% c("PSMFC_CATCH_AREA_CODE", "PSMFC_ARID"))) {

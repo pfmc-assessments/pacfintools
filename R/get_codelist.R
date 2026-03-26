@@ -97,7 +97,7 @@ get_codelist.PORT <- function(x) {
     header = FALSE,
     blank.lines.skip = TRUE
   )
-  colnames(all) <- c("PCID", "AGID", "AGENCY_PORT_CODE ", "DESCRIPTION")
-  all <- all[!is.na(all[["AGENCY_PORT_CODE "]]), ]
+  colnames(all) <- c("PCID", "AGID", "AGENCY_PORT_CODE", "DESCRIPTION")
+  all <- all[!is.na(all[["AGENCY_PORT_CODE"]]), ]
   return(all)
 }

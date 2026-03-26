@@ -93,7 +93,7 @@
 #' * fleet: initialized to 1
 #' * fishery: initialized to 1
 #' * season: initialized to 1.  Change using [getSeason]
-#' * state: initialized from SOURCE_AGID.  Change using [getState]
+#' * state: initialized from AGENCY_CODE.  Change using [getState]
 #' * length: length in mm, where `NA` indicates length is not available
 #' * lengthcm: floored cm from FORK_LENGTH when available, otherwise FISH_LENGTH
 #' * geargroup: the gear group associated with each [GRID](http://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/gr.txt)
@@ -179,7 +179,7 @@ cleanPacFIN <- function(
   if (check_columns_downloaded(Pdata)) {
     Pdata <- cleanColumns(Pdata)
   }
-  check_calcom <- any(Pdata[["SOURCE_AGID"]] == "CalCOM")
+  check_calcom <- any(Pdata[["AGENCY_CODE"]] == "CalCOM")
 
   #### Fill in missing input arguments
   Pdata <- getGearGroup(
@@ -227,7 +227,7 @@ cleanPacFIN <- function(
   Pdata <- getState(
     Pdata,
     verbose = verbose,
-    source = ifelse("AGID" %in% colnames(Pdata), "AGID", "SOURCE_AGID")
+    source = ifelse("AGID" %in% colnames(Pdata), "AGID", "AGENCY_CODE")
   )
   # California doesn't record SAMPLE_TYPE so we assume they are all Market samples
   Pdata[Pdata$state == "CA" & is.na(Pdata$SAMPLE_TYPE), "SAMPLE_TYPE"] <- "M"

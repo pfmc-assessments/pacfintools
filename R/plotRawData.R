@@ -82,8 +82,8 @@ plotRawData <- function(rawData, fname = NULL) {
   print(table(len$FISH_LENGTH_TYPE, useNA = "ifany"))
   cat("\n\n")
 
-  cat("SAMPLE_YEAR vs SOURCE_AGID for lengthed fish\n")
-  print(table(len$SAMPLE_YEAR, len$SOURCE_AGID))
+  cat("SAMPLE_YEAR vs AGENCY_CODE for lengthed fish\n")
+  print(table(len$SAMPLE_YEAR, len$AGENCY_CODE))
   cat("\n\n")
 
   cat("Difference between FISH_LENGTH and floor(FISH_LENGTH)\n")
@@ -98,8 +98,8 @@ plotRawData <- function(rawData, fname = NULL) {
   print(table(is.na(len$DEPTH_AVG)))
   cat("\n\n")
 
-  cat("SAMPLE_YEAR vs. SOURCE_AGID for SAMPLE_NOs with lengthed fish\n")
-  print(table(ltows$SAMPLE_YEAR, ltows$SOURCE_AGID))
+  cat("SAMPLE_YEAR vs. AGENCY_CODE for SAMPLE_NOs with lengthed fish\n")
+  print(table(ltows$SAMPLE_YEAR, ltows$AGENCY_CODE))
   cat("\n\n")
 
   cat("DEPTH_AVG for SAMPLE_NOs with lengthed fish\n")
@@ -110,12 +110,12 @@ plotRawData <- function(rawData, fname = NULL) {
   print(nrow(age))
   cat("\n\n")
 
-  cat("SAMPLE_YEAR vs. SOURCE_AGID for SAMPLE_NOs with aged fish\n")
-  print(table(atows$SAMPLE_YEAR, atows$SOURCE_AGID))
+  cat("SAMPLE_YEAR vs. AGENCY_CODE for SAMPLE_NOs with aged fish\n")
+  print(table(atows$SAMPLE_YEAR, atows$AGENCY_CODE))
   cat("\n\n")
 
-  cat("SAMPLE_YEAR vs. SOURCE_AGID for aged fish\n")
-  print(table(age$SAMPLE_YEAR, age$SOURCE_AGID))
+  cat("SAMPLE_YEAR vs. AGENCY_CODE for aged fish\n")
+  print(table(age$SAMPLE_YEAR, age$AGENCY_CODE))
   cat("\n\n")
 
   cat("age vs. ageX for aged fish\n")
