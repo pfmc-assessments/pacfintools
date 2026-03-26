@@ -156,7 +156,7 @@ plotCleaned <- function(Pdata, savedir = getwd()) {
   gg <- ggplot2::ggplot(
     data = Pdata,
     ggplot2::aes(
-      x = .data[["PSMFC_ARID"]],
+      x = .data[["PSMFC_CATCH_AREA_CODE"]],
       fill = factor(.data[["state"]])
     )
   ) +
