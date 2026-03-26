@@ -6,7 +6,7 @@ test_that("Pull works for sablefish", {
     message = "Your password is not saved."
   )
   species <- "SABL"
-  password <- readLines(password_file_name)
+  password <- readLines(password_file_name, warn = FALSE)
   bds.pacfin <- PullBDS.PacFIN(
     pacfin_species_code = species,
     password = password,
@@ -25,13 +25,15 @@ test_that("Pull works for sablefish", {
   on.exit(RODBC::odbcClose(database), add = TRUE, after = FALSE)
   landings_year <- RODBC::sqlQuery(
     database,
-    glue::glue("
+    glue::glue(
+      "
       SELECT LANDING_YEAR, sum(ROUND_WEIGHT_MTONS) CATCH_MT
       FROM PACFIN_MARTS.COMPREHENSIVE_FT
       WHERE PACFIN_SPECIES_CODE = 'SABL' and COUNCIL_CODE = 'P'
       GROUP BY LANDING_YEAR
       ORDER BY LANDING_YEAR
-    "),
+    "
+    ),
     as.is = FALSE
   )
   catch_summary <- catch.pacfin |>
@@ -42,13 +44,15 @@ test_that("Pull works for sablefish", {
     dplyr::arrange(LANDING_YEAR)
   age_year <- RODBC::sqlQuery(
     database,
-    glue::glue("
+    glue::glue(
+      "
       SELECT SAMPLE_YEAR, median(FINAL_FISH_AGE_IN_YEARS) MEAN_AGE
       FROM PACFIN_MARTS.COMPREHENSIVE_BDS_COMM
       WHERE PACFIN_SPECIES_CODE = 'SABL'
       GROUP BY SAMPLE_YEAR
       ORDER BY SAMPLE_YEAR
-    "),
+    "
+    ),
     as.is = FALSE
   )
   bds_summary <- bds.pacfin |>
