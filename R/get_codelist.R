@@ -27,7 +27,7 @@
 #' column names are always in all caps:
 #' \itemize{
 #'   \item{TYPE : }{integer value of 1 (gear code), 2 (gear group), or 3 (all)}
-#'   \item{GRID : }{three letter grid or gear type code}
+#'   \item{PACFIN_GEAR_CODE : }{three letter grid or gear type code}
 #'   \item{GROUP : }{three letter gear grouping code}
 #'   \item{ARID : }{mapping of sub area to areas}
 #'   \item{INPFC : }{International North Pacific Fisheries Commission (INPFC) Area code used in PacFIN}
@@ -40,10 +40,12 @@
 #'   \item{DESCRIPTION : }{long, detailed description}
 #' }
 #' @examples
-#' availablegrids <- get_codelist("GRID")
+#' availablegrids <- get_codelist("PACFIN_GEAR_CODE")
 #' availableports <- get_codelist("AGENCY_PORT_CODE")
 #'
-get_codelist <- function(x = c("GRID", "INPFC", "AGENCY_PORT_CODE")) {
+get_codelist <- function(
+  x = c("PACFIN_GEAR_CODE", "INPFC", "AGENCY_PORT_CODE")
+) {
   x <- match.arg(x, several.ok = FALSE)
   UseMethod("get_codelist", object = structure(list(), class = x))
 }
@@ -62,8 +64,8 @@ get_codelist.GRID <- function(x) {
   all <- all[c(-1, -2), ]
   all <- all[-1 * seq(grep("\\.\\.\\.", all[, 3]), NROW(all)), ]
   all <- all[!grepl("^\\s+$", all[, 1]), ]
-  all[, c("TYPE", "GRID", "GROUP")] <- t(apply(
-    all[, c("TYPE", "GRID", "GROUP")],
+  all[, c("TYPE", "PACFIN_GEAR_CODE", "GROUP")] <- t(apply(
+    all[, c("TYPE", "PACFIN_GEAR_CODE", "GROUP")],
     1,
     function(x) gsub("^\\s*|\\s*$", "", x)
   ))

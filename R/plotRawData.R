@@ -74,8 +74,8 @@ plotRawData <- function(rawData, fname = NULL) {
   print(table(rawData$FISH_LENGTH, useNA = "ifany"))
   cat("\n\n")
 
-  cat("GEAR vs GRID\n")
-  print(table(len$GEAR, len$GRID))
+  cat("GEAR vs PACFIN_GEAR_CODE\n")
+  print(table(len$GEAR, len$PACFIN_GEAR_CODE))
   cat("\n\n")
 
   cat("FISH_LENGTH for lengthed fish\n")

@@ -85,7 +85,7 @@ plotCleaned <- function(Pdata, savedir = getwd()) {
     ylim = c(0, max(Pdata$Age, na.rm = TRUE))
   )
 
-  grDevices::png(file.path(savedir, "PacFIN_comp_NbyGRID.png"))
+  grDevices::png(file.path(savedir, "PacFIN_comp_N_by_PACFIN_GEAR_CODE.png"))
   on.exit(grDevices::dev.off(), add = TRUE, after = FALSE)
   graphics::par(
     mfrow = c(2, 1),
@@ -93,9 +93,9 @@ plotCleaned <- function(Pdata, savedir = getwd()) {
     mar = c(0.5, 3.25, 0, 0),
     mgp = c(1.5, 0.5, 0)
   )
-  nGRID <- length(unique(Pdata$GRID))
+  nGRID <- length(unique(Pdata$PACFIN_GEAR_CODE))
   graphics::barplot(
-    stats::xtabs(!is.na(Pdata$length) ~ Pdata$GRID + Pdata$fishyr),
+    stats::xtabs(!is.na(Pdata$length) ~ Pdata$PACFIN_GEAR_CODE + Pdata$fishyr),
     col = grDevices::rainbow(nGRID),
     legend.text = TRUE,
     xlab = "",
@@ -104,7 +104,7 @@ plotCleaned <- function(Pdata, savedir = getwd()) {
     args.legend = list(x = "topleft", bty = "n", ncol = ceiling(nGRID / 4))
   )
   graphics::barplot(
-    stats::xtabs(!is.na(Pdata$Age) ~ Pdata$GRID + Pdata$fishyr),
+    stats::xtabs(!is.na(Pdata$Age) ~ Pdata$PACFIN_GEAR_CODE + Pdata$fishyr),
     col = grDevices::rainbow(nGRID),
     legend.text = FALSE,
     xlab = "Year",
