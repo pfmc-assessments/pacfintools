@@ -169,15 +169,15 @@ EF1_Denominator <- function(
     ) |>
     dplyr::ungroup() |>
     dplyr::group_by(SAMPLE_NO, CLUSTER_SEQUENCE_NUMBER) |>
-    # Do the same for CLUSTER_WGT
+    # Do the same for CLUSTER_WEIGHT_LBS
     dplyr::mutate(
       Wt_Sampled_2_A = (-1 *
         sum(ifelse(is.na(Age), bestweight, 0)) +
-        CLUSTER_WGT) *
+        CLUSTER_WEIGHT_LBS) *
         ifelse(all(is.na(Age)), 0, 1),
       Wt_Sampled_2_L = (-1 *
         sum(ifelse(is.na(length), bestweight, 0)) +
-        CLUSTER_WGT) *
+        CLUSTER_WEIGHT_LBS) *
         ifelse(all(is.na(length)), 0, 1)
     ) |>
     # Bring the calculations back to the full scale of the data frame
