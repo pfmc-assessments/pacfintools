@@ -46,15 +46,15 @@ plotRawData <- function(rawData, fname = NULL) {
   len <- rawData[!is.na(rawData$FISH_LENGTH), ]
   len$len <- floor(len$FISH_LENGTH / 10)
   len$depth_mid <- (len$DEPTH_MINIMUM_FATHOMS + len$DEPTH_MAXIMUM_FATHOMS) / 2
-  ltows <- len[!duplicated(len$SAMPLE_NO), ]
+  ltows <- len[!duplicated(len$SAMPLE_NUMBER), ]
 
   meanLen.yr <- tapply(len$len, list(len$SAMPLE_YEAR), mean)
-  meanLen <- tapply(len$len, list(len$SAMPLE_NO, len$SAMPLE_YEAR), mean)
+  meanLen <- tapply(len$len, list(len$SAMPLE_NUMBER, len$SAMPLE_YEAR), mean)
 
   age <- rawData[!is.na(rawData$FINAL_FISH_AGE_IN_YEARS), ]
   age$Age <- age$FINAL_FISH_AGE_IN_YEARS
-  atows <- age[!duplicated(age$SAMPLE_NO), ]
-  meanAge <- tapply(age$Age, list(age$SAMPLE_NO, age$SAMPLE_YEAR), mean)
+  atows <- age[!duplicated(age$SAMPLE_NUMBER), ]
+  meanAge <- tapply(age$Age, list(age$SAMPLE_NUMBER, age$SAMPLE_YEAR), mean)
 
   # Print tables
 
@@ -98,11 +98,11 @@ plotRawData <- function(rawData, fname = NULL) {
   print(table(is.na(len$DEPTH_AVERAGE_FATHOMS)))
   cat("\n\n")
 
-  cat("SAMPLE_YEAR vs. AGENCY_CODE for SAMPLE_NOs with lengthed fish\n")
+  cat("SAMPLE_YEAR vs. AGENCY_CODE for SAMPLE_NUMBERs with lengthed fish\n")
   print(table(ltows$SAMPLE_YEAR, ltows$AGENCY_CODE))
   cat("\n\n")
 
-  cat("DEPTH_AVERAGE_FATHOMS for SAMPLE_NOs with lengthed fish\n")
+  cat("DEPTH_AVERAGE_FATHOMS for SAMPLE_NUMBERs with lengthed fish\n")
   print(table(is.na(ltows$DEPTH_AVERAGE_FATHOMS), useNA = "ifany"))
   cat("\n\n")
 
@@ -110,7 +110,7 @@ plotRawData <- function(rawData, fname = NULL) {
   print(nrow(age))
   cat("\n\n")
 
-  cat("SAMPLE_YEAR vs. AGENCY_CODE for SAMPLE_NOs with aged fish\n")
+  cat("SAMPLE_YEAR vs. AGENCY_CODE for SAMPLE_NUMBERs with aged fish\n")
   print(table(atows$SAMPLE_YEAR, atows$AGENCY_CODE))
   cat("\n\n")
 

@@ -248,7 +248,7 @@ PullBDS.PacFIN <- function(
   # Long to wide to facilitate estimating ageing error
   # Multiple BDS_IDs can pertain to a single FISH_ID
   # each BDS_ID is an age read
-  # identical across rows: SAMPLE_ID, SAMPLE_NO, FISH_ID
+  # identical across rows: SAMPLE_ID, SAMPLE_NUMBER, FISH_ID
   # unique across rows: BDS_ID, AGE_ID, AGE_SEQUENCE_NUMBER
   bds.pacfin <- data |>
     tidyr::pivot_wider(

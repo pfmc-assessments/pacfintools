@@ -46,7 +46,7 @@ tableSample <- function(
   Ntow <- table(
     temp$SAMPLE_YEAR,
     temp$strat,
-    !duplicated(as.character(temp$SAMPLE_NO))
+    !duplicated(as.character(temp$SAMPLE_NUMBER))
   )[,, "TRUE"]
   Nfish <- table(temp$SAMPLE_YEAR, temp$strat)
 

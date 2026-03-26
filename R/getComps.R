@@ -20,7 +20,7 @@
 #' @param defaults The default stratification columns which will typically be
 #'   left at their default value of `c("fleet", "fishyr", "season")`.
 #' @param towid A vector of character values providing the column names that
-#'   generate a unique id for each sample. The default is `"SAMPLE_NO"` but you
+#'   generate a unique id for each sample. The default is `"SAMPLE_NUMBER"` but you
 #'   can pass a vector where all of the columns identified will be united to
 #'   create a unique identifier for the tow/sample.
 #' @param weightid A character value giving the column name that holds the value
@@ -51,7 +51,7 @@ getComps <- function(
   strat = NULL,
   Comps = c("LEN", "AGE", "AAL"),
   defaults = c("fleet", "fishyr", "season"),
-  towid = c("SAMPLE_NO"),
+  towid = c("SAMPLE_NUMBER"),
   weightid = "Final_Sample_Size_L",
   verbose = TRUE
 ) {
@@ -108,7 +108,7 @@ getComps <- function(
   }
 
   # Create a unique id for each sample where this most often is just the
-  # SAMPLE_NO
+  # SAMPLE_NUMBER
   # apply is faster than dplyr::*
   Pdata[, "uniqueid"] <- apply(
     Pdata[, towid, drop = FALSE],

@@ -10,7 +10,7 @@
 checkGrade <- function(Pdata) {
   out <- tapply(
     Pdata$PACFIN_GRADE_CODE,
-    Pdata$SAMPLE_NO,
+    Pdata$SAMPLE_NUMBER,
     function(x) length(unique(x)) == 1
   )
   ifelse(

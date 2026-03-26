@@ -188,7 +188,7 @@ getExpansion_2 <- function(
 
   #### Expansion
   # Get summed sampled lbs per individual sample (trip, tow, sample number).
-  tows <- Pdata[!duplicated(Pdata$SAMPLE_NO), ]
+  tows <- Pdata[!duplicated(Pdata$SAMPLE_NUMBER), ]
 
   # Get the total lbs sampled by year and stratification
   strat <- c("fishyr", "stratification")

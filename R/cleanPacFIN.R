@@ -263,7 +263,7 @@ cleanPacFIN <- function(
 
   #### Bad samples
   # Remove bad OR samples
-  Pdata$SAMPLE_TYPE[Pdata$SAMPLE_NO %in% paste0("OR", badORnums)] <- "S"
+  Pdata$SAMPLE_TYPE[Pdata$SAMPLE_NUMBER %in% paste0("OR", badORnums)] <- "S"
   # Via Chantel, from Ali at ODFW, do not keep b/c they don't have EXPANDED_SAMPLE_WEIGHT or FTID
   if ("SAMPLE_QUALITY" %in% colnames(Pdata)) {
     Pdata[Pdata[["SAMPLE_QUALITY"]] == 63, "SAMPLE_TYPE"] <- "S"
@@ -275,7 +275,7 @@ cleanPacFIN <- function(
   bad[, "goodarea"] <- is.na(getArea(Pdata, verbose = verbose))
   bad[, "goodstype"] <- Pdata$SAMPLE_TYPE %in% keep_sample_type
   bad[, "goodsmeth"] <- Pdata$SAMPLE_METHOD_CODE %in% keep_sample_method
-  bad[, "goodsno"] <- !is.na(Pdata$SAMPLE_NO)
+  bad[, "goodsno"] <- !is.na(Pdata$SAMPLE_NUMBER)
   bad[, "goodstate"] <- Pdata[, "state"] %in% keep_states
   bad[, "goodgear"] <- Pdata[, "geargroup"] %in% keep_gears
   bad[, "goodEXPANDED_SAMPLE_WEIGHT"] <- !(is.na(Pdata[[
@@ -290,7 +290,7 @@ cleanPacFIN <- function(
     message(
       "N SAMPLE_TYPEs changed from M to S",
       " for special samples from OR: ",
-      sum(Pdata$SAMPLE_NO %in% paste0("OR", badORnums))
+      sum(Pdata$SAMPLE_NUMBER %in% paste0("OR", badORnums))
     )
     message(
       "N not in keep_sample_type (SAMPLE_TYPE): ",
@@ -302,7 +302,7 @@ cleanPacFIN <- function(
       sum(!bad[, "goodsmeth"])
     )
     message(
-      "N with SAMPLE_NO of NA: ",
+      "N with SAMPLE_NUMBER of NA: ",
       sum(!bad[, "goodsno"])
     )
     message("N without length: ", sum(is.na(Pdata$length)))

@@ -127,10 +127,10 @@ EF1_Denominator <- function(
         TRUE ~ weightkg * 2.20462
       )
     ) |>
-    # Group by SAMPLE_NO so all subsequent calculations are done on subsets
+    # Group by SAMPLE_NUMBER so all subsequent calculations are done on subsets
     # of the data, i.e., mean(bestweight) is mean of the bestweight in a
     # specific sample
-    dplyr::group_by(SAMPLE_NO) |>
+    dplyr::group_by(SAMPLE_NUMBER) |>
     dplyr::mutate(
       bestweight = ifelse(
         is.na(bestweight),
@@ -138,7 +138,7 @@ EF1_Denominator <- function(
         bestweight
       )
     ) |>
-    # Calculate sample weights and weight of unsexed fish per SAMPLE_NO
+    # Calculate sample weights and weight of unsexed fish per SAMPLE_NUMBER
     dplyr::mutate(
       Wt_Sampled_3_L = sum(
         na.rm = TRUE,
@@ -168,7 +168,7 @@ EF1_Denominator <- function(
         ifelse(all(is.na(length)), 0, 1)
     ) |>
     dplyr::ungroup() |>
-    dplyr::group_by(SAMPLE_NO, CLUSTER_SEQUENCE_NUMBER) |>
+    dplyr::group_by(SAMPLE_NUMBER, CLUSTER_SEQUENCE_NUMBER) |>
     # Do the same for CLUSTER_WEIGHT_LBS
     dplyr::mutate(
       Wt_Sampled_2_A = (-1 *
