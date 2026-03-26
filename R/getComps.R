@@ -101,10 +101,10 @@ getComps <- function(
       "i" = "A SEX column was added with all rows set to 'U' for unsexed fish."
     ))
   }
-  # FREQ... stores the number of fish that sum to the weightid
-  freqn <- grep("FREQ", colnames(Pdata), value = TRUE)
+  # OBSERVED_FREQUENCY... stores the number of fish that sum to the weightid
+  freqn <- grep("OBSERVED_FREQUENCY", colnames(Pdata), value = TRUE)
   if (length(freqn) == 0) {
-    cli::cli_abort("FREQ is missing from the Pdata.")
+    cli::cli_abort("OBSERVED_FREQUENCY is missing from the Pdata.")
   }
 
   # Create a unique id for each sample where this most often is just the
@@ -127,7 +127,7 @@ getComps <- function(
     dplyr::group_by(dplyr::across(dplyr::all_of(towstrat)), sex_group) |>
     dplyr::mutate(
       n_tows = dplyr::n_distinct(uniqueid),
-      n_fish = sum(FREQ),
+      n_fish = sum(OBSERVED_FREQUENCY),
       ratio = sum(unique(n_fish)) / n_tows,
       n_stewart = dplyr::case_when(
         ratio < 44 ~ n_tows + 0.138 * sum(unique(n_fish)),

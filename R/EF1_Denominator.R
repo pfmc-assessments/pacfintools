@@ -233,7 +233,8 @@ EF1_Denominator <- function(
     if (nNA > 0) {
       graphics::barplot(
         stats::xtabs(
-          NA_Wt_Sampled$FREQ ~ NA_Wt_Sampled$state + NA_Wt_Sampled$fishyr
+          NA_Wt_Sampled$OBSERVED_FREQUENCY ~
+            NA_Wt_Sampled$state + NA_Wt_Sampled$fishyr
         ),
         col = grDevices::rainbow(length(unique(NA_Wt_Sampled$state))),
         legend.text = TRUE,
