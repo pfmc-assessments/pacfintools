@@ -274,7 +274,7 @@ cleanPacFIN <- function(
   bad <- Pdata[, 1:2]
   bad[, "goodarea"] <- is.na(getArea(Pdata, verbose = verbose))
   bad[, "goodstype"] <- Pdata$SAMPLE_TYPE %in% keep_sample_type
-  bad[, "goodsmeth"] <- Pdata$SAMPLE_METHOD %in% keep_sample_method
+  bad[, "goodsmeth"] <- Pdata$SAMPLE_METHOD_CODE %in% keep_sample_method
   bad[, "goodsno"] <- !is.na(Pdata$SAMPLE_NO)
   bad[, "goodstate"] <- Pdata[, "state"] %in% keep_states
   bad[, "goodgear"] <- Pdata[, "geargroup"] %in% keep_gears
@@ -298,7 +298,7 @@ cleanPacFIN <- function(
     )
     message("N with SAMPLE_TYPE of NA: ", sum(is.na(Pdata[["SAMPLE_TYPE"]])))
     message(
-      "N not in keep_sample_method (SAMPLE_METHOD): ",
+      "N not in keep_sample_method (SAMPLE_METHOD_CODE): ",
       sum(!bad[, "goodsmeth"])
     )
     message(
