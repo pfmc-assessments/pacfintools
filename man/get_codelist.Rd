@@ -4,7 +4,7 @@
 \alias{get_codelist}
 \title{Get a list of available options, e.g., code_list, from PacFIN}
 \usage{
-get_codelist(x = c("GRID", "INPFC", "PORT"))
+get_codelist(x = c("GRID", "INPFC", "AGENCY_PORT_CODE"))
 }
 \arguments{
 \item{x}{A character value specifying which code_list you want.
@@ -25,7 +25,7 @@ column names are always in all caps:
 \item{COUNCIL : }{the management council that the area falls within}
 \item{PCID : }{character port code}
 \item{AGID : }{agency code, e.g., "W" for Washington}
-\item{PORT : }{numberic port code}
+\item{AGENCY_PORT_CODE  : }{numberic port code}
 \item{SHORT : }{short description}
 \item{DESCRIPTION : }{long, detailed description}
 }
@@ -51,6 +51,6 @@ thank you in advance for collaborating.
 }
 \examples{
 availablegrids <- get_codelist("GRID")
-availableports <- get_codelist("PORT")
+availableports <- get_codelist("AGENCY_PORT_CODE")
 
 }

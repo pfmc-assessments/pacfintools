@@ -32,9 +32,7 @@
 #' X <- getGearGroup(data.frame(GRID = gears), verbose = TRUE)
 #' table(X[["geargroup"]])
 #'
-getGearGroup <- function(Pdata,
-                         spp = NULL,
-                         verbose = TRUE) {
+getGearGroup <- function(Pdata, spp = NULL, verbose = TRUE) {
   # Checks
   if (verbose) {
     cli::cli_bullets(c(
@@ -58,10 +56,33 @@ getGearGroup <- function(Pdata,
     if (tolower(spp) %in% c("sablefish", "sabl")) {
       change_to_trawl <- c(
         # Midwater trawl, diving (b/c there is so little), other trawls, dredge
-        "DGN", "DPN", "DVG", "DRG", "GLN", "MDT", "MPT", "MSC", "ODG", "ONT",
-        "OTH", "PWT", "RVT", "SCD", "SEN", "STN", "TWS", "USP",
+        "DGN",
+        "DPN",
+        "DVG",
+        "DRG",
+        "GLN",
+        "MDT",
+        "MPT",
+        "MSC",
+        "ODG",
+        "ONT",
+        "OTH",
+        "PWT",
+        "RVT",
+        "SCD",
+        "SEN",
+        "STN",
+        "TWS",
+        "USP",
         # all nets
-        "BTR", "DST", "NET", "SGN", "SHT", "SST", "TML", "TRL"
+        "BTR",
+        "DST",
+        "NET",
+        "SGN",
+        "SHT",
+        "SST",
+        "TML",
+        "TRL"
       )
       change_to_hkl <- c("HTR", "NTW", "PTR", "TLS")
       if (verbose) {
@@ -109,7 +130,9 @@ getGearGroup <- function(Pdata,
     table_gears <- table(Pdata[, "geargroup"])
     message_table <- paste0(
       names(table_gears),
-      " (", table_gears, ")"
+      " (",
+      table_gears,
+      ")"
     )
     cli::cli_bullets(c(
       "i" = "`GRID` was used to create `geargroup`",

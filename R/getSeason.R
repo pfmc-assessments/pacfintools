@@ -39,12 +39,14 @@
 #' test <- getSeason(Pdata = test, season_type = 1, yearUp = 12)
 #' testthat::expect_equivalent(test[test[, "fishyr"] == 3, "season"], 1)
 #'
-getSeason <- function(Pdata,
-                      season_type = -1,
-                      yearUp = NULL,
-                      yearDown = NULL,
-                      plotResults = FALSE,
-                      verbose = TRUE) {
+getSeason <- function(
+  Pdata,
+  season_type = -1,
+  yearUp = NULL,
+  yearDown = NULL,
+  plotResults = FALSE,
+  verbose = TRUE
+) {
   if (season_type < 0) {
     Pdata$season <- 1
   }
@@ -64,8 +66,10 @@ getSeason <- function(Pdata,
       message("Assigning seasons for Petrale; winter == 1, summer == 2.")
     }
 
-    Pdata[, "season"] <- ifelse(Pdata[, "SAMPLE_MONTH"] %in% c(11:12, 1:2),
-      1, 2
+    Pdata[, "season"] <- ifelse(
+      Pdata[, "SAMPLE_MONTH"] %in% c(11:12, 1:2),
+      1,
+      2
     )
   } # End if Petrale
 
@@ -76,7 +80,8 @@ getSeason <- function(Pdata,
     if (verbose) {
       message(
         "Incremented fishyr for months ",
-        paste(yearUp, collapse = ", "), "to the next year."
+        paste(yearUp, collapse = ", "),
+        "to the next year."
       )
     }
   } # End if yearUp
@@ -88,17 +93,21 @@ getSeason <- function(Pdata,
     if (verbose) {
       message(
         "Decremented fishyr for months ",
-        paste(yearDown, collapse = ", "), "to the previous year."
+        paste(yearDown, collapse = ", "),
+        "to the previous year."
       )
     }
   } # End if yearDown
 
   if (plotResults) {
     tmp <- table(Pdata[, c("season", "SAMPLE_YEAR")])
-    graphics::barplot(tmp,
+    graphics::barplot(
+      tmp,
       col = grDevices::rainbow(NROW(tmp)),
       legend.text = paste("Season", rownames(tmp)),
-      main = unique(Pdata$SPID), xlab = "Year", ylab = "Count",
+      main = unique(Pdata$SPID),
+      xlab = "Year",
+      ylab = "Count",
       bty = "n"
     )
   } # End if plotResults

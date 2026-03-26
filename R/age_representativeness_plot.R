@@ -31,17 +31,21 @@
 #'
 #' @export
 #' @author Ian G. Taylor, Kathryn L. Doering, Brian Langseth, Kelli F. Johnson
-age_representativeness_plot <- function(bio,
-                                        xlim = c(0, max_break),
-                                        ylim = c(0, 0.049),
-                                        max_break = 155,
-                                        file = NULL,
-                                        plot_panels = c(10, 2),
-                                        wait2plot = FALSE) {
+age_representativeness_plot <- function(
+  bio,
+  xlim = c(0, max_break),
+  ylim = c(0, 0.049),
+  max_break = 155,
+  file = NULL,
+  plot_panels = c(10, 2),
+  wait2plot = FALSE
+) {
   if (!is.null(file)) {
     on.exit(grDevices::dev.off(), add = TRUE, after = FALSE)
   }
-  if (!is.null(file)) wait2plot <- FALSE
+  if (!is.null(file)) {
+    wait2plot <- FALSE
+  }
 
   bio <- changecol_pacfin(bio, verbose = FALSE)
   bio <- bio[!(is.na(bio$Age) && is.na(bio$Length_cm)), ]
@@ -60,16 +64,27 @@ age_representativeness_plot <- function(bio,
   }
   years <- sort(unique(bio$Year))
 
-  colvec <- c(grDevices::rgb(1, 0, 0, alpha = 0.8), grDevices::rgb(0, 0, 1, alpha = 0.5))
+  colvec <- c(
+    grDevices::rgb(1, 0, 0, alpha = 0.8),
+    grDevices::rgb(0, 0, 1, alpha = 0.5)
+  )
 
   pc <- 1 # plot counter
   for (y in years) {
     mod <- (y - years[1]) %% (prod(plot_panels)) # modulus to determine if plot if filled
     if (!is.null(file) && mod == 0) {
-      if (pc != 1) grDevices::dev.off()
+      if (pc != 1) {
+        grDevices::dev.off()
+      }
       file_name <- strsplit(file, "[.]")[[1]][1]
       file_ext <- strsplit(file, "[.]")[[1]][2]
-      grDevices::png(filename = paste0(file_name, "_", pc, ".", file_ext), width = 7, height = 7, units = "in", res = 300)
+      grDevices::png(
+        filename = paste0(file_name, "_", pc, ".", file_ext),
+        width = 7,
+        height = 7,
+        units = "in",
+        res = 300
+      )
       pc <- pc + 1
 
       # make multi-panel plot comparing length samples to the subset with ages
@@ -79,15 +94,20 @@ age_representativeness_plot <- function(bio,
         oma = c(4, 4, 1, 1)
       )
     }
-    if (is.null(file)) graphics::par(oma = c(1, 1, 1, 1), ask = wait2plot)
+    if (is.null(file)) {
+      graphics::par(oma = c(1, 1, 1, 1), ask = wait2plot)
+    }
 
     # make empty plot (note: xlim and ylim were set by trial and error)
-    plot(0,
+    plot(
+      0,
       type = "n",
       xlim = xlim,
-      xaxs = "i", xlab = "",
+      xaxs = "i",
+      xlab = "",
       ylim = ylim,
-      yaxs = "i", ylab = "",
+      yaxs = "i",
+      ylab = "",
       axes = FALSE
     )
     graphics::grid()
@@ -98,16 +118,20 @@ age_representativeness_plot <- function(bio,
       graphics::axis(1)
     }
     lengths.y <- bio$Length_cm[bio$Year == y]
-    ages.y <- bio$Length_cm[bio$Year == y &
-      !is.na(bio$Age)]
-    lhist <- graphics::hist(lengths.y,
+    ages.y <- bio$Length_cm[
+      bio$Year == y &
+        !is.na(bio$Age)
+    ]
+    lhist <- graphics::hist(
+      lengths.y,
       breaks = seq(0, max_break, 5),
       freq = FALSE,
       col = colvec[1],
       add = TRUE
     )
     if (length(ages.y > 0)) {
-      ahist <- graphics::hist(ages.y,
+      ahist <- graphics::hist(
+        ages.y,
         breaks = seq(0, max_break, 5),
         freq = FALSE,
         col = colvec[2],
@@ -123,42 +147,72 @@ age_representativeness_plot <- function(bio,
         stats::ks.test(x = lengths.y, y = ages.y)$p.value
       )
       p.color <- ifelse(p.value > 0.05, "green3", "red")
-      bhat <- sum(sqrt(lhist$counts / sum(lhist$counts) * ahist$counts / sum(ahist$counts)))
+      bhat <- sum(sqrt(
+        lhist$counts / sum(lhist$counts) * ahist$counts / sum(ahist$counts)
+      ))
     }
     graphics::legend("topleft", legend = NA, bty = "n", title = y, cex = 1.5)
     myinset <- ifelse(is.null(file), 0, -0.25)
     myinset2 <- ifelse(is.null(file), -0.02, -0.35)
-    graphics::legend("bottomright",
-      legend = "\n\n", bty = "n", inset = c(0, myinset),
+    graphics::legend(
+      "bottomright",
+      legend = "\n\n",
+      bty = "n",
+      inset = c(0, myinset),
       title = paste0(
-        length(lengths.y), " lengths\n",
-        length(ages.y), " ages (",
+        length(lengths.y),
+        " lengths\n",
+        length(ages.y),
+        " ages (",
         round(100 * length(ages.y) / length(lengths.y)),
         "%)"
       ),
       cex = 1.0
     )
-    graphics::legend("bottomright",
-      legend = "\n", bty = "n", inset = c(0, myinset),
+    graphics::legend(
+      "bottomright",
+      legend = "\n",
+      bty = "n",
+      inset = c(0, myinset),
       title = paste0(
         "K-S p-value = ",
         sprintf("%.3f", p.value)
       ),
-      cex = 1.0, title.col = p.color
+      cex = 1.0,
+      title.col = p.color
     )
-    graphics::legend("bottomright",
-      legend = NA, bty = "n", inset = c(0, myinset2),
-      title = as.expression(bquote(atop(phantom(), hat(b) == .(sprintf("%.3f", bhat))))),
-      cex = 1.0, title.col = "black"
+    graphics::legend(
+      "bottomright",
+      legend = NA,
+      bty = "n",
+      inset = c(0, myinset2),
+      title = as.expression(bquote(atop(
+        phantom(),
+        hat(b) == .(sprintf("%.3f", bhat))
+      ))),
+      cex = 1.0,
+      title.col = "black"
     )
-    if ((graphics::par()$mfg[1] == plot_panels[1] & graphics::par()$mfg[2] == plot_panels[2]) |
-      is.null(file) | y == max(years)) {
+    if (
+      (graphics::par()$mfg[1] == plot_panels[1] &
+        graphics::par()$mfg[2] == plot_panels[2]) |
+        is.null(file) |
+        y == max(years)
+    ) {
       # empty plot for legend
       par.old <- graphics::par(no.readonly = TRUE)
-      graphics::par(fig = c(0, 1, 0, 1), oma = c(0, 0, 0, 0), mar = c(0, 0, 0, 0), new = TRUE)
+      graphics::par(
+        fig = c(0, 1, 0, 1),
+        oma = c(0, 0, 0, 0),
+        mar = c(0, 0, 0, 0),
+        new = TRUE
+      )
       plot(0, 0, type = "n", bty = "n", xaxt = "n", yaxt = "n")
-      graphics::legend("bottomright",
-        xpd = TRUE, inset = c(0, -0.01), horiz = FALSE,
+      graphics::legend(
+        "bottomright",
+        xpd = TRUE,
+        inset = c(0, -0.01),
+        horiz = FALSE,
         bty = "n",
         fill = colvec,
         cex = 1.0,

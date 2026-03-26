@@ -55,8 +55,7 @@
 #' more transparent way than cryptic codes like `4a`. `NA`s indicate records
 #' that the package maintainers believe should be maintained in your data set.
 #'
-getArea <- function(Pdata,
-                    verbose = TRUE) {
+getArea <- function(Pdata, verbose = TRUE) {
   out <- rep(NA, NROW(Pdata))
 
   # Find column names b/c they can be named different things depending on the
@@ -99,7 +98,8 @@ getArea <- function(Pdata,
       type = "message",
       dplyr::count(
         data.frame(region = out, strings),
-        strings, region
+        strings,
+        region
       ) |>
         dplyr::filter(!is.na(region))
     )

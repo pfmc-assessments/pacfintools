@@ -137,19 +137,21 @@
 #'
 #' @author Andi Stephens, Kelli F. Johnson, Chantel R. Wetzel
 
-cleanPacFIN <- function(Pdata,
-                        keep_INPFC = lifecycle::deprecated(),
-                        keep_gears,
-                        keep_sample_type = c("M"),
-                        keep_sample_method = "R",
-                        keep_length_type,
-                        keep_age_method = NULL,
-                        keep_missing_lengths = lifecycle::deprecated(),
-                        keep_states = c("WA", "OR", "CA"),
-                        CLEAN = TRUE,
-                        spp = NULL,
-                        verbose = TRUE,
-                        savedir = NULL) {
+cleanPacFIN <- function(
+  Pdata,
+  keep_INPFC = lifecycle::deprecated(),
+  keep_gears,
+  keep_sample_type = c("M"),
+  keep_sample_method = "R",
+  keep_length_type,
+  keep_age_method = NULL,
+  keep_missing_lengths = lifecycle::deprecated(),
+  keep_states = c("WA", "OR", "CA"),
+  CLEAN = TRUE,
+  spp = NULL,
+  verbose = TRUE,
+  savedir = NULL
+) {
   #### Deprecate old input arguments
   if (lifecycle::is_present(keep_INPFC)) {
     lifecycle::deprecate_stop(
@@ -192,7 +194,15 @@ cleanPacFIN <- function(Pdata,
   if (missing(keep_length_type)) {
     keep_length_type <- sort(unique(c(
       Pdata[, "FISH_LENGTH_TYPE"],
-      "", "A", "D", "F", "R", "S", "T", "U", NA
+      "",
+      "A",
+      "D",
+      "F",
+      "R",
+      "S",
+      "T",
+      "U",
+      NA
     )))
   }
   if (is.null(keep_age_method)) {
@@ -211,13 +221,11 @@ cleanPacFIN <- function(Pdata,
     grDevices::png(filename = file.path(savedir, "PacFIN_comp_season.png"))
     on.exit(grDevices::dev.off(), add = TRUE, after = FALSE)
   }
-  Pdata <- getSeason(Pdata,
-    verbose = verbose,
-    plotResults = !missing(savedir)
-  )
+  Pdata <- getSeason(Pdata, verbose = verbose, plotResults = !missing(savedir))
 
   #### Areas
-  Pdata <- getState(Pdata,
+  Pdata <- getState(
+    Pdata,
     verbose = verbose,
     source = ifelse("AGID" %in% colnames(Pdata), "AGID", "SOURCE_AGID")
   )
@@ -228,7 +236,8 @@ cleanPacFIN <- function(Pdata,
   Pdata[, "SEX"] <- nwfscSurvey::codify_sex(Pdata[, "SEX"])
 
   #### Lengths
-  Pdata[, "length"] <- getLength(Pdata,
+  Pdata[, "length"] <- getLength(
+    Pdata,
     verbose = verbose,
     keep = keep_length_type
   )
@@ -295,8 +304,14 @@ cleanPacFIN <- function(Pdata,
     )
     message("N without length: ", sum(is.na(Pdata$length)))
     message("N without Age: ", sum(is.na(Pdata$Age)))
-    message("N without length and Age: ", sum(is.na(Pdata$length) | is.na(Pdata$Age)))
-    message("N sample weights not available for OR: ", sum(!bad[, "goodEXP_WT"]))
+    message(
+      "N without length and Age: ",
+      sum(is.na(Pdata$length) | is.na(Pdata$Age))
+    )
+    message(
+      "N sample weights not available for OR: ",
+      sum(!bad[, "goodEXP_WT"])
+    )
     message("N records: ", NROW(Pdata))
     message("N remaining if CLEAN: ", sum(bad[, "keep"]))
     message("N removed if CLEAN: ", NROW(Pdata) - sum(bad[, "keep"]))
@@ -324,9 +339,11 @@ cleanPacFIN <- function(Pdata,
 
   if (!missing(savedir)) {
     wlpars <- getWLpars(Pdata, verbose = FALSE)
-    utils::write.table(wlpars,
+    utils::write.table(
+      wlpars,
       sep = ",",
-      row.names = FALSE, col.names = TRUE,
+      row.names = FALSE,
+      col.names = TRUE,
       file = file.path(savedir, "PacFIN_WLpars.csv")
     )
     if (verbose) {

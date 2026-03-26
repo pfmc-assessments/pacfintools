@@ -66,14 +66,16 @@
 #' )
 #' }
 #'
-getExpansion_2 <- function(Pdata,
-                           Catch,
-                           Units = "LB",
-                           Convert = lifecycle::deprecated(),
-                           maxExp = 0.95,
-                           stratification.cols,
-                           verbose = TRUE,
-                           savedir = NULL) {
+getExpansion_2 <- function(
+  Pdata,
+  Catch,
+  Units = "LB",
+  Convert = lifecycle::deprecated(),
+  maxExp = 0.95,
+  stratification.cols,
+  verbose = TRUE,
+  savedir = NULL
+) {
   if (lifecycle::is_present(Convert)) {
     lifecycle::deprecate_soft(
       when = "0.2.10",
@@ -90,11 +92,7 @@ getExpansion_2 <- function(Pdata,
     several.ok = FALSE,
     choices = c(measurements::conv_unit_options[["mass"]], "MT", "LB")
   )
-  Units <- switch(Units,
-    MT = "metric_ton",
-    LB = "lbs",
-    Units
-  )
+  Units <- switch(Units, MT = "metric_ton", LB = "lbs", Units)
 
   # Start clean
   Pdata$Expansion_Factor_2 <- NA
@@ -111,10 +109,13 @@ getExpansion_2 <- function(Pdata,
         } else {
           separate <- unique(gsub(
             "^[a-zA-Z]+(\\s*[[:punct:]]\\s*)[a-zA-Z]+$",
-            "\\1", colnames(Catch)[-1]
+            "\\1",
+            colnames(Catch)[-1]
           ))
-          Pdata[, "stratification"] <- apply(Pdata[, stratification.cols],
-            1, paste,
+          Pdata[, "stratification"] <- apply(
+            Pdata[, stratification.cols],
+            1,
+            paste,
             collapse = separate
           )
         }
@@ -143,13 +144,17 @@ getExpansion_2 <- function(Pdata,
     if (sum(Pstrat %in% Catchgears) == 0) {
       cli::cli_abort(
         "No Pdata stratifications,\n",
-        paste(Pstrat, collapse = ", "), "\n",
+        paste(Pstrat, collapse = ", "),
+        "\n",
         "were found in catch columns,\n",
         paste(Catchgears, collapse = ", ")
       )
     } else {
       Pdata <- Pdata[Pdata[, "stratification"] %in% colnames(Catch), ]
-      Catch <- Catch[, c(colnames(Catch)[yearcol], unique(Pdata[, "stratification"]))]
+      Catch <- Catch[, c(
+        colnames(Catch)[yearcol],
+        unique(Pdata[, "stratification"])
+      )]
       if (verbose) {
         cli::cli_inform("Data were truncated to just these stratifications:")
         cli::cli_inform(
@@ -196,13 +201,21 @@ getExpansion_2 <- function(Pdata,
     dplyr::ungroup() |>
     dplyr::left_join(
       Catch_long,
-      by = c("fishyr" = names(Catch_long)[yearcol], "stratification" = "stratification"),
+      by = c(
+        "fishyr" = names(Catch_long)[yearcol],
+        "stratification" = "stratification"
+      ),
       relationship = "many-to-one"
     )
 
   if (any(tows[, "catch"] == 0)) {
     missing_data <- unique(
-      apply(tows[which(tows[["catch"]] == 0), c("year", "stratification")], 1, paste, collapse = "-")
+      apply(
+        tows[which(tows[["catch"]] == 0), c("year", "stratification")],
+        1,
+        paste,
+        collapse = "-"
+      )
     )
     if (verbose) {
       cli::cli_alert_danger(
@@ -218,7 +231,8 @@ getExpansion_2 <- function(Pdata,
   if (NROW(trips_without_catch) > 0) {
     NoCatch <- dplyr::group_by(
       .data = trips_without_catch,
-      fishyr, stratification
+      fishyr,
+      stratification
     ) |>
       dplyr::count(Sum_Sampled_Lbs)
     if (length(NoCatch) > 0 && verbose) {
@@ -237,15 +251,24 @@ getExpansion_2 <- function(Pdata,
   # Match EF2 to the larger dataset
   Pdata$Sum_Sampled_Lbs <- find.matching.rows(
     Pdata,
-    tows, strat, strat, "Sum_Sampled_Lbs"
+    tows,
+    strat,
+    strat,
+    "Sum_Sampled_Lbs"
   )[[1]]
   Pdata$catch <- find.matching.rows(
     Pdata,
-    tows, strat, strat, "catch"
+    tows,
+    strat,
+    strat,
+    "catch"
   )[[1]]
   Pdata$Expansion_Factor_2 <- find.matching.rows(
     Pdata,
-    tows, strat, strat, "EF2"
+    tows,
+    strat,
+    strat,
+    "EF2"
   )[[1]]
 
   NA_EF2 <- Pdata[is.na(Pdata$Expansion_Factor_2), ]
@@ -287,19 +310,26 @@ getExpansion_2 <- function(Pdata,
       graphics::barplot(
         stats::xtabs(NA_EF2$FREQ ~ NA_EF2$state + NA_EF2$fishyr),
         col = grDevices::rainbow(3),
-        legend.text = TRUE, xlab = "Year", ylab = "Samples",
+        legend.text = TRUE,
+        xlab = "Year",
+        ylab = "Samples",
         main = "Second-stage expansion values of NA replaced by 1"
       )
     } else {
-      cli::cli_inform("Specify savedir if you want a figure to show the NA Expansion_Factor_2 values replaced by 1.")
+      cli::cli_inform(
+        "Specify savedir if you want a figure to show the NA Expansion_Factor_2 values replaced by 1."
+      )
     }
   } # End if
 
   if (!is.null(savedir)) {
     grDevices::png(file.path(savedir, "PacFIN_exp2_summarybyyear.png"))
     on.exit(grDevices::dev.off(), add = TRUE, after = FALSE)
-    graphics::boxplot(Pdata$Expansion_Factor_2 ~ Pdata$fishyr,
-      main = "", xlab = "Year", ylab = "Second-stage expansion factor"
+    graphics::boxplot(
+      Pdata$Expansion_Factor_2 ~ Pdata$fishyr,
+      main = "",
+      xlab = "Year",
+      ylab = "Second-stage expansion factor"
     )
   }
 

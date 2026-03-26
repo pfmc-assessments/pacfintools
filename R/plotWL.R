@@ -16,12 +16,14 @@
 #' [getWLpars] to calculate parameters of the weight--length relationship;
 #' [getweight] to predict weights from empirical lengths
 #'
-plotWL <- function(length,
-                   sex,
-                   weight,
-                   weight.calc,
-                   xlab = "Length (cm)",
-                   ylab = "Weight (kg)") {
+plotWL <- function(
+  length,
+  sex,
+  weight,
+  weight.calc,
+  xlab = "Length (cm)",
+  ylab = "Weight (kg)"
+) {
   if (missing(sex)) {
     sex <- rep("all", length = length(length))
   }
@@ -31,14 +33,13 @@ plotWL <- function(length,
   gg <- ggplot2::ggplot(
     data = data,
     ggplot2::aes(
-      x = .data[["length"]], y = .data[["weight"]],
+      x = .data[["length"]],
+      y = .data[["weight"]],
       col = .data[["sex"]]
     )
   ) +
     ggplot2::geom_point(pch = 21, alpha = 0.8) +
-    ggplot2::geom_line(ggplot2::aes(y = .data[["pred"]]),
-      lwd = 1.2
-    ) +
+    ggplot2::geom_line(ggplot2::aes(y = .data[["pred"]]), lwd = 1.2) +
     ggplot2::xlab(xlab) +
     ggplot2::ylab(ylab) +
     ggplot2::theme_bw() +

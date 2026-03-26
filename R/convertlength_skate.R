@@ -20,8 +20,7 @@
 #' @return A vector of lengths.
 #' See \code{returntype} for detailed information on what can be returned.
 #'
-convertlength_skate <- function(Pdata,
-                                returntype = c("all", "estimated")) {
+convertlength_skate <- function(Pdata, returntype = c("all", "estimated")) {
   matchcol <- function(data) {
     var_sex <- grep("SEX", colnames(data), value = TRUE)[1]
     var_fish_length_type <- grep(
@@ -48,12 +47,16 @@ convertlength_skate <- function(Pdata,
   discpar[, "match"] <- matchcol(discpar)
   matches <- match(matchcol(Pdata), discpar[, "match"])
 
-  est <- Pdata[, "FISH_LENGTH"] * discpar[matches, "multiply"] +
+  est <- Pdata[, "FISH_LENGTH"] *
+    discpar[matches, "multiply"] +
     discpar[matches, "add"]
 
-  returned <- switch(returntype,
-    all = ifelse(Pdata[, "FISH_LENGTH_TYPE"] %in% c("A", "R"),
-      est, Pdata[, "FISH_LENGTH"]
+  returned <- switch(
+    returntype,
+    all = ifelse(
+      Pdata[, "FISH_LENGTH_TYPE"] %in% c("A", "R"),
+      est,
+      Pdata[, "FISH_LENGTH"]
     ),
     estimated = est
   )

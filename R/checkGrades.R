@@ -9,10 +9,13 @@
 #'
 checkGrade <- function(Pdata) {
   out <- tapply(
-    Pdata$GRADE, Pdata$SAMPLE_NO,
+    Pdata$GRADE,
+    Pdata$SAMPLE_NO,
     function(x) length(unique(x)) == 1
   )
-  ifelse(all(out == 1), "One grade per sample number.",
+  ifelse(
+    all(out == 1),
+    "One grade per sample number.",
     "More than one grade per sample number."
   )
 }

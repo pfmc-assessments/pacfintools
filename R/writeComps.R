@@ -82,21 +82,23 @@
 #' @seealso
 #' * `getComps()`
 #'
-writeComps <- function(inComps,
-                       comp_bins,
-                       fname = NULL,
-                       abins = lifecycle::deprecated(),
-                       lbins = lifecycle::deprecated(),
-                       column_with_input_n = c("n_tows", "n_stewart", "n_fish"),
-                       maxAge = lifecycle::deprecated(),
-                       month = 7,
-                       partition = 2,
-                       ageErr = 0,
-                       dummybins = lifecycle::deprecated(),
-                       sum1 = lifecycle::deprecated(),
-                       digits = 4,
-                       overwrite = lifecycle::deprecated(),
-                       verbose = FALSE) {
+writeComps <- function(
+  inComps,
+  comp_bins,
+  fname = NULL,
+  abins = lifecycle::deprecated(),
+  lbins = lifecycle::deprecated(),
+  column_with_input_n = c("n_tows", "n_stewart", "n_fish"),
+  maxAge = lifecycle::deprecated(),
+  month = 7,
+  partition = 2,
+  ageErr = 0,
+  dummybins = lifecycle::deprecated(),
+  sum1 = lifecycle::deprecated(),
+  digits = 4,
+  overwrite = lifecycle::deprecated(),
+  verbose = FALSE
+) {
   # lifecycle checks
   if (lifecycle::is_present(overwrite)) {
     lifecycle::deprecate_soft(
@@ -141,8 +143,9 @@ writeComps <- function(inComps,
     )
   }
   # Check inputs
-  if ("season" %in% names(inComps) &&
-    max(inComps[["season"]]) != length(month)) {
+  if (
+    "season" %in% names(inComps) && max(inComps[["season"]]) != length(month)
+  ) {
     cli::cli_abort(c(
       "i" = "Input 'month' should have length equal to the maximum season",
       "x" = "month = {.var {month}}",
@@ -150,8 +153,10 @@ writeComps <- function(inComps,
     ))
   }
   column_with_input_n <- match.arg(column_with_input_n, several.ok = FALSE)
-  if (!"season" %in% names(inComps) &&
-    length(month) != 1) {
+  if (
+    !"season" %in% names(inComps) &&
+      length(month) != 1
+  ) {
     cli::cli_abort(c(
       "x" = "month should have length 1 instead of length {length(month)}
         because {.var season} does not exist as a column in {.var inComps}"
@@ -217,12 +222,22 @@ writeComps <- function(inComps,
   bin_width <- check_bin_width[1]
   grid <- inComps |>
     tibble::tibble() |>
-    tidyr::expand(fishyr, fleet, season, SEX, tidyr::full_seq(comp_bins, bin_width))
+    tidyr::expand(
+      fishyr,
+      fleet,
+      season,
+      SEX,
+      tidyr::full_seq(comp_bins, bin_width)
+    )
   colnames(grid)[ncol(grid)] <- "bins"
   expanded_comps <- inComps_bins |>
     dplyr::right_join(grid) |>
     tibble::tibble() |>
-    tidyr::complete(fishyr, fleet, season, bins,
+    tidyr::complete(
+      fishyr,
+      fleet,
+      season,
+      bins,
       fill = list(
         n_tows = 0,
         n_fish = 0,

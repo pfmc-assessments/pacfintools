@@ -46,24 +46,26 @@
 #' @export
 #' @author Chantel R. Wetzel, Vlada Gertseva, James Thorson
 
-checkLenAge <- function(Pdata,
-                        Par = list(
-                          K = 0.13,
-                          Linf = 55,
-                          L0 = 15,
-                          CV0 = 0.10,
-                          CV1 = 0.10
-                        ),
-                        len_col = "lengthcm",
-                        age_col = "Age",
-                        sex_col = "SEX",
-                        mult = 1,
-                        keepAll = TRUE,
-                        sdFactor = 4,
-                        Optim = TRUE,
-                        precision = 1,
-                        verbose = TRUE,
-                        dir = NULL) {
+checkLenAge <- function(
+  Pdata,
+  Par = list(
+    K = 0.13,
+    Linf = 55,
+    L0 = 15,
+    CV0 = 0.10,
+    CV1 = 0.10
+  ),
+  len_col = "lengthcm",
+  age_col = "Age",
+  sex_col = "SEX",
+  mult = 1,
+  keepAll = TRUE,
+  sdFactor = 4,
+  Optim = TRUE,
+  precision = 1,
+  verbose = TRUE,
+  dir = NULL
+) {
   #### Initialize the three new columns
   Pdata$Lhat_pred <- NA
   Pdata$Lhat_low <- NA
@@ -94,7 +96,8 @@ checkLenAge <- function(Pdata,
     if (!all(sex_vec %in% names(Par[[1]]))) {
       stop(
         "The data contains the following values for sexes,\n",
-        paste(sex_vec, collapse = ", "), "\n",
+        paste(sex_vec, collapse = ", "),
+        "\n",
         " which must match names of the parameter vectors in the list Par, e.g.,\n",
         paste(unique(unlist(lapply(Par, names))), collapse = ", ")
       )
@@ -149,7 +152,10 @@ checkLenAge <- function(Pdata,
       Lengths = Pdata[use_data, len_col]
     )
 
-    Pdata[use_data, c("Lhat_low", "Lhat_pred", "Lhat_high")] <- round(Pred, precision)
+    Pdata[use_data, c("Lhat_low", "Lhat_pred", "Lhat_high")] <- round(
+      Pred,
+      precision
+    )
   }
 
   if (!keepAll) {
@@ -173,25 +179,41 @@ checkLenAge <- function(Pdata,
     ]
     estsall <- data.frame(
       Sex = sex_vec,
-      do.call("rbind", tapply(
-        seq(NROW(tempdata)), tempdata[, sex_col],
-        function(x) {
-          exp(stats::optim(
-            fn = nwfscSurvey::fit_vbgrowth,
-            par = log(pars_in),
-            hessian = FALSE,
-            Ages = tempdata[x, age_col],
-            Lengths = tempdata[x, len_col]
-          )$par)
-        }
-      ))
+      do.call(
+        "rbind",
+        tapply(
+          seq(NROW(tempdata)),
+          tempdata[, sex_col],
+          function(x) {
+            exp(
+              stats::optim(
+                fn = nwfscSurvey::fit_vbgrowth,
+                par = log(pars_in),
+                hessian = FALSE,
+                Ages = tempdata[x, age_col],
+                Lengths = tempdata[x, len_col]
+              )$par
+            )
+          }
+        )
+      )
     )
     colnames(estsall)[-1] <- names(Par)
     estsall <- estsall[, c("Sex", "L0", "Linf", "K", "CV0", "CV1")]
-    colnames(estsall) <- c("Sex", "$L_0$", "$L_{Inf}$", "$K$", "$CV_{young}$", "$CV_{old}$")
-    x <- knitr::kable(estsall,
+    colnames(estsall) <- c(
+      "Sex",
+      "$L_0$",
+      "$L_{Inf}$",
+      "$K$",
+      "$CV_{young}$",
+      "$CV_{old}$"
+    )
+    x <- knitr::kable(
+      estsall,
       format = "latex",
-      label = "PacFIN_vonBpars", escape = FALSE, booktabs = TRUE,
+      label = "PacFIN_vonBpars",
+      escape = FALSE,
+      booktabs = TRUE,
       caption = paste0(
         "Estimates of von Bertalanffy growth parameters in terms of ",
         "length at age-0 ($L_0$), rather than age at which growth is zero, and fit to ",
@@ -203,9 +225,11 @@ checkLenAge <- function(Pdata,
       )
     )
     writeLines(x, file.path(dir, "PacFIN_vonBpars.tex"))
-    utils::write.table(estsall,
+    utils::write.table(
+      estsall,
       file = file.path(dir, "PacFIN_vonBpars.csv"),
-      sep = ",", row.names = FALSE
+      sep = ",",
+      row.names = FALSE
     )
     tempdata <- tempdata[, c(len_col, age_col, sex_col)]
     colnames(tempdata) <- c("Length_cm", "Age", "Sex")
@@ -213,10 +237,15 @@ checkLenAge <- function(Pdata,
     names(pars) <- NULL
 
     latage <- nwfscSurvey::PlotVarLengthAtAge.fn(
-      dat = tempdata, parStart = pars,
-      dir = dir, main = "PacFIN", ageBin = 1,
+      dat = tempdata,
+      parStart = pars,
+      dir = dir,
+      main = "PacFIN",
+      ageBin = 1,
       bySex = !all(estsall[, "Sex"] == "A"),
-      estVB = TRUE, legX = "bottomleft", dopng = TRUE
+      estVB = TRUE,
+      legX = "bottomleft",
+      dopng = TRUE
     )
   }
 

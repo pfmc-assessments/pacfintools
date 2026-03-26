@@ -70,17 +70,19 @@
 #' @author Andi Stephens, Kelli F. Johnson, Chantel R. Wetzel
 #' @seealso [EF1_Numerator], [getExpansion_1], [getExpansion_2]
 #'
-EF1_Denominator <- function(Pdata,
-                            fa,
-                            fb,
-                            ma,
-                            mb,
-                            ua,
-                            ub,
-                            verbose = TRUE,
-                            plot = lifecycle::deprecated(),
-                            col.weight = "weightkg",
-                            savedir = NULL) {
+EF1_Denominator <- function(
+  Pdata,
+  fa,
+  fb,
+  ma,
+  mb,
+  ua,
+  ub,
+  verbose = TRUE,
+  plot = lifecycle::deprecated(),
+  col.weight = "weightkg",
+  savedir = NULL
+) {
   if (lifecycle::is_present(plot)) {
     lifecycle::deprecate_soft(
       when = "0.2.10",
@@ -152,29 +154,47 @@ EF1_Denominator <- function(Pdata,
     # Back out the weight of fish that have no length or Age for each
     # specific sample weight, if all are NA in sample, then set to 0.
     dplyr::mutate(
-      Wt_Sampled_1_A = (-1 * sum(ifelse(is.na(Age), bestweight, 0)) +
-        FEMALES_WGT + MALES_WGT + UNK_WT) *
+      Wt_Sampled_1_A = (-1 *
+        sum(ifelse(is.na(Age), bestweight, 0)) +
+        FEMALES_WGT +
+        MALES_WGT +
+        UNK_WT) *
         ifelse(all(is.na(Age)), 0, 1),
-      Wt_Sampled_1_L = (-1 * sum(ifelse(is.na(length), bestweight, 0)) +
-        FEMALES_WGT + MALES_WGT + UNK_WT) *
+      Wt_Sampled_1_L = (-1 *
+        sum(ifelse(is.na(length), bestweight, 0)) +
+        FEMALES_WGT +
+        MALES_WGT +
+        UNK_WT) *
         ifelse(all(is.na(length)), 0, 1)
     ) |>
     dplyr::ungroup() |>
     dplyr::group_by(SAMPLE_NO, CLUSTER_NO) |>
     # Do the same for CLUSTER_WGT
     dplyr::mutate(
-      Wt_Sampled_2_A = (-1 * sum(ifelse(is.na(Age), bestweight, 0)) +
-        CLUSTER_WGT) * ifelse(all(is.na(Age)), 0, 1),
-      Wt_Sampled_2_L = (-1 * sum(ifelse(is.na(length), bestweight, 0)) +
-        CLUSTER_WGT) * ifelse(all(is.na(length)), 0, 1)
+      Wt_Sampled_2_A = (-1 *
+        sum(ifelse(is.na(Age), bestweight, 0)) +
+        CLUSTER_WGT) *
+        ifelse(all(is.na(Age)), 0, 1),
+      Wt_Sampled_2_L = (-1 *
+        sum(ifelse(is.na(length), bestweight, 0)) +
+        CLUSTER_WGT) *
+        ifelse(all(is.na(length)), 0, 1)
     ) |>
     # Bring the calculations back to the full scale of the data frame
     dplyr::ungroup() |>
     # Coalesce sets things to downstream values, only if NA, i.e.,
     # Wt_Sampled_[AL] is set by priority left to right 1, 2, 3
     dplyr::mutate(
-      Wt_Sampled_A = dplyr::coalesce(Wt_Sampled_1_A, Wt_Sampled_2_A, Wt_Sampled_3_A),
-      Wt_Sampled_L = dplyr::coalesce(Wt_Sampled_1_L, Wt_Sampled_2_L, Wt_Sampled_3_L)
+      Wt_Sampled_A = dplyr::coalesce(
+        Wt_Sampled_1_A,
+        Wt_Sampled_2_A,
+        Wt_Sampled_3_A
+      ),
+      Wt_Sampled_L = dplyr::coalesce(
+        Wt_Sampled_1_L,
+        Wt_Sampled_2_L,
+        Wt_Sampled_3_L
+      )
     ) |>
     # Return a data frame rather than a tibble
     data.frame()
@@ -182,8 +202,10 @@ EF1_Denominator <- function(Pdata,
   #### Summary and boxplot
   # TODO: revamp the summary and plots
   printemp <- data.frame(cbind(
-    Pdata$Wt_Sampled_1_L, Pdata$Wt_Sampled_2_L,
-    Pdata$Wt_Sampled_3_L, Pdata$Wt_Sampled_L
+    Pdata$Wt_Sampled_1_L,
+    Pdata$Wt_Sampled_2_L,
+    Pdata$Wt_Sampled_3_L,
+    Pdata$Wt_Sampled_L
   ))
 
   names(printemp) <- c("M+F+U", "Cluster", "L-W", "Final Wt_Sampled")
@@ -214,13 +236,16 @@ EF1_Denominator <- function(Pdata,
           NA_Wt_Sampled$FREQ ~ NA_Wt_Sampled$state + NA_Wt_Sampled$fishyr
         ),
         col = grDevices::rainbow(length(unique(NA_Wt_Sampled$state))),
-        legend.text = TRUE, xlab = "Year",
+        legend.text = TRUE,
+        xlab = "Year",
         ylab = "N samples w/ first-stage expansion denominator = NA",
         args.legend = list(x = "topleft", bty = "n")
       )
     }
     gg <- plotWL(
-      Pdata[, "lengthcm"], Pdata[, "SEX"], Pdata[, "weightkg"],
+      Pdata[, "lengthcm"],
+      Pdata[, "SEX"],
+      Pdata[, "weightkg"],
       Pdata[, "LW_Calc_Wt"] * 0.453592
     )
     ggplot2::ggsave(

@@ -38,36 +38,43 @@
 #' print(comps)
 #' }
 #'
-comps_wide <- function(data,
-                       breaks,
-                       col_bins = "Age",
-                       col_proportions = "lf",
-                       includeplusgroup = TRUE) {
+comps_wide <- function(
+  data,
+  breaks,
+  col_bins = "Age",
+  col_proportions = "lf",
+  includeplusgroup = TRUE
+) {
   col_proportions.num <- which(colnames(data) == col_proportions)
   col_bins.num <- which(colnames(data) == col_bins)
   stopifnot(length(col_proportions.num) == 1)
   stopifnot(length(col_bins.num) == 1)
   data <- data[, c(
     seq_along(data)[-c(col_bins.num, col_proportions.num)],
-    col_bins.num, col_proportions.num
+    col_bins.num,
+    col_proportions.num
   )]
   data[, NCOL(data) - 1] <- comps_bins(
     vector = data[, NCOL(data) - 1, drop = TRUE],
-    breaks = breaks, includeplusgroup = includeplusgroup,
+    breaks = breaks,
+    includeplusgroup = includeplusgroup,
     returnclass = "numeric"
   )
 
   outformula <- stats::formula(paste(col_proportions, "~ ."))
   out <- stats::reshape(
-    direction = "wide", stats::aggregate(outformula, data = data, sum),
+    direction = "wide",
+    stats::aggregate(outformula, data = data, sum),
     idvar = colnames(data)[1:(NCOL(data) - 2)],
     timevar = colnames(data)[NCOL(data) - 1]
   )
   out[is.na(out)] <- 0
-  out <- out[do.call(
-    order,
-    as.list(out[, colnames(out)[-(NCOL(out):(NCOL(out) - 1))]])
-  ), ]
+  out <- out[
+    do.call(
+      order,
+      as.list(out[, colnames(out)[-(NCOL(out):(NCOL(out) - 1))]])
+    ),
+  ]
 
   return(out)
 }

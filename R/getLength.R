@@ -15,9 +15,7 @@
 #' @return A vector of lengths in millimeters. Values of `NA` indicate that
 #' the length should not be used in down-stream calculations.
 #'
-getLength <- function(Pdata,
-                      verbose = TRUE,
-                      keep) {
+getLength <- function(Pdata, verbose = TRUE, keep) {
   # Initial checks
   # Early return
   if (all(is.na(Pdata[["FISH_LENGTH"]]))) {
@@ -80,7 +78,9 @@ getLength <- function(Pdata,
   )
   if (length(check.calt) > 0) {
     message(
-      "Changing ", length(check.calt), " CA FISH_LENGTH_TYPE == 'F' to 'T'.",
+      "Changing ",
+      length(check.calt),
+      " CA FISH_LENGTH_TYPE == 'F' to 'T'.",
       " Vlada is working on getting these entries fixed in PacFIN."
     )
     Pdata[check.calt, var_fish_length_type] <- "T"
@@ -104,7 +104,8 @@ getLength <- function(Pdata,
   check.dogfish <- Pdata[[var_spid]] == "DSRK" & !is.na(Pdata[["FORK_LENGTH"]])
   if (sum(check.dogfish) > 0 & verbose) {
     message(
-      sum(check.dogfish), " fork lengths were converted to total lengths using\n",
+      sum(check.dogfish),
+      " fork lengths were converted to total lengths using\n",
       "Tribuzio and Kruse (2012)."
     )
   }
@@ -114,9 +115,12 @@ getLength <- function(Pdata,
 
   # Fix incorrect FISH_LENGTH_UNITS for hake
   if (length(grep("PWHT", Pdata[["SPID"]])) > 0) {
-    if (verbose) message("Still fixing WA FISH_LENGTH_UNITS")
+    if (verbose) {
+      message("Still fixing WA FISH_LENGTH_UNITS")
+    }
     Pdata[, "FISH_LENGTH_UNITS"] <- ifelse(
-      tolower(Pdata[, "FISH_LENGTH_UNITS"]) == "cm" & Pdata[, "FISH_LENGTH"] > 90,
+      tolower(Pdata[, "FISH_LENGTH_UNITS"]) == "cm" &
+        Pdata[, "FISH_LENGTH"] > 90,
       "MM",
       Pdata[, "FISH_LENGTH_UNITS"]
     )
@@ -155,9 +159,12 @@ getLength <- function(Pdata,
     message("Using dorsal lengths, are you sure you want dorsal lengths?")
   }
   Pdata$length <- ifelse(
-    "D" %in% keep & Pdata[[var_fish_length_type]] == "D" &
+    "D" %in%
+      keep &
+      Pdata[[var_fish_length_type]] == "D" &
       Pdata$FORK_LENGTH != Pdata$FISH_LENGTH,
-    Pdata$FORK_LENGTH, Pdata$length
+    Pdata$FORK_LENGTH,
+    Pdata$length
   )
 
   # Work with standard length measurements and unknown type
@@ -206,7 +213,6 @@ getLength <- function(Pdata,
     yes = Pdata[, "length"] * 10,
     no = Pdata[, "length"]
   )
-
 
   if (verbose) {
     cli::cli_alert_info(paste(
