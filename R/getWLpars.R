@@ -31,10 +31,12 @@
 #' This will happen when there are no females in your data set,
 #' for example.
 #'
-getWLpars <- function(data,
-                      col.length = "lengthcm",
-                      col.weight = "weightkg",
-                      verbose = TRUE) {
+getWLpars <- function(
+  data,
+  col.length = "lengthcm",
+  col.weight = "weightkg",
+  verbose = TRUE
+) {
   col.length <- tolower(col.length)
   col.weight <- tolower(col.weight)
   colnames(data) <- tolower(colnames(data))
@@ -60,20 +62,29 @@ getWLpars <- function(data,
   }
 
   mresults <- tibble::lst(
-    female = . |> dplyr::filter(sex == "F"),
-    male = . |> dplyr::filter(sex == "M"),
-    all = . |> dplyr::filter(sex %in% c(NA, "F", "M", "U", "H"))
-  ) |>
-    purrr::map_dfr(~ tidyr::nest(.x(data), data = everything()), .id = "group") |>
+    female = . %>% dplyr::filter(sex == "F"),
+    male = . %>% dplyr::filter(sex == "M"),
+    all = . %>% dplyr::filter(sex %in% c(NA, "F", "M", "U", "H"))
+  ) %>%
+    purrr::map_dfr(
+      ~ tidyr::nest(.x(data), data = everything()),
+      .id = "group"
+    ) %>%
     dplyr::mutate(
-      fits = purrr::map(data, ~ stats::lm(log(weight) ~ log(length_cm), data = .x))
+      fits = purrr::map(
+        data,
+        ~ stats::lm(log(weight) ~ log(length_cm), data = .x)
+      )
     )
   WLresults <- mresults |>
-    dplyr::summarize(
+    dplyr::reframe(
       group = group,
       median_intercept = purrr::map_dbl(fits, ~ exp(.x$coefficients[1])),
       SD = purrr::map_dbl(fits, ~ sd(.x$residuals)),
-      A = purrr::map_dbl(fits, ~ exp(.x$coefficients[1]) * exp(0.5 * sd(.x$residuals)^2)),
+      A = purrr::map_dbl(
+        fits,
+        ~ exp(.x$coefficients[1]) * exp(0.5 * sd(.x$residuals)^2)
+      ),
       B = purrr::map_dbl(fits, ~ .x$coefficients[2])
     ) |>
     data.frame()
