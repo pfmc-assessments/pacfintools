@@ -93,7 +93,7 @@ getAgeMethod <- function(Pdata, verbose = TRUE) {
       "i" = "Age methods were originally coded to {text_original_methods}",
       "i" = "Age methods are now coded to {text_returned_methods_n}"
     ))
-    print(summaryAgeMethod(Pdata, verbose = TRUE))
+    #print(summaryAgeMethod(Pdata, verbose = TRUE))
   }
 
   return(used_method)
@@ -130,11 +130,11 @@ getAgeMethod <- function(Pdata, verbose = TRUE) {
 #' prior to returning the table.
 #'
 summaryAgeMethod <- function(Pdata, verbose = FALSE) {
-  if (verbose) {
-    cli::cli_bullets(c(
-      "i" = "Number of samples (n) per combinations of ageing methods"
-    ))
-  }
+  #if (verbose) {
+  #  cli::cli_bullets(c(
+  #    "i" = "Number of samples (n) per combinations of ageing methods"
+  #  ))
+  #}
   old_column_name <- c(
     "Age method for best age" = "age_method"
   )

@@ -236,28 +236,11 @@ getAge <- function(
     # Print messages to users
     cli::cli_bullets(c(
       " " = "{.fn getAge} summary information -",
-      text_n_missing_final,
-      "i" = glue::glue(
-        "
-        The distribution (in numbers) for fish aged
-        0--{max(out, na.rm = TRUE)} years is {table_summary_n_age}
-      "
-      ),
-      "i" = "Age methods {text_age_methods} were present",
-      "i" = glue::glue(
-        "
-        Age methods
-        {glue::glue_collapse(sQuote(keep), sep = ', ', last = ' and ')}
-        were desired
-      "
-      ),
-      "i" = "{sum(table_summary_na[['n']])} ages used undesired age methods",
-      "v" = glue::glue(
-        "
-        Number of ages by age (years) changed to `NA` is
-        {paste(text_n_na, collapse = ', ')}
-      "
-      )
+      "i" = "{text_n_missing_final}",
+      "i" = "Age methods {text_age_methods} were present.",
+      "i" = "Age methods {glue::glue_collapse(sQuote(keep), sep = ', ', last = ' and ')} were desired.",
+      "i" = "{sum(table_summary_na[['n']])} ages used undesired age methods.",
+      "v" = "Number of ages by age (years) changed to `NA` is {paste(text_n_na, collapse = ', ')}"
     ))
   }
 
@@ -281,13 +264,12 @@ grep_final_age <- function(x) {
   )
   out <- all[!grepl(pattern = "CODE", x = all)]
   if (length(out) == 0) {
-    stop("A match to AGE.*FINAL|FINAL.*AGE was not found.")
+    cli::cli_abort("A match to AGE.*FINAL|FINAL.*AGE was not found.")
   }
   if (length(out) > 1) {
-    stop(
-      "Please remove all but one of the following columns and rerun the\n",
-      " function:\n",
-      paste(out, collapse = "\n")
+    message <- paste(out, collapse = "\n")
+    cli::cli_abort(
+      "Please remove all but one of the following columns and rerun the function: {message}"
     )
   }
   return(out)

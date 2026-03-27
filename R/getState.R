@@ -63,19 +63,18 @@
 #'
 getState <- function(
   Pdata,
-  source = c("AGENCY_CODE", "AGENCY_CODE"),
+  source = c("AGENCY_CODE"),
   verbose = TRUE
 ) {
   if (any(source %in% c("PSMFC_CATCH_AREA_CODE", "PSMFC_ARID"))) {
-    stop(
-      "'PSMFC_CATCH_AREA_CODE' and 'PSMFC_ARID' are no longer supported ",
-      "inputs to getState(source = )."
+    cli::cli_abort(
+      "'PSMFC_CATCH_AREA_CODE' and 'PSMFC_ARID' are no longer supported inputs to getState(source = )."
     )
   }
   source <- match.arg(source, several.ok = FALSE)
   colid <- match(source, colnames(Pdata))
   if (is.na(colid[1])) {
-    stop("The column '", source, "' was not found in Pdata.")
+    cli::cli_inform("The column {source} was not found in Pdata.")
   }
 
   Pdata$state <- as.character(Pdata[, source])
@@ -91,19 +90,14 @@ getState <- function(
     W = "WA",
     "UNK"
   )
-
   states <- c("OR", "CA", "WA")
-
   nostate <- sum(!Pdata[, "state"] %in% states)
 
   if (verbose) {
-    message(
-      "\nThere are ",
-      nostate,
-      " records for which the state (i.e., 'CA', 'OR', 'WA')",
-      "\ncould not be assigned and were labeled as 'UNK'."
+    cli::cli_inform(
+      "There are {nostate} records for which the state (i.e., 'CA', 'OR', 'WA') 
+      could not be assigned and were labeled as 'UNK'."
     )
-    utils::capture.output(type = "message", table(Pdata[, "state"]))
   } # End if verbose
 
   return(Pdata)

@@ -32,12 +32,8 @@ getLength <- function(Pdata, verbose = TRUE, keep) {
   )
   if (NROW(data_with_length)) {
     cli::cli_abort(
-      glue::glue(
-        "FISH_LENGTH_UNITS contains units other than 'CM' or 'MM' for fish",
-        " with lengths, please assign a unit like 'CM' or 'MM' to each row."
-      ),
-      wrap = TRUE,
-      call = NULL
+      "FISH_LENGTH_UNITS contains units other than 'CM' or 'MM' for fish
+        with lengths, please assign a unit like 'CM' or 'MM' to each row."
     )
   }
 
@@ -59,13 +55,9 @@ getLength <- function(Pdata, verbose = TRUE, keep) {
   good_types_string <- glue::glue_collapse(sQuote(good_types), sep = ", ")
   if (any(!Pdata[[var_fish_length_type]] %in% good_types)) {
     cli::cli_abort(
-      glue::glue(
-        "getLength can only accommodate the following FISH_LENGTH_TYPEs,
+      "getLength can only accommodate the following FISH_LENGTH_TYPEs
         please contact the package maintainer to add additional types:
-        {good_types_string}
-        "
-      ),
-      call = NULL
+        {good_types_string}"
     )
   }
 
@@ -77,11 +69,10 @@ getLength <- function(Pdata, verbose = TRUE, keep) {
       Pdata[[var_fish_length_type]] == "F"
   )
   if (length(check.calt) > 0) {
-    message(
-      "Changing ",
-      length(check.calt),
-      " CA FISH_LENGTH_TYPE == 'F' to 'T'.",
-      " Vlada is working on getting these entries fixed in PacFIN."
+    change_vals <- length(check.calt)
+    cli::cli_inform(
+      "Changing {change_vals} CA FISH_LENGTH_TYPE == F to T.
+      Vlada is working on getting these entries fixed in PacFIN."
     )
     Pdata[check.calt, var_fish_length_type] <- "T"
   }
@@ -103,10 +94,9 @@ getLength <- function(Pdata, verbose = TRUE, keep) {
   # Spiny dogfish (Squalus suckleyi; DSRK)
   check.dogfish <- Pdata[[var_spid]] == "DSRK" & !is.na(Pdata[["FORK_LENGTH"]])
   if (sum(check.dogfish) > 0 & verbose) {
-    message(
-      sum(check.dogfish),
-      " fork lengths were converted to total lengths using\n",
-      "Tribuzio and Kruse (2012)."
+    total_check_dogfish <- sum(check.dogfish)
+    cli::cli_inform(
+      "{total_check_dogfish} fork lengths were converted to total lengths using Tribuzio and Kruse (2012)."
     )
   }
   Pdata[check.dogfish, "FORK_LENGTH"] <-
@@ -116,7 +106,7 @@ getLength <- function(Pdata, verbose = TRUE, keep) {
   # Fix incorrect FISH_LENGTH_UNITS for hake
   if (length(grep("PWHT", Pdata[["PACFIN_SPECIES_CODE"]])) > 0) {
     if (verbose) {
-      message("Still fixing WA FISH_LENGTH_UNITS")
+      cli::cli_inform("Still fixing WA FISH_LENGTH_UNITS")
     }
     Pdata[, "FISH_LENGTH_UNITS"] <- ifelse(
       tolower(Pdata[, "FISH_LENGTH_UNITS"]) == "cm" &
@@ -156,7 +146,9 @@ getLength <- function(Pdata, verbose = TRUE, keep) {
       "D" %in% keep &
       length(grep("D", Pdata[[var_fish_length_type]]) > 0)
   ) {
-    message("Using dorsal lengths, are you sure you want dorsal lengths?")
+    cli::cli_alert_danger(
+      "Using dorsal lengths, are you sure you want dorsal lengths?"
+    )
   }
   Pdata$length <- ifelse(
     "D" %in%

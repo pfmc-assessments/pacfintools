@@ -1,4 +1,4 @@
-#' Add a column to `Pdata` for season.
+#' Add a column for season.
 #'
 #' Several seasonal schemes are available, including Petrale seasons
 #' (1 = winter months, 2 else).
@@ -53,9 +53,8 @@ getSeason <- function(
 
   if (season_type == 0) {
     if (verbose) {
-      message("Assigning season from SAMPLE_MONTH.")
+      cli::cli_inform("Assigning season from SAMPLE_MONTH.")
     }
-
     Pdata[, "season"] <- utils::type.convert(as.is = TRUE, Pdata$SAMPLE_MONTH)
   } # End if
 
@@ -63,7 +62,9 @@ getSeason <- function(
 
   if (season_type == 1) {
     if (verbose) {
-      message("Assigning seasons for Petrale; winter == 1, summer == 2.")
+      cli::cli_inform(
+        "Assigning seasons for winter == 1 (month 11, 12, 1, 2) and summer == 2 month (3-10)."
+      )
     }
 
     Pdata[, "season"] <- ifelse(
@@ -78,10 +79,9 @@ getSeason <- function(
       Pdata$fishyr[Pdata$SAMPLE_MONTH %in% yearUp] + 1
 
     if (verbose) {
-      message(
-        "Incremented fishyr for months ",
-        paste(yearUp, collapse = ", "),
-        "to the next year."
+      year_message <- paste(yearUp, collapse = ", ")
+      cli::cli_inform(
+        "Incremented fishyr for months {year_message} to the next year."
       )
     }
   } # End if yearUp
@@ -91,24 +91,33 @@ getSeason <- function(
       Pdata$fishyr[Pdata$SAMPLE_MONTH %in% yearDown] - 1
 
     if (verbose) {
-      message(
-        "Decremented fishyr for months ",
-        paste(yearDown, collapse = ", "),
-        "to the previous year."
+      year_message <- paste(yearDown, collapse = ", ")
+      cli::cli_inform(
+        "Decremented fishyr for months {year_message} to the previous year."
       )
     }
   } # End if yearDown
 
   if (plotResults) {
-    tmp <- table(Pdata[, c("season", "SAMPLE_YEAR")])
-    graphics::barplot(
-      tmp,
-      col = grDevices::rainbow(NROW(tmp)),
-      legend.text = paste("Season", rownames(tmp)),
-      main = unique(Pdata$PACFIN_SPECIES_CODE),
-      xlab = "Year",
-      ylab = "Count",
-      bty = "n"
+    plot_data <- Pdata |>
+      dplyr::mutate(
+        season = as.factor(season),
+        Count = 1
+      )
+    p <- ggplot2::ggplot(
+      plot_data,
+      ggplot2::aes(x = year, y = Count, fill = season)
+    ) +
+      ggplot2::geom_bar(stat = "identity") +
+      ggplot2::scale_fill_viridis_d(begin = 0, end = 0.5) +
+      ggplot2::theme_bw() +
+      ggplot2::xlab("Year")
+    ggplot2::ggsave(
+      plot = p,
+      filename = file.path(savedir, "PacFIN_comp_season.png"),
+      height = 7,
+      width = 7,
+      units = 'in'
     )
   } # End if plotResults
 
