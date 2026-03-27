@@ -19,10 +19,12 @@
 #'   comps_bins(1:8, breaks = c(-Inf, 3:5), includeplusgroup = TRUE)
 #' )
 #'
-comps_bins <- function(vector,
-                       breaks,
-                       includeplusgroup = TRUE,
-                       returnclass = c("character", "numeric")) {
+comps_bins <- function(
+  vector,
+  breaks,
+  includeplusgroup = TRUE,
+  returnclass = c("character", "numeric")
+) {
   returnclass <- match.arg(returnclass)
   breaks <- sort(utils::type.convert(breaks, as.is = TRUE))
   if (includeplusgroup && utils::tail(breaks, 1) != Inf) {
@@ -33,12 +35,10 @@ comps_bins <- function(vector,
     # also used as a special character to represent ranges
     pattern = "[\\[\\(]([0-9\\Inf-]+),\\s*[0-9Inf\\)]+",
     replacement = "\\1",
-    x = cut(vector,
-      breaks = breaks,
-      include.lowest = FALSE, right = FALSE
-    )
+    x = cut(vector, breaks = breaks, include.lowest = FALSE, right = FALSE)
   )
-  out <- switch(returnclass,
+  out <- switch(
+    returnclass,
     character = out,
     numeric = utils::type.convert(out, as.is = TRUE)
   )

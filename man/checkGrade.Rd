@@ -2,7 +2,7 @@
 % Please edit documentation in R/checkGrades.R
 \name{checkGrade}
 \alias{checkGrade}
-\title{Check Sample Numbers for Grade}
+\title{Check Sample Numbers for PACFIN_GRADE_CODE}
 \usage{
 checkGrade(Pdata)
 }
@@ -16,7 +16,7 @@ are pulled using sql calls.}
 todo: document what checkGrade returns.
 }
 \description{
-Ensure that each sample number has only one grade of fish in it.
+Ensure that each sample number has only one PACFIN_GRADE_CODE of fish in it.
 }
 \author{
 Kelli F. Johnson

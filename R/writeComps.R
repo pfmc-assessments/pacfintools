@@ -82,21 +82,23 @@
 #' @seealso
 #' * `getComps()`
 #'
-writeComps <- function(inComps,
-                       comp_bins,
-                       fname = NULL,
-                       abins = lifecycle::deprecated(),
-                       lbins = lifecycle::deprecated(),
-                       column_with_input_n = c("n_tows", "n_stewart", "n_fish"),
-                       maxAge = lifecycle::deprecated(),
-                       month = 7,
-                       partition = 2,
-                       ageErr = 0,
-                       dummybins = lifecycle::deprecated(),
-                       sum1 = lifecycle::deprecated(),
-                       digits = 4,
-                       overwrite = lifecycle::deprecated(),
-                       verbose = FALSE) {
+writeComps <- function(
+  inComps,
+  comp_bins,
+  fname = NULL,
+  abins = lifecycle::deprecated(),
+  lbins = lifecycle::deprecated(),
+  column_with_input_n = c("n_tows", "n_stewart", "n_fish"),
+  maxAge = lifecycle::deprecated(),
+  month = 7,
+  partition = 2,
+  ageErr = 0,
+  dummybins = lifecycle::deprecated(),
+  sum1 = lifecycle::deprecated(),
+  digits = 4,
+  overwrite = lifecycle::deprecated(),
+  verbose = FALSE
+) {
   # lifecycle checks
   if (lifecycle::is_present(overwrite)) {
     lifecycle::deprecate_soft(
@@ -141,8 +143,9 @@ writeComps <- function(inComps,
     )
   }
   # Check inputs
-  if ("season" %in% names(inComps) &&
-    max(inComps[["season"]]) != length(month)) {
+  if (
+    "season" %in% names(inComps) && max(inComps[["season"]]) != length(month)
+  ) {
     cli::cli_abort(c(
       "i" = "Input 'month' should have length equal to the maximum season",
       "x" = "month = {.var {month}}",
@@ -150,8 +153,10 @@ writeComps <- function(inComps,
     ))
   }
   column_with_input_n <- match.arg(column_with_input_n, several.ok = FALSE)
-  if (!"season" %in% names(inComps) &&
-    length(month) != 1) {
+  if (
+    !"season" %in% names(inComps) &&
+      length(month) != 1
+  ) {
     cli::cli_abort(c(
       "x" = "month should have length 1 instead of length {length(month)}
         because {.var season} does not exist as a column in {.var inComps}"
@@ -217,12 +222,22 @@ writeComps <- function(inComps,
   bin_width <- check_bin_width[1]
   grid <- inComps |>
     tibble::tibble() |>
-    tidyr::expand(fishyr, fleet, season, SEX, tidyr::full_seq(comp_bins, bin_width))
+    tidyr::expand(
+      fishyr,
+      fleet,
+      season,
+      SEX_CODE,
+      tidyr::full_seq(comp_bins, bin_width)
+    )
   colnames(grid)[ncol(grid)] <- "bins"
   expanded_comps <- inComps_bins |>
     dplyr::right_join(grid) |>
     tibble::tibble() |>
-    tidyr::complete(fishyr, fleet, season, bins,
+    tidyr::complete(
+      fishyr,
+      fleet,
+      season,
+      bins,
       fill = list(
         n_tows = 0,
         n_fish = 0,
@@ -240,15 +255,15 @@ writeComps <- function(inComps,
   # letter to paste with the bin to make f1 f2 f3 m1 m2 m3 for
   # a two sex model or u1 u2 u3 if just unsexed fish
   sex_label_left_side <- dplyr::case_when(
-    all(c("M", "F", "U") %in% inComps[["SEX"]]) ~ "f",
-    "F" %in% inComps[["SEX"]] ~ "f",
-    "U" %in% inComps[["SEX"]] ~ "u"
+    all(c("M", "F", "U") %in% inComps[["SEX_CODE"]]) ~ "f",
+    "F" %in% inComps[["SEX_CODE"]] ~ "f",
+    "U" %in% inComps[["SEX_CODE"]] ~ "u"
   )
 
   wide_composition_data <- expanded_comps |>
     dplyr::group_by(
       dplyr::across(dplyr::all_of(
-        c(key_names, column_with_input_n, "SEX", target)
+        c(key_names, column_with_input_n, "SEX_CODE", target)
       ))
     ) |>
     dplyr::summarize(comp = round(sum(comp), digits = digits)) |>
@@ -257,8 +272,8 @@ writeComps <- function(inComps,
       # Create the f1 f2 ... m1 m2 ... or u1 u2 ... labels to move to wide
       # columns later
       sex_length = dplyr::case_when(
-        SEX == "U" ~ sprintf(fmt = "%s%05d", sex_label_left_side, bins),
-        .default = sprintf(fmt = "%s%05d", tolower(SEX), bins)
+        SEX_CODE == "U" ~ sprintf(fmt = "%s%05d", sex_label_left_side, bins),
+        .default = sprintf(fmt = "%s%05d", tolower(SEX_CODE), bins)
       ),
       # sex_length = sprintf(
       #  fmt = "%s%05d",
@@ -267,26 +282,26 @@ writeComps <- function(inComps,
       # ),
       # Relabel males as females in sex so they get cast to the right when
       # making a wide data frame
-      SEX = ifelse(SEX == "M", "F", SEX)
+      SEX_CODE = ifelse(SEX_CODE == "M", "F", SEX_CODE)
     ) |>
     dplyr::arrange(fleet, sex_length) |>
     tidyr::pivot_wider(
-      id_cols = c(key_names, column_with_input_n, "SEX"),
+      id_cols = c(key_names, column_with_input_n, "SEX_CODE"),
       names_from = "sex_length",
       values_from = "comp",
       names_sort = TRUE,
       values_fill = 0
     ) |>
-    dplyr::arrange(SEX) |>
+    dplyr::arrange(SEX_CODE) |>
     dplyr::mutate(
       season = factor(season, labels = month),
       # Males and females with sex-ratio preserved are 3 and unsexed
       # fish with males and females combined are 0 in a two-sex model
-      SEX = ifelse(SEX == "F", 3, 0),
+      SEX_CODE = ifelse(SEX_CODE == "F", 3, 0),
       partition = partition
     ) |>
     dplyr::rename(
-      "sex" = "SEX",
+      "sex" = "SEX_CODE",
       "month" = season,
       year = fishyr,
       input_n = column_with_input_n

@@ -82,16 +82,17 @@
 #' pd <- PullBDS.PacFIN(pacfin_species_code = "POP")
 #' }
 #'
-PullBDS.PacFIN <- function(pacfin_species_code,
-                           username = getUserName("PacFIN"),
-                           password = ask_password(),
-                           savedir = getwd(),
-                           verbose = TRUE) {
+PullBDS.PacFIN <- function(
+  pacfin_species_code,
+  username = getUserName("PacFIN"),
+  password = ask_password(),
+  savedir = getwd(),
+  verbose = TRUE
+) {
   # Input checks
   stopifnot(
-    "`verbose` must be a logical." =
-      is.logical(verbose) &&
-        length(verbose) == 1
+    "`verbose` must be a logical." = is.logical(verbose) &&
+      length(verbose) == 1
   )
   file_species_code <- paste(pacfin_species_code, collapse = "--")
 
@@ -145,7 +146,9 @@ PullBDS.PacFIN <- function(pacfin_species_code,
     warning(
       call. = FALSE,
       immediate. = TRUE,
-      "FISH_ID includes NULL(s) for ", sum(fish_id), " rows.\n",
+      "FISH_ID includes NULL(s) for ",
+      sum(fish_id),
+      " rows.\n",
       "These rows have been removed from the data; but you should contact\n",
       "state representatives for ",
       glue::glue_collapse(
@@ -245,7 +248,7 @@ PullBDS.PacFIN <- function(pacfin_species_code,
   # Long to wide to facilitate estimating ageing error
   # Multiple BDS_IDs can pertain to a single FISH_ID
   # each BDS_ID is an age read
-  # identical across rows: SAMPLE_ID, SAMPLE_NO, FISH_ID
+  # identical across rows: SAMPLE_ID, SAMPLE_NUMBER, FISH_ID
   # unique across rows: BDS_ID, AGE_ID, AGE_SEQUENCE_NUMBER
   bds.pacfin <- data |>
     tidyr::pivot_wider(

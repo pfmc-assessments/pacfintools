@@ -69,27 +69,27 @@
 #'   dplyr::count()
 #' }
 #'
-PullCatch.PacFIN <- function(pacfin_species_code,
-                             council_code = "P",
-                             username = getUserName("PacFIN"),
-                             password = ask_password(),
-                             savedir = getwd(),
-                             addnominal = TRUE,
-                             verbose = TRUE) {
+PullCatch.PacFIN <- function(
+  pacfin_species_code,
+  council_code = "P",
+  username = getUserName("PacFIN"),
+  password = ask_password(),
+  savedir = getwd(),
+  addnominal = TRUE,
+  verbose = TRUE
+) {
   # todo:
   # * change input arguments to snake_case
   # * get rid of addnominal call and show users how to add it in pacfin_species_code
 
   # Input checks
   stopifnot(
-    "`addnominal` must be a logical." =
-      is.logical(addnominal) &&
-        length(addnominal) == 1
+    "`addnominal` must be a logical." = is.logical(addnominal) &&
+      length(addnominal) == 1
   )
   stopifnot(
-    "`verbose` must be a logical." =
-      is.logical(verbose) &&
-        length(verbose) == 1
+    "`verbose` must be a logical." = is.logical(verbose) &&
+      length(verbose) == 1
   )
   file_species_code <- paste(pacfin_species_code, collapse = "--")
 

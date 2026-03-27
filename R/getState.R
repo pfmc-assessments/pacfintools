@@ -7,8 +7,8 @@
 #' `SAMPLE_AGENCY` was deprecated; more specifically, the column is
 #' available but filled with `NULL` values.
 #' Thus, pacfintools no longer maintains `SAMPLE_AGENCY` that was being converted
-#' to `SOURCE_AGID` and all identification of
-#' state records should be based on `AGENCY_CODE` or `SOURCE_AGID`, where the latter is
+#' to `AGENCY_CODE` and all identification of
+#' state records should be based on `AGENCY_CODE` or `AGENCY_CODE`, where the latter is
 #' just the converted column name (see [cleanColumns]).
 #' `AGENCY_CODE` is a column created by PacFIN to identify which agency provided
 #' the data. In the 2019 sablefish data there were four unique values in `AGENCY_CODE`,
@@ -61,9 +61,11 @@
 #'   all(getState(data)[["state"]] == rep(c("WA", "OR", "CA"), each = 2))
 #' )
 #'
-getState <- function(Pdata,
-                     source = c("AGENCY_CODE", "SOURCE_AGID"),
-                     verbose = TRUE) {
+getState <- function(
+  Pdata,
+  source = c("AGENCY_CODE", "AGENCY_CODE"),
+  verbose = TRUE
+) {
   if (any(source %in% c("PSMFC_CATCH_AREA_CODE", "PSMFC_ARID"))) {
     stop(
       "'PSMFC_CATCH_AREA_CODE' and 'PSMFC_ARID' are no longer supported ",
@@ -78,10 +80,13 @@ getState <- function(Pdata,
 
   Pdata$state <- as.character(Pdata[, source])
 
-  Pdata[, "state"] <- vapply(Pdata[, "state"],
+  Pdata[, "state"] <- vapply(
+    Pdata[, "state"],
     FUN = switch,
     FUN.VALUE = "character",
-    C = "CA", CalCOM = "CA", CALCOM = "CA",
+    C = "CA",
+    CalCOM = "CA",
+    CALCOM = "CA",
     O = "OR",
     W = "WA",
     "UNK"
@@ -93,7 +98,8 @@ getState <- function(Pdata,
 
   if (verbose) {
     message(
-      "\nThere are ", nostate,
+      "\nThere are ",
+      nostate,
       " records for which the state (i.e., 'CA', 'OR', 'WA')",
       "\ncould not be assigned and were labeled as 'UNK'."
     )

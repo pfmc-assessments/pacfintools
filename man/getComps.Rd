@@ -9,7 +9,7 @@ getComps(
   strat = NULL,
   Comps = c("LEN", "AGE", "AAL"),
   defaults = c("fleet", "fishyr", "season"),
-  towid = c("SAMPLE_NO"),
+  towid = c("SAMPLE_NUMBER"),
   weightid = "Final_Sample_Size_L",
   verbose = TRUE
 )
@@ -34,7 +34,7 @@ and \code{Age} to the grouping structure.}
 left at their default value of \code{c("fleet", "fishyr", "season")}.}
 
 \item{towid}{A vector of character values providing the column names that
-generate a unique id for each sample. The default is \code{"SAMPLE_NO"} but you
+generate a unique id for each sample. The default is \code{"SAMPLE_NUMBER"} but you
 can pass a vector where all of the columns identified will be united to
 create a unique identifier for the tow/sample.}
 

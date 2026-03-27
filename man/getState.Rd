@@ -4,7 +4,7 @@
 \alias{getState}
 \title{Create a state column based on input column specified in \code{source}}
 \usage{
-getState(Pdata, source = c("AGENCY_CODE", "SOURCE_AGID"), verbose = TRUE)
+getState(Pdata, source = c("AGENCY_CODE", "AGENCY_CODE"), verbose = TRUE)
 }
 \arguments{
 \item{Pdata}{A data frame returned from \code{\link[=PullBDS.PacFIN]{PullBDS.PacFIN()}} containing
@@ -37,8 +37,8 @@ With the creation of the comprehensive bds table in PacFIN, the column called
 \code{SAMPLE_AGENCY} was deprecated; more specifically, the column is
 available but filled with \code{NULL} values.
 Thus, pacfintools no longer maintains \code{SAMPLE_AGENCY} that was being converted
-to \code{SOURCE_AGID} and all identification of
-state records should be based on \code{AGENCY_CODE} or \code{SOURCE_AGID}, where the latter is
+to \code{AGENCY_CODE} and all identification of
+state records should be based on \code{AGENCY_CODE} or \code{AGENCY_CODE}, where the latter is
 just the converted column name (see \link{cleanColumns}).
 \code{AGENCY_CODE} is a column created by PacFIN to identify which agency provided
 the data. In the 2019 sablefish data there were four unique values in \code{AGENCY_CODE},

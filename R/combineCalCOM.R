@@ -40,9 +40,18 @@ combineCalCOM <- function(Pdata, CalCOM) {
     CalCOM <- CalCOM[, -1]
   }
   calcom_columns_example <- c(
-    "SPECIES", "SAMPLE_NO", "SAMPLE_DATE", "AGE", "FISH_NO",
-    "TLENGTH", "SEX", "DEPTH", "SumOfWEIGHT", "SumOfTOTAL_CT",
-    "TOTAL_WGT", "PORT_COMPLEX",
+    "SPECIES",
+    "SAMPLE_NO",
+    "SAMPLE_DATE",
+    "AGE",
+    "FISH_NO",
+    "TLENGTH",
+    "SEX",
+    "DEPTH",
+    "SumOfWEIGHT",
+    "SumOfTOTAL_CT",
+    "TOTAL_WGT",
+    "PORT_COMPLEX",
     # Check if age method is present
     if ("AGE_METHOD" %in% colnames(CalCOM)) "AGE_METHOD"
   )

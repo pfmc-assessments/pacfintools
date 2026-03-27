@@ -34,10 +34,12 @@ NULL
 #' @rdname sql
 #' @details `sql_area()` results in area data
 sql_area <- function() {
-  sqlcall <- glue::glue("
+  sqlcall <- glue::glue(
+    "
     SELECT *
     FROM PACFIN.BDS_AR;
-    ")
+    "
+  )
   sqlcall <- gsub("\\n", " ", sqlcall)
   return(sqlcall)
 }
@@ -57,11 +59,13 @@ sql_bds <- function(pacfin_species_code) {
   spid <- sQuote(paste(pacfin_species_code, collapse = "|"), q = FALSE)
   stopifnot(length(spid) == 1)
 
-  sqlcall <- glue::glue("
+  sqlcall <- glue::glue(
+    "
    SELECT *
    FROM PACFIN_MARTS.COMPREHENSIVE_BDS_COMM
    WHERE REGEXP_LIKE (PACFIN_SPECIES_CODE, {spid});
-   ")
+   "
+  )
   sqlcall <- gsub("\\n", " ", sqlcall)
   return(sqlcall)
 }
@@ -80,12 +84,14 @@ sql_catch <- function(pacfin_species_code, council_code = "P") {
   )
   stopifnot(length(council) == 1)
 
-  sqlcall <- glue::glue("
+  sqlcall <- glue::glue(
+    "
     SELECT *
     FROM PACFIN_MARTS.COMPREHENSIVE_FT
     WHERE PACFIN_SPECIES_CODE = ANY ({species})
      AND COUNCIL_CODE = ANY ({council})
-    ")
+    "
+  )
   sqlcall <- gsub("\\n", " ", sqlcall)
   return(sqlcall)
 }
@@ -93,11 +99,13 @@ sql_catch <- function(pacfin_species_code, council_code = "P") {
 #' @rdname sql
 #' @details `sql_species()` results in data frame of species names
 sql_species <- function() {
-  sqlcall <- glue::glue("
+  sqlcall <- glue::glue(
+    "
     SELECT DISTINCT PACFIN_SPECIES_CODE, PACFIN_SPECIES_COMMON_NAME
     FROM PACFIN_MARTS.COMPREHENSIVE_FT
     ORDER BY PACFIN_SPECIES_COMMON_NAME, PACFIN_SPECIES_CODE;
-    ")
+    "
+  )
   sqlcall <- gsub("\\n", " ", sqlcall)
   return(sqlcall)
 }
@@ -113,13 +121,15 @@ sql_species <- function() {
 #' assessments of population status. Thus, the result is used in an automated
 #' check and to create warning labels when downloading data.
 sql_check_FINAL_FISH_AGE_IN_YEARS <- function() {
-  sqlcall <- glue::glue("
+  sqlcall <- glue::glue(
+    "
     SELECT PACFIN_SPECIES_CODE, AGENCY_CODE, count(distinct(FISH_ID)) AS N
     FROM PACFIN_MARTS.COMPREHENSIVE_BDS_COMM
     WHERE AGE_IN_YEARS is not null and FINAL_FISH_AGE_IN_YEARS is null
     group by PACFIN_SPECIES_CODE, AGENCY_CODE
     ORDER by PACFIN_SPECIES_CODE, AGENCY_CODE;
-    ")
+    "
+  )
   sqlcall <- gsub("\\n", " ", sqlcall)
   return(sqlcall)
 }

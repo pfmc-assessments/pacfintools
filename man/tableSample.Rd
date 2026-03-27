@@ -7,7 +7,7 @@
 tableSample(
   Pdata,
   fname = paste0("fishery_", comps, "_samples.csv"),
-  strat = "SOURCE_AGID",
+  strat = "AGENCY_CODE",
   comps = c("LEN", "AGE"),
   remove_yrs = NULL
 )

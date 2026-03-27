@@ -11,15 +11,17 @@
 #' @param col.length Length column name.
 #' @param height Figure height.
 #' @param width Figure width.
-plotStrat <- function(data,
-                      dir = getwd(),
-                      npages = 5,
-                      col.fleet = "fleet",
-                      col.area = "state",
-                      col.age = "Age",
-                      col.length = "lengthcm",
-                      height = 10,
-                      width = 10) {
+plotStrat <- function(
+  data,
+  dir = getwd(),
+  npages = 5,
+  col.fleet = "fleet",
+  col.area = "state",
+  col.age = "Age",
+  col.length = "lengthcm",
+  height = 10,
+  width = 10
+) {
   splits <- split(
     unique(data$year)[order(unique(data$year))],
     ggplot2::cut_number(unique(data$year)[order(unique(data$year))], npages)
@@ -27,17 +29,27 @@ plotStrat <- function(data,
   data[["fleet"]] <- factor(data[[col.fleet]])
   data[["area"]] <- factor(data[[col.area]])
   data[["Age"]] <- as.factor(!is.na(data[[col.age]]))
-  for (ii_g in c(stats::formula("area ~ fleet"), stats::formula("fleet ~ area"))) {
+  for (ii_g in c(
+    stats::formula("area ~ fleet"),
+    stats::formula("fleet ~ area")
+  )) {
     grDevices::pdf(
-      file = file.path(dir, paste0(
-        "lengthedages_",
-        gsub("~", "", paste(ii_g, collapse = "")), ".pdf"
-      )),
-      height = height, width = width
+      file = file.path(
+        dir,
+        paste0(
+          "lengthedages_",
+          gsub("~", "", paste(ii_g, collapse = "")),
+          ".pdf"
+        )
+      ),
+      height = height,
+      width = width
     )
     for (ii in seq_along(splits)) {
       plotmea <- data[data$year %in% splits[[ii]], , drop = FALSE]
-      if (nrow(plotmea) == 0) next
+      if (nrow(plotmea) == 0) {
+        next
+      }
       gg <- ggplot2::ggplot(
         plotmea,
         ggplot2::aes(

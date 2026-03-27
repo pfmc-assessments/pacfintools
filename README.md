@@ -13,7 +13,7 @@ Note: this package was named `PacFIN.Utilities` prior to January 2025.
 
 ## Data
 Data collection programs for groundfish managed within the Pacific Fisheries Management Council (PFMC) are the responsibility of individual states. Washington and Oregon have mandatory sampling protocols, while sampling in California was not mandatory prior to October 10, 2021. These programs have largely been in existence since the 1960s. PacFIN, which was initiated in 1981, serves as a central repository for these data. For fish landed whole, fork or total length and sex are typically recorded at a minimum. Otoliths are sometimes extracted and weights are sometimes taken. For fish landed dressed, dorsal length is taken rather than fork length (or total length). 
-Samples can be taken from unsorted landings (i.e., 'ocean run') or from sorted categories (e.g., small, medium, large, ...). When fish are sorted into categories, samples are in theory taken from each sorted group and the actual weight of the sorted group is recorded. Data within PacFIN contains a range of fields that provides information on each specific record: [area of landing](https://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/ar.txt), [gear type](https://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/gr.txt), [port](https://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/pc.txt), [the condition landed (e.g., live, dead, dressed)](https://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/list_cl_condition.txt), and [the removal type (e.g., commercial, research)](https://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/list_cl_removal_type.txt). All records within PacFIN are associated with a unique species code [SPID](https://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/sp.txt).
+Samples can be taken from unsorted landings (i.e., 'ocean run') or from sorted categories (e.g., small, medium, large, ...). When fish are sorted into categories, samples are in theory taken from each sorted group and the actual weight of the sorted group is recorded. Data within PacFIN contains a range of fields that provides information on each specific record: [area of landing](https://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/ar.txt), [gear type](https://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/gr.txt), [port](https://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/pc.txt), [the condition landed (e.g., live, dead, dressed)](https://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/list_cl_condition.txt), and [the removal type (e.g., commercial, research)](https://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/list_cl_removal_type.txt). All records within PacFIN are associated with a unique species code [PACFIN_SPECIES_CODE](https://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/sp.txt).
 
 ## Filtering
 ### Agencies
@@ -40,7 +40,7 @@ Many samples were collected by Oregon using non-traditional sampling protocols i
 On March 19, 2019, Oregon made a correction to PacFIN that properly designated a collection of special-permit samples as SPxxx samples rather than ORxxx samples. The SPxxx sample number provides a flag to stock assessment scientists that the sample should not be used. Prior to 2019, these samples from the late 1970s and early 1980s were included in the data utilized from PacFIN for age and length compositions. The incorrect sample numbers can be found in the object labeled `badORnums`.
 
 ### Sample weights
-Oregon and California have gone to great lengths to provide correct species-specific weights of samples. This information is stored in `Pdata[, "EXP_WT"]` and `Pdata[, "SPECIES_WGT"]`, respectively. All Oregon and California samples that are missing this information are removed from the data set expanded to create compositions. 
+Oregon and California have gone to great lengths to provide correct species-specific weights of samples. This information is stored in `Pdata[, "EXPANDED_SAMPLE_WEIGHT"]` and `Pdata[, "PACFIN_SPECIES_CODE"]`, respectively. All Oregon and California samples that are missing this information are removed from the data set expanded to create compositions. 
 
 ## Expansion
 Expansions are performed to account for fish that were not sampled or when sampling is unequal across stratums. Expansions are calculated twice, first for fish with lengths and second for fish with ages because less fish are typically aged than lengthed and weights used for the expansions should only include fish that provide information. For example, if 10 fish were lengthed but only five fish were aged the expansion for the ages should only be based on the weight of the aged fish. 
@@ -58,8 +58,8 @@ Unfortunately, the species-specific weight for a given tow or trip is not always
   * Year- and gear-specific median tow or trip total weights are assigned to all samples that don't have a tow or trip weight.
 
 ##### Oregon
-  * `EXP_WT` is provided by Oregon as a measure of the weight the sample should be expanded to and defaults to the landing weight.
-  * Years prior to 1973 are often missing `EXP_WT`, and for these instances, the weight is calculated in the same manner as the default method for California. 
+  * `EXPANDED_SAMPLE_WEIGHT` is provided by Oregon as a measure of the weight the sample should be expanded to and defaults to the landing weight.
+  * Years prior to 1973 are often missing `EXPANDED_SAMPLE_WEIGHT`, and for these instances, the weight is calculated in the same manner as the default method for California. 
   * Year- and gear-specific median tow or trip total weights are assigned to all samples that don't have a tow or trip weight.
 
 ##### California
@@ -70,7 +70,7 @@ Unfortunately, the species-specific weight for a given tow or trip is not always
 Weights of the sample are found using the following three methods:
 
   1. Oregon provides the total weight of males, females, and unsexed fish within a given sample; these are summed to calculate the weight of all fish within the sample. 
-  2. The species-specific weight for the species of concern within that sample is provided by California as `SPECIES_WGT`.
+  2. The species-specific weight for the species of concern within that sample is provided by California as `PACFIN_SPECIES_CODE`.
   3. The weight of all fish within the sample are summed. Fish weights are preferably empirically measured weights and secondarily calculated using a weight--length relationship. For fish in a sample without a length, the median length of all fish within the sample is used. 
 
 ### Stage-2 expansion

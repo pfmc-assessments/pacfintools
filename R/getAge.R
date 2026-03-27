@@ -6,15 +6,14 @@
 #' column.
 #'
 #' @details
-#' ## `FISH_AGE_YEARS_FINAL`
-#' `FISH_AGE_YEARS_FINAL` is defined in PacFIN as the ``age of specimen (best
-#' age or final age)''. If `FISH_AGE_YEARS_FINAL` does not have an entry, where
+#' `FINAL_FISH_AGE_IN_YEARS` is defined in PacFIN as the ``age of specimen (best
+#' age or final age)''. If `FINAL_FISH_AGE_IN_YEARS` does not have an entry, where
 #' this should be the best age available, then the user is warned that they
 #' should potentially look at the age reads from an individual reader, e.g.,
 #' `age1` or `age2`, until the state works out what age read is best and
-#' provides this in `FISH_AGE_YEARS_FINAL`.
+#' provides this in `FINAL_FISH_AGE_IN_YEARS`.
 #'
-#' How `FISH_AGE_YEARS_FINAL` is determined can be unclear because it does not
+#' How `FINAL_FISH_AGE_IN_YEARS` is determined can be unclear because it does not
 #' always equal the value from one of the age readers. How the value is
 #' determined is specific to the lab that conducted the ageing. Sometimes,
 #' reconciling multiple age reads to determine the best age will lead to the

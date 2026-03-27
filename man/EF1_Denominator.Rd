@@ -86,14 +86,14 @@ model-based weights, which would be the only way they can get weights when
 the fish were not weighed themselves. The weight of unsexed fish is calculated
 internally by the code and added to the female and male weight.
 \strong{todo}: Let Oregon know that this calculation is being done and they may want
-to provide UNK_WGT.
+to provide WEIGHT_OF_UNKNOWN_LBS.
 
 California sample weights were previously based on the column labeled
 \code{SPECIES_WEIGHT}. Now, California data is parsed by PacFIN to furnish
 species-specific cluster weights. Prior, cluster weights included the weight
-of all species in the sample. Now, \code{CLUSTER_WEIGHT} is the weight in that
+of all species in the sample. Now, \code{CLUSTER_WEIGHT_LBS} is the weight in that
 cluster for the species of interest. This was verified for dover sole by
-Kelli F. Johnson in February of 2021. Thus, the code uses \code{CLUSTER_WEIGHT}
+Kelli F. Johnson in February of 2021. Thus, the code uses \code{CLUSTER_WEIGHT_LBS}
 rather than \code{SPECIES_WEIGHT} now.
 \strong{todo}: determine if this should be the only cluster-specific value going forward?
 

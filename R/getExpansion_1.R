@@ -103,18 +103,20 @@
 #' but additional columns are added. In particular columns starting with
 #' `Expansion_Factor_1` are available for setting the `Final_Expansion_Factor`.
 #'
-getExpansion_1 <- function(Pdata,
-                           fa,
-                           fb,
-                           ma,
-                           mb,
-                           ua,
-                           ub,
-                           maxExp = 0.95,
-                           Exp_WA = TRUE,
-                           verbose = TRUE,
-                           plot = lifecycle::deprecated(),
-                           savedir = NULL) {
+getExpansion_1 <- function(
+  Pdata,
+  fa,
+  fb,
+  ma,
+  mb,
+  ua,
+  ub,
+  maxExp = 0.95,
+  Exp_WA = TRUE,
+  verbose = TRUE,
+  plot = lifecycle::deprecated(),
+  savedir = NULL
+) {
   if (lifecycle::is_present(plot)) {
     lifecycle::deprecate_soft(
       when = "0.2.10",
@@ -127,7 +129,12 @@ getExpansion_1 <- function(Pdata,
 
   Pdata <- EF1_Denominator(
     Pdata,
-    fa = fa, fb = fb, ma = ma, mb = mb, ua = ua, ub = ub,
+    fa = fa,
+    fb = fb,
+    ma = ma,
+    mb = mb,
+    ua = ua,
+    ub = ub,
     verbose = verbose,
     savedir = savedir
   )
@@ -187,12 +194,15 @@ getExpansion_1 <- function(Pdata,
     if (nNA > 0) {
       # Plot NA values by year and state.  Early years data or CALCOM data?
       graphics::par(
-        mfrow = c(2, 1), mar = c(0, 3, 0, 0), oma = c(4, 1, 3, 0),
+        mfrow = c(2, 1),
+        mar = c(0, 3, 0, 0),
+        oma = c(4, 1, 3, 0),
         mgp = c(2.0, 0.5, 0)
       )
 
       allyears <- seq(min(Pdata$fishyr), max(Pdata$fishyr), by = 1)
-      vals <- matrix(0,
+      vals <- matrix(
+        0,
         nrow = length(unique(NA_EF1$state)),
         ncol = length(allyears)
       )
@@ -201,9 +211,12 @@ getExpansion_1 <- function(Pdata,
       bad <- as.matrix(table(NA_EF1$state, NA_EF1$fishyr))
       vals[, colnames(vals) %in% colnames(bad)] <- bad
 
-      graphics::barplot(vals,
+      graphics::barplot(
+        vals,
         col = grDevices::rainbow(length(unique(NA_EF1$state))),
-        legend.text = TRUE, xlab = "", xaxt = "n",
+        legend.text = TRUE,
+        xlab = "",
+        xaxt = "n",
         ylab = "Replace NA in Exp_1 with 1",
         args.legend = list(bty = "n")
       )
@@ -215,9 +228,11 @@ getExpansion_1 <- function(Pdata,
       )
     } # End if
 
-    graphics::boxplot(Pdata$Expansion_Factor_1_L ~ Pdata$fishyr,
+    graphics::boxplot(
+      Pdata$Expansion_Factor_1_L ~ Pdata$fishyr,
       ylab = "Expansion_Factor_1_L",
-      xlab = "", frame.plot = FALSE
+      xlab = "",
+      frame.plot = FALSE
     )
 
     graphics::mtext(side = 1, outer = TRUE, "Year", line = 2)

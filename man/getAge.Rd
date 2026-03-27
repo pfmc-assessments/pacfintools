@@ -39,16 +39,14 @@ compartmentalized here, but called in \code{\link[=cleanPacFIN]{cleanPacFIN()}} 
 column.
 }
 \details{
-\subsection{\code{FISH_AGE_YEARS_FINAL}}{
-
-\code{FISH_AGE_YEARS_FINAL} is defined in PacFIN as the ``age of specimen (best
-age or final age)''. If \code{FISH_AGE_YEARS_FINAL} does not have an entry, where
+\code{FINAL_FISH_AGE_IN_YEARS} is defined in PacFIN as the ``age of specimen (best
+age or final age)''. If \code{FINAL_FISH_AGE_IN_YEARS} does not have an entry, where
 this should be the best age available, then the user is warned that they
 should potentially look at the age reads from an individual reader, e.g.,
 `age1` or `age2`, until the state works out what age read is best and
-provides this in `FISH_AGE_YEARS_FINAL`.
+provides this in `FINAL_FISH_AGE_IN_YEARS`.
 
-How \code{FISH_AGE_YEARS_FINAL} is determined can be unclear because it does not
+How \code{FINAL_FISH_AGE_IN_YEARS} is determined can be unclear because it does not
 always equal the value from one of the age readers. How the value is
 determined is specific to the lab that conducted the ageing. Sometimes,
 reconciling multiple age reads to determine the best age will lead to the
@@ -118,8 +116,6 @@ resolved age is used;
 \item for older fish where the discrepancy cannot be resolved, age1 is used
 because it had the freshest otolith and potentially used the better half.
 }
-}
-
 }
 }
 \author{
