@@ -15,7 +15,7 @@
 #' @param weight A vector of fish weights, where the units for each
 #' measurement are specified in `unit.in`.
 #' @param unit.in A vector of units for each measurement in `weight`.
-#' Options include `KG`, `G`, `LB`, `UNK`. Where, the latter leads to
+#' Options include `KG`, `G`, `LB`, `P`, `UNK`. Where, the latter leads to
 #' the assumption that your units are in grams and will be converted
 #' as such.
 #'
@@ -32,9 +32,9 @@ getweight <- function(
   length,
   sex,
   pars,
-  unit.out = c("lb", "kg"),
   weight,
-  unit.in
+  unit.in,
+  unit.out = c("lb", "kg")
 ) {
   unit.out <- match.arg(unit.out, several.ok = FALSE)
 
@@ -44,21 +44,21 @@ getweight <- function(
       return(weight)
     }
     if (is.null(unit.in)) {
-      warning(
-        call. = FALSE,
+      cli::cli_alert_danger(
         "Guessing unit.in for getweight; please input a non-null vector."
       )
       if (all(weight > 300)) {
         unit.in <- rep("G", length(weight))
       } else {
-        stop("Not sure of units, please input a unit.in vector.")
+        cli::cli_abort(
+          "Not sure of units, please recall getweight and input a unit.in vector."
+        )
       }
     }
     if (any(unit.in == "H", na.rm = TRUE)) {
-      message(
-        "FISH_WEIGHT units of H are changed to G for ",
-        sum(unit.in == "H", na.rm = TRUE),
-        " fish."
+      n <- sum(unit.in == "H", na.rm = TRUE)
+      cli::cli_inform(
+        "FISH_WEIGHT units of H are changed to G for {n} fish."
       )
       unit.in[unit.in == "H"] <- "G"
     }
@@ -70,6 +70,7 @@ getweight <- function(
           G = 0.00220462,
           KG = 2.20462,
           UNK = 0.00220462,
+          P = 1,
           0.00220462
         )
       )
@@ -83,9 +84,8 @@ getweight <- function(
   #### Checks
   stopifnot(all(sex %in% c(NA, "U", "F", "M", "H")))
   if (length(length) != length(sex)) {
-    stop(
-      "The vectors, length and",
-      " sex, must be equal in length."
+    cli::cli_abort(
+      "The vectors, length and sex, must be equal in length."
     )
   }
   if (is.matrix(pars)) {
@@ -95,7 +95,9 @@ getweight <- function(
     pars["H", ] <- pars["all", ]
   }
   if ((!"H" %in% row.names(pars)) & "H" %in% sex) {
-    stop("H is in the sex vector but no parameters in pars are available.")
+    cli::cli_abort(
+      "H is in the sex vector but no parameters in pars are available."
+    )
   }
   if (!"females" %in% rownames(pars)) {
     pars["F", ] <- pars["all", ]

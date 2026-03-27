@@ -94,12 +94,12 @@ cleanColumns.bds <- function(data) {
   #  colnames(data),
   #  master[matches, "vdrfd"]
   #)
-
-  # CRW: Columns have been collapsed to have
-  # TOTAL_WGT for CA and RWT_LBS for WA.
-  #data$RWT_LBS <- data$TOTAL_WGT
   data <- data |>
-    dplyr::select(-dplyr::matches("VESSEL|AGE_[R]|^NUM|LOAD|COMMON|_ID|agedby"))
+    dplyr::select(
+      -dplyr::matches(
+        "VESSEL|AGE_[R]|^NUM|LOAD|_ID|agedby|AGENCY_AGE_STRUCTURE_CODE"
+      )
+    )
 
   return(data)
 }
