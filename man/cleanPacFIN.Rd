@@ -36,9 +36,7 @@ groups are maintained and ordered alphabetically. For more details see
 groupings and how they link to \code{"PACFIN_GEAR_CODE"} within your data. The vector
 supplied to this argument should consist of only options available in
 \code{unique(GearTable[["GROUP"]])}.
-\code{PACFIN_GEAR_CODE} is a legacy term from PacFIN, now identified as \code{PACFIN_GEAR_CODE}
-in the biological and fish ticket data, where GR is short for gear and ID
-is short for identification. Typical entries will include character values
+Typical entries will include character values
 such as \code{HKL}, \code{POT}, \code{TWL}, where the latter is short for all non-shrimp
 trawls and \code{TWS} is shrimp trawls. Other gear identification codes and
 their definitions include \code{DRG} which is dredge gear, \code{MSC} which is all

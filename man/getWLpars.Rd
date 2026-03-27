@@ -14,7 +14,7 @@ getWLpars(
 \arguments{
 \item{data}{A data frame containing empirical weights and lengths
 from sampled fish.
-Sexes should be available in the column \code{sex} or \code{SEX}.}
+Sexes should be available in the column \code{sex_code} or \code{SEX_CODE}.}
 
 \item{col.length}{A numeric or character value specifying the column
 to use in \code{data} for length information. These lengths are assumed to
