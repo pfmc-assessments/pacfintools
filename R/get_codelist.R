@@ -33,18 +33,19 @@
 #'   \item{INPFC : }{International North Pacific Fisheries Commission (INPFC) Area code used in PacFIN}
 #'   \item{TYPE : }{classification of tree structure, i.e., if it is a subarea}
 #'   \item{COUNCIL : }{the management council that the area falls within}
-#'   \item{ PACFIN_PORT_CODE  : }{character port code}
+#'   \item{PACFIN_PORT_CODE : }{character port code}
 #'   \item{AGID : }{agency code, e.g., "W" for Washington}
 #'   \item{AGENCY_PORT_CODE  : }{numberic port code}
 #'   \item{SHORT : }{short description}
 #'   \item{DESCRIPTION : }{long, detailed description}
 #' }
 #' @examples
-#' availablegrids <- get_codelist("PACFIN_GEAR_CODE")
-#' availableports <- get_codelist("AGENCY_PORT_CODE")
+#' availablegrids <- get_codelist("GEAR")
+#' availableports <- get_codelist("PORT")
+#' availableports <- get_codelist("INPFC")
 #'
 get_codelist <- function(
-  x = c("PACFIN_GEAR_CODE", "INPFC", "AGENCY_PORT_CODE")
+  x = c("GEAR", "INPFC", "PORT")
 ) {
   x <- match.arg(x, several.ok = FALSE)
   UseMethod("get_codelist", object = structure(list(), class = x))
@@ -52,7 +53,7 @@ get_codelist <- function(
 
 #' @export
 #'
-get_codelist.GRID <- function(x) {
+get_codelist.GEAR <- function(x) {
   url <- "https://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/gr.txt"
   all <- utils::read.fwf(
     url(url),
@@ -64,12 +65,13 @@ get_codelist.GRID <- function(x) {
   all <- all[c(-1, -2), ]
   all <- all[-1 * seq(grep("\\.\\.\\.", all[, 3]), NROW(all)), ]
   all <- all[!grepl("^\\s+$", all[, 1]), ]
-  all[, c("TYPE", "PACFIN_GEAR_CODE", "GROUP")] <- t(apply(
-    all[, c("TYPE", "PACFIN_GEAR_CODE", "GROUP")],
+  all[, c("TYPE", "GRID", "GROUP")] <- t(apply(
+    all[, c("TYPE", "GRID", "GROUP")],
     1,
     function(x) gsub("^\\s*|\\s*$", "", x)
   ))
   all <- all[, -which(colnames(all) == "ENTERED")]
+  colnames(all)[2] <- "PACFIN_GEAR_CODE"
   return(all)
 }
 
@@ -84,6 +86,7 @@ get_codelist.INPFC <- function(x) {
   all[, "INPFC"] <- gsub("\\s*|\\\\|_", "", all[, grep("ARID", colnames(all))])
   all[, "SHORT"] <- all[["NAME"]]
   all <- all[, c("ARID", "INPFC", "TYPE", "COUNCIL", "SHORT", "DESCRIPTION")]
+  colnames(all)[1] <- "INPFC_AREA_TYPE_CODE"
   return(all)
 }
 
@@ -100,8 +103,8 @@ get_codelist.PORT <- function(x) {
     blank.lines.skip = TRUE
   )
   colnames(all) <- c(
-    " PACFIN_PORT_CODE ",
-    "AGID",
+    "PACFIN_PORT_CODE",
+    "AGENCY_CODE",
     "AGENCY_PORT_CODE",
     "DESCRIPTION"
   )
