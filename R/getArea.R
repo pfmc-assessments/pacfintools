@@ -66,7 +66,7 @@ getArea <- function(Pdata, verbose = TRUE) {
     ignore.case = TRUE
   )
   if (length(column_numbers) == 0) {
-    stop("Your data does not have a column indicating the area.")
+    cli::cli_abort("Your data does not have a column indicating the area.")
   }
 
   # Use unite() to paste (b/c it is faster than glue) all entries into a
@@ -88,11 +88,11 @@ getArea <- function(Pdata, verbose = TRUE) {
   out[grepl("5[a-z]", strings, ignore.case = TRUE)] <- "CAN"
 
   if (verbose && sum(!is.na(out)) != 0) {
-    message(
-      "\n The table below summarizes the number of records that are outside\n",
-      " the area included in U.S. West Coast population assessments.\n",
-      " Columns with information about area of landing were pasted together\n ",
-      "and searched for specific strings indicative of an excluded region."
+    cli::cli_inform(
+      "The table below summarizes the number of records that are outside 
+      the area included in U.S. West Coast population assessments.
+      Columns with information about area of landing were pasted together
+      and searched for specific strings indicative of an excluded region."
     )
     utils::capture.output(
       type = "message",
@@ -105,10 +105,10 @@ getArea <- function(Pdata, verbose = TRUE) {
     )
   }
   if (verbose && sum(!is.na(out)) == 0) {
-    message(
-      "\n No records were determined to be outside of the area included in\n",
-      " U.S. West Coast population assessments. You should perform\n",
-      " additional explorations to confirm this."
+    cli::cli_inform(
+      "No records were determined to be outside of the area included in
+      U.S. West Coast population assessments. You should perform
+      additional explorations to confirm this."
     )
   }
   return(out)
