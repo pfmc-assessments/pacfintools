@@ -92,10 +92,12 @@
 #' A vector of integer ages in years the same length as the number of rows
 #' present in `Pdata`.
 #'
-getAge <- function(Pdata,
-                   verbose = TRUE,
-                   keep,
-                   col.bestage = lifecycle::deprecated()) {
+getAge <- function(
+  Pdata,
+  verbose = TRUE,
+  keep,
+  col.bestage = lifecycle::deprecated()
+) {
   if (lifecycle::is_present(col.bestage)) {
     lifecycle::deprecate_soft(
       when = "0.2.5",
@@ -103,11 +105,11 @@ getAge <- function(Pdata,
     )
   }
   if ("AGE_IN_YEARS" %in% colnames(Pdata)) {
-    stop(
-      "`getAge()` only works with data pulled by `PullBDS.PacFIN()`, ",
-      "which moves double reads to columns ",
-      "rather than leaving them in rows within AGE_IN_YEARS.",
-      "Please change `Pdata` to recent output from `PullBDS.PacFIN()."
+    cli::cli_abort(
+      "`getAge()` only works with data pulled by `PullBDS.PacFIN()`, 
+      which moves double reads to columns 
+      rather than leaving them in rows within AGE_IN_YEARS.
+      Please change `Pdata` to recent output from `PullBDS.PacFIN()."
     )
   }
   keep <- unique(codify_age_method(keep))
@@ -223,7 +225,9 @@ getAge <- function(Pdata,
         all_ages != ""
       ) |>
       NROW()
-    text_n_missing_final <- glue::glue("{text_n_missing_final} rows were missing a final age")
+    text_n_missing_final <- glue::glue(
+      "{text_n_missing_final} rows were missing a final age"
+    )
     names(text_n_missing_final) <- ifelse(
       substr(text_n_missing_final, 1, 1) == "0",
       "v",
@@ -234,21 +238,27 @@ getAge <- function(Pdata,
     cli::cli_bullets(c(
       " " = "{.fn getAge} summary information -",
       text_n_missing_final,
-      "i" = glue::glue("
+      "i" = glue::glue(
+        "
         The distribution (in numbers) for fish aged
         0--{max(out, na.rm = TRUE)} years is {table_summary_n_age}
-      "),
+      "
+      ),
       "i" = "Age methods {text_age_methods} were present",
-      "i" = glue::glue("
+      "i" = glue::glue(
+        "
         Age methods
         {glue::glue_collapse(sQuote(keep), sep = ', ', last = ' and ')}
         were desired
-      "),
+      "
+      ),
       "i" = "{sum(table_summary_na[['n']])} ages used undesired age methods",
-      "v" = glue::glue("
+      "v" = glue::glue(
+        "
         Number of ages by age (years) changed to `NA` is
         {paste(text_n_na, collapse = ', ')}
-      ")
+      "
+      )
     ))
   }
 
