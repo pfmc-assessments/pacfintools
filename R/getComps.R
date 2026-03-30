@@ -58,7 +58,7 @@ getComps <- function(
   if (length(unique(Pdata[["SEX_CODE"]])) == 3 & verbose) {
     cli::cli_warn(
       "Sexed and unsexed fish are in the data and n_tows, n_fish, and n_stewart
-      input sample size options will be calculated seperately for sexed and unsexed
+      input sample size options will be calculated separately for sexed and unsexed
       fish. For single-sex models, it is recommended to set SEX_CODE = U for all records
       prior to running this function."
     )
