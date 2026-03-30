@@ -15,8 +15,7 @@
 #' to the matching available in the table pulled from online.
 #'
 #' @param Pdata A data frame, typically one extracted from PacFIN but for this
-#'   function just one column is needed, `PACFIN_GEAR_CODE`. If a newer data pull is used,
-#'   the function will change `PACFIN_GEAR_CODE` to `PACFIN_GEAR_CODE` for you.
+#'   function just one column is needed, `PACFIN_GEAR_CODE`.
 #' @inheritParams cleanPacFIN
 #'
 #' @export
