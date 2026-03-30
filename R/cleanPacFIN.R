@@ -194,7 +194,7 @@ cleanPacFIN <- function(
 
   #### Fill in missing input arguments
   data <- getGearGroup(
-    Pdata = data,
+    Pdata = data_columns,
     spp = spp,
     verbose = verbose
   )
