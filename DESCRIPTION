@@ -1,6 +1,6 @@
 Package: pacfintools
 Title: Generate fishery composition data from PacFIN data for the NWFSC
-Version: 0.3.1
+Version: 0.4.0
 Authors@R: c(
     person(c("Chantel", "R."), "Wetzel", , "chantel.wetzel@noaa.gov", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-7573-8240")),
