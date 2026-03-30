@@ -71,7 +71,9 @@ get_codelist.GEAR <- function(x) {
     function(x) gsub("^\\s*|\\s*$", "", x)
   ))
   all <- all[, -which(colnames(all) == "ENTERED")]
-  colnames(all)[2] <- "PACFIN_GEAR_CODE"
+  all$PACFIN_GEAR_CODE <- all$GRID
+  all <- all |>
+    dplyr::relocate(PACFIN_GEAR_CODE, .after = TYPE)
   return(all)
 }
 
