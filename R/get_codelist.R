@@ -34,7 +34,7 @@
 #'   \item{TYPE : }{classification of tree structure, i.e., if it is a subarea}
 #'   \item{COUNCIL : }{the management council that the area falls within}
 #'   \item{PACFIN_PORT_CODE : }{character port code}
-#'   \item{AGID : }{agency code, e.g., "W" for Washington}
+#'   \item{AGENCY_CODE : }{agency code, e.g., "W" for Washington}
 #'   \item{AGENCY_PORT_CODE : }{numeric port code}
 #'   \item{SHORT : }{short description}
 #'   \item{DESCRIPTION : }{long, detailed description}
