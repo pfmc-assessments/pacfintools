@@ -42,7 +42,7 @@
 #' @examples
 #' availablegrids <- get_codelist("GEAR")
 #' availableports <- get_codelist("PORT")
-#' availableports <- get_codelist("INPFC")
+#' availableinpfc <- get_codelist("INPFC")
 #'
 get_codelist <- function(
   x = c("GEAR", "INPFC", "PORT")
