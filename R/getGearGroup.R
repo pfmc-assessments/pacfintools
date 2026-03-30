@@ -1,12 +1,12 @@
 #' Create column for gear called `geargroup` according to PacFIN gears
 #'
+#'
+#' @details
 #' Data from the PacFIN [gear
 #' table](http://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/gr.txt)
 #' is used to create a column in `Pdata` called `geargroup`, where
-#' `Pdata[["PACFIN_GEAR_CODE"]] is recoded to `geargroup` according to the gear group listed
+#' `Pdata[["PACFIN_GEAR_CODE"]]` is recoded to `geargroup` according to the gear group listed
 #' in the table.
-#'
-#' @details
 #' For some species the recoding is more intense. For example, sablefish
 #' `GROUPS` are recoded into just three gears, hook and line (HKL), pot (POT),
 #' and trawl (TWL). This is done internally to maintain consistency across
@@ -29,7 +29,7 @@
 #' @examples
 #' gears <- c("PRT", "FPT", "TWL", "MDP")
 #' X <- getGearGroup(data.frame(PACFIN_GEAR_CODE = gears), verbose = TRUE)
-#' table(X[["geargroup"]])
+#'
 #'
 getGearGroup <- function(Pdata, spp = NULL, verbose = TRUE) {
   # Checks
