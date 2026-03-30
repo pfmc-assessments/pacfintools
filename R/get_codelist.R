@@ -29,7 +29,7 @@
 #'   \item{TYPE : }{integer value of 1 (gear code), 2 (gear group), or 3 (all)}
 #'   \item{PACFIN_GEAR_CODE : }{three letter grid or gear type code}
 #'   \item{GROUP : }{three letter gear grouping code}
-#'   \item{ARID : }{mapping of sub area to areas}
+#'   \item{INPFC_AREA_TYPE_CODE : }{mapping of sub area to areas}
 #'   \item{INPFC : }{International North Pacific Fisheries Commission (INPFC) Area code used in PacFIN}
 #'   \item{TYPE : }{classification of tree structure, i.e., if it is a subarea}
 #'   \item{COUNCIL : }{the management council that the area falls within}
@@ -88,7 +88,9 @@ get_codelist.INPFC <- function(x) {
   all[, "INPFC"] <- gsub("\\s*|\\\\|_", "", all[, grep("ARID", colnames(all))])
   all[, "SHORT"] <- all[["NAME"]]
   all <- all[, c("ARID", "INPFC", "TYPE", "COUNCIL", "SHORT", "DESCRIPTION")]
-  colnames(all)[1] <- "INPFC_AREA_TYPE_CODE"
+  all$INPFC_AREA_TYPE_CODE <- all$ARID
+  all <- all |>
+    dplyr::relocate(INPFC_AREA_TYPE_CODE, .before = ARID)
   return(all)
 }
 
