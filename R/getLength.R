@@ -121,12 +121,6 @@ getLength <- function(Pdata, keep, verbose = TRUE) {
   )
 
   Pdata$length <- ifelse(
-    "R" %in% keep & Pdata[[var_fish_length_type]] == "R",
-    yes = width2length,
-    no = Pdata$length
-  )
-
-  Pdata$length <- ifelse(
     "D" %in%
       keep &
       Pdata[[var_fish_length_type]] == "D" &
@@ -170,17 +164,6 @@ getLength <- function(Pdata, keep, verbose = TRUE) {
     no = Pdata$length
   )
 
-  # A double check that lengths for methods not in keep are NA
-  Pdata$length <- ifelse(
-    Pdata[[var_fish_length_type]] %in% keep,
-    yes = ifelse(
-      is.na(Pdata$FORK_LENGTH),
-      yes = Pdata$FISH_LENGTH,
-      no = Pdata$FORK_LENGTH
-    ),
-    no = NA
-  )
-
   # Work with skate data
   # A is disc width
   # R is inter-spiracle width for skates (used by WDFW)
@@ -194,7 +177,24 @@ getLength <- function(Pdata, keep, verbose = TRUE) {
       yes = width2length,
       no = Pdata$length
     )
+
+    Pdata$length <- ifelse(
+      "R" %in% keep & Pdata[[var_fish_length_type]] == "R",
+      yes = width2length,
+      no = Pdata$length
+    )
   }
+
+  # A double check that lengths for methods not in keep are NA
+  Pdata$length <- ifelse(
+    Pdata[[var_fish_length_type]] %in% keep,
+    yes = ifelse(
+      is.na(Pdata$FORK_LENGTH),
+      yes = Pdata$FISH_LENGTH,
+      no = Pdata$FORK_LENGTH
+    ),
+    no = NA
+  )
 
   # Assign all fish of length zero to NA
   i_length_0 <- Pdata[["length"]] == 0
