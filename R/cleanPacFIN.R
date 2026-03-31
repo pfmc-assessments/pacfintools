@@ -177,11 +177,12 @@ cleanPacFIN <- function(
     )
   }
   if (lifecycle::is_present(CLEAN)) {
-    lifecycle::deprecate_stop(
+    lifecycle::deprecate_warn(
       when = "0.4.1",
       what = paste0("cleanPacFIN(CLEAN = )"),
       details = "Please use cleanPacFIN(clean =)."
     )
+    clean = CLEAN
   }
   if (lifecycle::is_present(savedir)) {
     lifecycle::deprecate_warn(
@@ -214,12 +215,6 @@ cleanPacFIN <- function(
     verbose = verbose
   )
   data[, "fleet"] <- data[, "geargroup"]
-
-  if (is.null(keep_age_method)) {
-    keep_age_method <- unique(
-      unlist(data[, grep("AGE_METHOD[0-9]*$", colnames(data))])
-    )
-  }
 
   #### Column names
   if (!"fishery" %in% colnames(data)) {
@@ -273,14 +268,22 @@ cleanPacFIN <- function(
   data[, "lengthmm"] <- data[, "length"]
   data[, "lengthcm"] <- floor(data[, "lengthmm"] / 10)
 
-  # Named to "Age" to match nwfscSurvey where Age is used.
+  # Deal with ages
+  if (is.null(keep_age_method)) {
+    keep_age_method <- unique(
+      unlist(data[, grep("AGE_METHOD[0-9]*$", colnames(data))])
+    )
+  }
   data[, "Age"] <- getAge(
     Pdata = data,
     verbose = verbose,
     keep = keep_age_method
   )
   # TODO: speed up this function
-  data[, "age_method"] <- getAgeMethod(Pdata = data)
+  data[, "age_method"] <- getAgeMethod(
+    Pdata = data,
+    verbose = verbose
+  )
 
   #### Weight (random units in)
   data[, "weightkg"] <- getweight(
@@ -334,13 +337,7 @@ cleanPacFIN <- function(
     nnumber <- sum(bad[, "badsno"])
     nstate <- sum(bad[, "badstate"])
     ngear <- sum(bad[, "badgear"])
-    nweight_or <- sum(
-      !(is.na(data[[
-        "EXPANDED_SAMPLE_WEIGHT"
-      ]]) &
-        data[["SAMPLE_TYPE"]] %in% keep_sample_type &
-        data[["state"]] == "OR")
-    )
+    nweight_or <- sum(bad[, "bador_type_weight"])
     nlength <- sum(is.na(data$lengthmm))
     nage <- sum(is.na(data$Age))
     nlenage <- sum(is.na(data$lengthmm) & is.na(data$Age))
@@ -356,8 +353,8 @@ cleanPacFIN <- function(
       "x" = "Number of records without SAMPLE_NUMBER: {nnumber}",
       "x" = "Number of records not in keep_states: {nstate}",
       "x" = "Number of records not in keep_gears: {ngear}",
-      "x" = "Number of records in Oregon with a request sample type without EXPANDED_SAMPLE_WEIGHT: {nweight_or}",
-      "i" = "Number of records with bad length type of NA: {nlength}",
+      "x" = "Number of records in Oregon within the requested sample type without a EXPANDED_SAMPLE_WEIGHT: {nweight_or}",
+      "i" = "Number of records with bad length type of NA: {nlength}. These lengths should be investigated further to determine if they can be used or not.",
       "i" = "Number of records without length and Age: {nlenage}",
       "i" = "Number of records: {NROW(Pdata)}",
       "i" = "Number of records remaining if clean = TRUE: {nclean}",
