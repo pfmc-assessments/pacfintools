@@ -204,11 +204,7 @@ getAge <- function(
       dplyr::pull(n) |>
       paste(collapse = ", ")
     text_n_na <- if (NROW(table_summary_na) > 0) {
-      apply(
-        table_summary_na,
-        MARGIN = 1,
-        FUN = function(x) sprintf("age-%d (n = %d)", x[1], x[2])
-      )
+      NROW(table_summary_na)
     } else {
       "0"
     }

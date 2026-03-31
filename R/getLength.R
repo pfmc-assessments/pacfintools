@@ -126,16 +126,6 @@ getLength <- function(Pdata, keep, verbose = TRUE) {
     no = Pdata$length
   )
 
-  # Work with dorsal length
-  if (
-    verbose &
-      "D" %in% keep &
-      length(grep("D", Pdata[[var_fish_length_type]]) > 0)
-  ) {
-    cli::cli_alert_danger(
-      "Using dorsal lengths, are you sure you want dorsal lengths?"
-    )
-  }
   Pdata$length <- ifelse(
     "D" %in%
       keep &
@@ -220,18 +210,24 @@ getLength <- function(Pdata, keep, verbose = TRUE) {
   )
 
   if (verbose) {
-    types <- sQuote(unique(Pdata[
+    types <- unique(Pdata[
       !is.na(Pdata[["length"]]),
       var_fish_length_type
-    ]))
+    ])
     n0 <- sum(Pdata[["length"]] == 0, na.rm = TRUE)
     n <- sum(Pdata[['FISH_LENGTH_UNITS']] == 'CM', na.rm = TRUE)
     cli::cli_bullets(c(
+      " " = "{.fn getLength} summary information -",
       "i" = "The following length types were kept in the data: {types}",
       "i" = "Lengths range from {min(Pdata[['length']], na.rm = TRUE)}--{max(Pdata[['length']], na.rm = TRUE)} (mm)",
-      "i" = "{n0} fish had lengths of 0 (mm) and were changed to NAs",
+      "v" = "{n0} fish had lengths of 0 (mm) and were changed to NAs",
       "i" = "{n} lengths (cm) and were converted to mm."
     ))
+    if ("D" %in% types) {
+      cli::cli_alert_danger(
+        "The data includes dorsal lengths and should be investigated to ensure that these lengths should be used."
+      )
+    }
   }
   return(Pdata[["length"]])
 }

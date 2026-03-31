@@ -94,10 +94,10 @@ getState <- function(
   nostate <- sum(!Pdata[, "state"] %in% states)
 
   if (verbose) {
-    cli::cli_inform(
-      "There are {nostate} records for which the state (i.e., 'CA', 'OR', 'WA') 
-      could not be assigned and were labeled as 'UNK'."
-    )
+    cli::cli_bullets(c(
+      " " = "{.fn getState} summary information -",
+      "v" = "There are {nostate} records for which the state (i.e., CA, OR, WA) could not be assigned and were labeled as UNK."
+    ))
   } # End if verbose
 
   return(Pdata)
