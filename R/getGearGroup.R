@@ -30,7 +30,6 @@
 #' gears <- c("PRT", "FPT", "TWL", "MDP")
 #' X <- getGearGroup(data.frame(PACFIN_GEAR_CODE = gears), verbose = TRUE)
 #'
-#'
 getGearGroup <- function(Pdata, spp = NULL, verbose = TRUE) {
   # Checks
   if (verbose) {
