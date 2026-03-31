@@ -2,7 +2,7 @@
 % Please edit documentation in R/getSeason.R
 \name{getSeason}
 \alias{getSeason}
-\title{Add a column to \code{Pdata} for season.}
+\title{Add a column for season.}
 \usage{
 getSeason(
   Pdata,

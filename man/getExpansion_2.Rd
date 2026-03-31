@@ -60,8 +60,8 @@ off when output indicates information that you already know. The printing
 of output to the screen does not affect any of the returned objects. The
 default is to always print to the screen, i.e., \code{verbose = TRUE}.}
 
-\item{savedir}{A file path to the directory where the results will be saved.
-The default is NULL.}
+\item{savedir}{Deprecated. This function no longer creates plots of cleaned data,
+but you can call \code{\link[=plotCleaned]{plotCleaned()}} separately if you want to create these plots.}
 }
 \value{
 The input PacFIN dataset, with column \code{Expansion_Factor_2} appended.

@@ -4,7 +4,7 @@
 \alias{getLength}
 \title{Get length for PacFIN commercial samples}
 \usage{
-getLength(Pdata, verbose = TRUE, keep)
+getLength(Pdata, keep, verbose = TRUE)
 }
 \arguments{
 \item{Pdata}{A data frame returned from \code{\link[=PullBDS.PacFIN]{PullBDS.PacFIN()}} containing
@@ -12,16 +12,16 @@ biological samples. These data are stored in the Pacific Fishieries
 Information Network (PacFIN) data warehouse, which originated in 2014 and
 are pulled using sql calls.}
 
+\item{keep}{A vector of values that represent what you want to keep. Values
+of \code{NA}, \code{""}, and numeric values are acceptable. Often, it is helpful to
+run `unique(, useNA = "always") on the relevant data prior to running the
+function to see what types are present.}
+
 \item{verbose}{A logical specifying if output should be written to the
 screen or not. Good for testing and exploring your data but can be turned
 off when output indicates information that you already know. The printing
 of output to the screen does not affect any of the returned objects. The
 default is to always print to the screen, i.e., \code{verbose = TRUE}.}
-
-\item{keep}{A vector of values that represent what you want to keep. Values
-of \code{NA}, \code{""}, and numeric values are acceptable. Often, it is helpful to
-run `unique(, useNA = "always") on the relevant data prior to running the
-function to see what types are present.}
 }
 \value{
 A vector of lengths in millimeters. Values of \code{NA} indicate that

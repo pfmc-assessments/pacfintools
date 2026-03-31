@@ -6,18 +6,19 @@
 \usage{
 cleanPacFIN(
   Pdata,
-  keep_INPFC = lifecycle::deprecated(),
-  keep_gears,
+  keep_gears = NULL,
+  keep_length_type = NULL,
   keep_sample_type = c("M"),
   keep_sample_method = "R",
-  keep_length_type,
   keep_age_method = NULL,
-  keep_missing_lengths = lifecycle::deprecated(),
   keep_states = c("WA", "OR", "CA"),
-  CLEAN = TRUE,
+  clean = TRUE,
+  CLEAN = lifecycle::deprecated(),
+  keep_INPFC = lifecycle::deprecated(),
+  keep_missing_lengths = lifecycle::deprecated(),
   spp = NULL,
   verbose = TRUE,
-  savedir = NULL
+  savedir = lifecycle::deprecated()
 )
 }
 \arguments{
@@ -25,8 +26,6 @@ cleanPacFIN(
 biological samples. These data are stored in the Pacific Fishieries
 Information Network (PacFIN) data warehouse, which originated in 2014 and
 are pulled using sql calls.}
-
-\item{keep_INPFC}{\emph{Deprecated}. Areas are now defined using different methods.}
 
 \item{keep_gears}{A character vector including the gear types you want
 to label as unique fleets. Order matters and will define fleet numbering.
@@ -45,6 +44,17 @@ non-trawl net gear, \code{NTW} which is non-trawl gear, and \code{TLS} which is
 trolling gear. As a special case, \code{MID} is available for spiny dogfish to
 extract mid-water trawl data as a separate fleet.}
 
+\item{keep_length_type}{A vector of character values specifying the types of
+length samples to keep. There is no default value, though users will
+typically want to keep \code{c("", "F", "A")}, but should also think about using
+\code{c("", "F", "A", NA)}. Note that types other than those listed below can be
+present, especially if you are dealing with a skate.
+\code{A} is alternate length,
+\code{D} is dorsal length,
+\code{F} is fork length,
+\code{S} is standard length, and
+\code{T} is total length.}
+
 \item{keep_sample_type}{A vector of character values specifying the types of
 samples you want to keep. The default is to keep \code{c("M")}. Available types
 include market (M), research (R), special request (S), and commercial
@@ -61,40 +71,35 @@ random (R), stratified (S), systematic (N), purposive (P), and special (X).
 As of February 17, 2021, Washington is the only state with a sample type of
 \code{""}, and it was limited to two special samples of yelloweye rockfish.}
 
-\item{keep_length_type}{A vector of character values specifying the types of
-length samples to keep. There is no default value, though users will
-typically want to keep \code{c("", "F", "A")}, but should also think about using
-\code{c("", "F", "A", NA)}. Note that types other than those listed below can be
-present, especially if you are dealing with a skate.
-\code{A} is alternate length,
-\code{D} is dorsal length,
-\code{F} is fork length,
-\code{S} is standard length, and
-\code{T} is total length.}
-
 \item{keep_age_method}{A vector of ageing methods to retain in the data. All
 fish aged with methods other than those listed will no longer be considered
 aged. A value of \code{NULL}, the default, will keep all ageing methods.
 However, a vector of \verb{c("B", "BB", S", "", NA, 1, 2)} will keep all unaged
 fish and those that were aged with break and burn and surface reads. You do
 not really need to include such a verbose vector of values though because
-numbers are converted to appropriate character codes in \link{getAge}.
+numbers are converted to appropriate character codes in \code{\link[=getAge]{getAge()}}.
 Therefore, something like \code{c("B", "S")} would be sufficient to keep all
 break and burn and surface reads.}
-
-\item{keep_missing_lengths}{\emph{Deprecated}. Just subset them using
-\verb{is.na(Pdata[, 'length']) after running }cleanPacFIN` if you want to remove
-lengths, though there is no need because the package accommodates keeping
-them in.}
 
 \item{keep_states}{A vector of states that you want to keep, where each state
 is defined using a two-letter abbreviation, e.g., \code{WA}. The default is to
 keep data from all three states, \code{keep_states = c("WA", "OR", "CA")}. Add
 \code{'UNK'} to the vector if you want to keep data not assigned to a state.}
 
-\item{CLEAN}{A logical value used when you want to remove data from the input
+\item{clean}{A logical value used when you want to remove data from the input
 data set. The default is \code{TRUE}. Where the opposite returns the original
 data with additional columns and reports on what would have been removed.}
+
+\item{CLEAN}{\emph{Deprecated} A logical value used when you want to remove data from the input
+data set. The default is \code{TRUE}. Where the opposite returns the original
+data with additional columns and reports on what would have been removed.}
+
+\item{keep_INPFC}{\emph{Deprecated}. Areas are now defined using different methods.}
+
+\item{keep_missing_lengths}{\emph{Deprecated}. Just subset them using
+\verb{is.na(Pdata[, 'length']) after running }cleanPacFIN` if you want to remove
+lengths, though there is no need because the package accommodates keeping
+them in.}
 
 \item{spp}{A character string giving the species name to ensure that the
 methods are species specific. Leave \code{NULL} if generic methods work for
@@ -107,8 +112,8 @@ off when output indicates information that you already know. The printing
 of output to the screen does not affect any of the returned objects. The
 default is to always print to the screen, i.e., \code{verbose = TRUE}.}
 
-\item{savedir}{A file path to the directory where the results will be saved.
-The default is NULL.}
+\item{savedir}{Deprecated. This function no longer creates plots of cleaned data,
+but you can call \code{\link[=plotCleaned]{plotCleaned()}} separately if you want to create these plots.}
 }
 \value{
 The input data filtered for desired areas and record types
@@ -126,7 +131,7 @@ specified, with added columns
 }
 }
 \description{
-Clean raw PacFIN data to remove unsuitable samples if \code{CLEAN = TRUE} and
+Clean raw PacFIN data to remove unsuitable samples if \code{clean = TRUE} and
 convert units of measured quantities to work with downstream functions.
 Raw data are meant to be inclusive of everything from PacFIN so users can
 explore all that is available, but this means that raw data will \strong{ALWAYS}
@@ -143,17 +148,17 @@ now \code{"U"}.
 \item Age: the best ages to use going forward rather than just the first age read.
 }
 
-\subsection{CLEAN}{
+\subsection{clean}{
 The data are put through various tests before they are returned
-and the results of these tests are stored in the \code{CLEAN} column.
-Thus, sometimes it is informative to run \code{cleanPacFIN(CLEAN = FALSE)}
+and the results of these tests are stored in the \code{clean} column.
+Thus, sometimes it is informative to run \code{cleanPacFIN(clean = FALSE)}
 and use frequency tables to inspect which groups of data will be removed
-from the data set when you change the code to be \code{CLEAN = FALSE}.
+from the data set when you change the code to be \code{clean = FALSE}.
 For example, many early length compositions do not have information on
 the weight of fish that were sampled, and thus, there is no way to infer
 how much the entire sample weighed or how much the tow/trip weighed.
 Therefore, these data cannot be expanded and are removed using
-\code{CLEAN = TRUE}. Some stock assessment authors or even previous
+\code{clean = TRUE}. Some stock assessment authors or even previous
 versions of this very code attempted to use adjacent years to inform
 weights. The number of assumptions for this was great and state
 representatives discouraged inferring data that did not exist.

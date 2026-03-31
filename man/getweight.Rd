@@ -4,7 +4,7 @@
 \alias{getweight}
 \title{Calculate weight from length and the weight--length relationship}
 \usage{
-getweight(length, sex, pars, unit.out = c("lb", "kg"), weight, unit.in)
+getweight(length, sex, pars, weight, unit.in, unit.out = c("lb", "kg"))
 }
 \arguments{
 \item{length}{A vector of fish lengths in mm.}
@@ -18,17 +18,17 @@ must have columns of \code{'A'} and \code{'B'}, as well as
 rows named \code{'U'}, at a minimum, \code{'F'}, and \code{'M'}.
 The output from \code{\link{getWLpars}} is formatted correctly as is.}
 
-\item{unit.out}{The desired units you wish the output to be in. See the
-function call for a list of default units available within the function.
-For example, \code{"lb"} would return the units of pounds.}
-
 \item{weight}{A vector of fish weights, where the units for each
 measurement are specified in \code{unit.in}.}
 
 \item{unit.in}{A vector of units for each measurement in \code{weight}.
-Options include \code{KG}, \code{G}, \code{LB}, \code{UNK}. Where, the latter leads to
+Options include \code{KG}, \code{G}, \code{LB}, \code{P}, \code{UNK}. Where, the latter leads to
 the assumption that your units are in grams and will be converted
 as such.}
+
+\item{unit.out}{The desired units you wish the output to be in. See the
+function call for a list of default units available within the function.
+For example, \code{"lb"} would return the units of pounds.}
 }
 \value{
 A vector of measurements in the unit specified using
