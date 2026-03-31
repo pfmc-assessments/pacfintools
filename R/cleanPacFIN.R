@@ -40,8 +40,6 @@
 #'   of sampling methods you want to keep. The default is to keep \code{"R"},
 #'   which refers to samples that were sampled randomly. Available types include
 #'   random (R), stratified (S), systematic (N), purposive (P), and special (X).
-#'   As of February 17, 2021, Washington is the only state with a sample type of
-#'   `""`, and it was limited to two special samples of yelloweye rockfish.
 #' @param keep_length_type A vector of character values specifying the types of
 #'   length samples to keep. There is no default value, though users will
 #'   typically want to keep `c("", "F", "A")`, but should also think about using
@@ -94,7 +92,6 @@
 #' * year: initialized from SAMPLE_YEAR\cr
 #' * fleet: initialized to 1
 #' * fishery: initialized to 1
-#' * season: initialized to 1.  Change using [getSeason]
 #' * state: initialized from AGENCY_CODE.  Change using [getState]
 #' * length: length in mm, where `NA` indicates length is not available
 #' * lengthcm: floored cm from FORK_LENGTH when available, otherwise FISH_LENGTH
@@ -108,34 +105,16 @@
 #' only include character values such that fish with an unidentified sex are
 #' now `"U"`.
 #' * Age: the best ages to use going forward rather than just the first age read.
-#'
-#' \subsection{clean}{
 #' The data are put through various tests before they are returned
 #' and the results of these tests are stored in the \code{clean} column.
 #' Thus, sometimes it is informative to run \code{cleanPacFIN(clean = FALSE)}
 #' and use frequency tables to inspect which groups of data will be removed
-#' from the data set when you change the code to be \code{clean = FALSE}.
-#' For example, many early length compositions do not have information on
-#' the weight of fish that were sampled, and thus, there is no way to infer
-#' how much the entire sample weighed or how much the tow/trip weighed.
-#' Therefore, these data cannot be expanded and are removed using
-#' \code{clean = TRUE}. Some stock assessment authors or even previous
-#' versions of this very code attempted to use adjacent years to inform
-#' weights. The number of assumptions for this was great and state
-#' representatives discouraged inferring data that did not exist.
-#' }
-#'
-#' \subsection{Furthermore}{
-#' The values created as new columns are for use by other functions in this package.
-#' In particular, `fishyr` and `season` are useful if there are multiple
-#' seasons (e.g., winter and summer, as in the petrale sole assessment), and the
-#' year is adjusted so that "winter" occurs in one year, rather than across two.
-#'
+#' from the data set when you change the code to be \code{clean = TRUE}.
 #' The `fleet`, `fishery`, and `state` columns are meant for use in
 #' stratifying the data according to the particulars of an assessment.
-#' }
 #'
-#' @seealso [getState], [getSeason]
+#'
+#' @seealso [getState()], [getLength()], [getAge()], [getAgeMethod()], [getweight()], [getArea()]
 #'
 #' @author Andi Stephens, Kelli F. Johnson, Chantel R. Wetzel
 

@@ -67,9 +67,7 @@ double counting.}
 \item{keep_sample_method}{A vector of character values specifying the types
 of sampling methods you want to keep. The default is to keep \code{"R"},
 which refers to samples that were sampled randomly. Available types include
-random (R), stratified (S), systematic (N), purposive (P), and special (X).
-As of February 17, 2021, Washington is the only state with a sample type of
-\code{""}, and it was limited to two special samples of yelloweye rockfish.}
+random (R), stratified (S), systematic (N), purposive (P), and special (X).}
 
 \item{keep_age_method}{A vector of ageing methods to retain in the data. All
 fish aged with methods other than those listed will no longer be considered
@@ -122,7 +120,6 @@ specified, with added columns
 \item year: initialized from SAMPLE_YEAR\cr
 \item fleet: initialized to 1
 \item fishery: initialized to 1
-\item season: initialized to 1.  Change using \link{getSeason}
 \item state: initialized from AGENCY_CODE.  Change using \link{getState}
 \item length: length in mm, where \code{NA} indicates length is not available
 \item lengthcm: floored cm from FORK_LENGTH when available, otherwise FISH_LENGTH
@@ -146,36 +143,17 @@ with the exception of
 only include character values such that fish with an unidentified sex are
 now \code{"U"}.
 \item Age: the best ages to use going forward rather than just the first age read.
-}
-
-\subsection{clean}{
 The data are put through various tests before they are returned
 and the results of these tests are stored in the \code{clean} column.
 Thus, sometimes it is informative to run \code{cleanPacFIN(clean = FALSE)}
 and use frequency tables to inspect which groups of data will be removed
-from the data set when you change the code to be \code{clean = FALSE}.
-For example, many early length compositions do not have information on
-the weight of fish that were sampled, and thus, there is no way to infer
-how much the entire sample weighed or how much the tow/trip weighed.
-Therefore, these data cannot be expanded and are removed using
-\code{clean = TRUE}. Some stock assessment authors or even previous
-versions of this very code attempted to use adjacent years to inform
-weights. The number of assumptions for this was great and state
-representatives discouraged inferring data that did not exist.
-}
-
-\subsection{Furthermore}{
-The values created as new columns are for use by other functions in this package.
-In particular, \code{fishyr} and \code{season} are useful if there are multiple
-seasons (e.g., winter and summer, as in the petrale sole assessment), and the
-year is adjusted so that "winter" occurs in one year, rather than across two.
-
+from the data set when you change the code to be \code{clean = TRUE}.
 The \code{fleet}, \code{fishery}, and \code{state} columns are meant for use in
 stratifying the data according to the particulars of an assessment.
 }
 }
 \seealso{
-\link{getState}, \link{getSeason}
+\code{\link[=getState]{getState()}}, \code{\link[=getLength]{getLength()}}, \code{\link[=getAge]{getAge()}}, \code{\link[=getAgeMethod]{getAgeMethod()}}, \code{\link[=getweight]{getweight()}}, \code{\link[=getArea]{getArea()}}
 }
 \author{
 Andi Stephens, Kelli F. Johnson, Chantel R. Wetzel
