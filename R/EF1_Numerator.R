@@ -47,14 +47,25 @@ EF1_Numerator <- function(
       details = "Please use savedir to create and save plots."
     )
   }
+  # Define trip samle pounds based upon either EXPANDED_SAMPLE_WEIGHT or WEIGHT_OF_LANDING_LBS
+  # Oregon primarily uses EXPANDED_SAMPLE_WEIGHT
+  # California and Washington primarily use WEIGHT OF LANDED LBS
   Pdata$Trip_Sampled_Lbs <- dplyr::coalesce(
     Pdata[["EXPANDED_SAMPLE_WEIGHT"]],
     Pdata[["WEIGHT_OF_LANDING_LBS"]]
   )
 
   if (verbose) {
-    cli::cli_inform("Sampled pounds per trip:")
-    print(summary(Pdata$Trip_Sampled_Lbs))
+    summary <- summary(Pdata$Trip_Sampled_Lbs)
+    message_table <- paste0(
+      names(summary),
+      " (",
+      round(summary, 0),
+      ")"
+    )
+    cli::cli_inform(
+      "Summary (quantiles, mean, and NAs) of sampled pounds per trip: {message_table}"
+    )
   }
 
   if (!is.null(savedir)) {
