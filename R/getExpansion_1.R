@@ -159,13 +159,16 @@ getExpansion_1 <- function(
     ))
   }
 
-  NA_EF1 <- Pdata[is.na(Pdata$Expansion_Factor_1_L), ]
-  nNA <- NROW(NA_EF1)
-
   if (verbose) {
-    cli::cli_alert_info(
-      "{NROW(NA_EF1)} {.code NA} Expansion_Factor_1 values replaced by 1."
+    n_na <- sum(is.na(Pdata$Expansion_Factor_1_L))
+    n_inf <- sum(
+      !is.na(Pdata$Expansion_Factor_1_L) &
+        !is.finite(Pdata$Expansion_Factor_1_L)
     )
+    cli::cli_bullets(c(
+      "x" = "{n_na} {.code NA} Expansion_Factor_1 values replaced by 1.",
+      "x" = "{n_inf} not finite numbers and Expansion_Factor_1 values replaced by 1."
+    ))
   }
 
   # Now replace NAs with 1.
@@ -178,12 +181,10 @@ getExpansion_1 <- function(
   Pdata$Expansion_Factor_1_L <- capValues(Pdata$Expansion_Factor_1_L, maxExp)
   Pdata$Expansion_Factor_1_A <- capValues(Pdata$Expansion_Factor_1_A, maxExp)
   if (verbose) {
-    cli::cli_inform(
-      "Maximum first-stage length expansion capped at the {maxExp} quantile of {round(max(Pdata$Expansion_Factor_1_L), 2)}"
-    )
-    cli::cli_inform(
-      "Maximum first-stage age expansion capped at the {maxExp} quantile of {round(max(Pdata$Expansion_Factor_1_A), 2)}"
-    )
+    cli::cli_bullets(c(
+      "i" = "Maximum first-stage length expansion capped at the {maxExp} quantile of {round(max(Pdata$Expansion_Factor_1_L), 2)}",
+      "i" = "Maximum first-stage age expansion capped at the {maxExp} quantile of {round(max(Pdata$Expansion_Factor_1_A), 2)}"
+    ))
   }
 
   # Generate plots and save them to the disk if specified.
