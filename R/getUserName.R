@@ -20,8 +20,10 @@
 #' \dontrun{
 #' getUserName()
 #' }
-getUserName <- function(database = c("PacFIN"),
-                        datasourcename = lifecycle::deprecated()) {
+getUserName <- function(
+  database = c("PacFIN"),
+  datasourcename = lifecycle::deprecated()
+) {
   if (lifecycle::is_present(datasourcename)) {
     lifecycle::deprecate_soft(
       when = "0.2.9",
@@ -36,7 +38,8 @@ getUserName <- function(database = c("PacFIN"),
   stopifnot(length(un_split) == 2)
 
   database <- match.arg(database)
-  out <- switch(database,
+  out <- switch(
+    database,
     "PacFIN" = tolower(paste0(substr(un_split[1], 1, 1), un_split[2])),
     NA
   )

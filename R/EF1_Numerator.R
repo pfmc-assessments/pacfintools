@@ -7,10 +7,10 @@
 #'
 #' @details
 #' Previously, `Trip_Sampled_Lbs` was calculated differently for each state.
-#' For California, `Species_Percent_Sampled * TOTAL_WGT`.
-#' For Oregon, `Pdata$EXP_WT` and if missing, the same as California.
-#' For Washington, `Pdata$RWT_LBS`, `Pdata$TOTAL_WGT`, `RWT_LBS`, or
-#' `median(Pdata$TOTAL_WGT)`.
+#' For California, `Species_Percent_Sampled * WEIGHT_OF_LANDING_LBS`.
+#' For Oregon, `Pdata$EXPANDED_SAMPLE_WEIGHT` and if missing, the same as California.
+#' For Washington, `Pdata$WEIGHT_OF_LANDING_LBS`, or
+#' `median(Pdata$WEIGHT_OF_LANDING_LBS)`.
 #' Then, if all else failed, per-year, state-specific medians.
 #'
 #' Now, PacFIN works hard behind the scenes to provide species-specific landing
@@ -34,10 +34,12 @@
 #' @template savedir
 #' @author Andi Stephens, Kelli F. Johnson, Chantel R. Wetzel
 
-EF1_Numerator <- function(Pdata,
-                          verbose = TRUE,
-                          plot = lifecycle::deprecated(),
-                          savedir = NULL) {
+EF1_Numerator <- function(
+  Pdata,
+  verbose = TRUE,
+  plot = lifecycle::deprecated(),
+  savedir = NULL
+) {
   if (lifecycle::is_present(plot)) {
     lifecycle::deprecate_soft(
       when = "0.2.10",
@@ -46,7 +48,8 @@ EF1_Numerator <- function(Pdata,
     )
   }
   Pdata$Trip_Sampled_Lbs <- dplyr::coalesce(
-    Pdata[["EXP_WT"]], Pdata[["RWT_LBS"]]
+    Pdata[["EXPANDED_SAMPLE_WEIGHT"]],
+    Pdata[["WEIGHT_OF_LANDING_LBS"]]
   )
 
   if (verbose) {
@@ -63,22 +66,42 @@ EF1_Numerator <- function(Pdata,
     grDevices::png(plot_filename)
     on.exit(grDevices::dev.off(), add = TRUE, after = FALSE)
     graphics::par(
-      mgp = c(2.5, 0.5, 0), mfrow = c(numstate, 1), mar = rep(0, 4),
+      mgp = c(2.5, 0.5, 0),
+      mfrow = c(numstate, 1),
+      mar = rep(0, 4),
       oma = c(4, 5, 3, 0.5)
     )
     for (st in unique(Pdata$state)) {
-      plotdata <- Pdata[Pdata[, "state"] == st & !is.na(Pdata[["Trip_Sampled_Lbs"]]), ]
-      if (all(is.na(plotdata$Trip_Sampled_Lbs))) next
-      graphics::boxplot(plotdata$Trip_Sampled_Lbs ~ plotdata$fishyr,
-        ylab = "", xlab = "", xaxt = "n",
-        at = unique(plotdata$fishyr), xlim = range(Pdata$fishyr)
+      plotdata <- Pdata[
+        Pdata[, "state"] == st & !is.na(Pdata[["Trip_Sampled_Lbs"]]),
+      ]
+      if (all(is.na(plotdata$Trip_Sampled_Lbs))) {
+        next
+      }
+      graphics::boxplot(
+        plotdata$Trip_Sampled_Lbs ~ plotdata$fishyr,
+        ylab = "",
+        xlab = "",
+        xaxt = "n",
+        at = unique(plotdata$fishyr),
+        xlim = range(Pdata$fishyr)
       )
       graphics::legend("topleft", legend = st, bty = "n")
     }
     graphics::axis(1)
     graphics::mtext(side = 1, "Year", outer = TRUE, line = 2)
-    graphics::mtext(side = 3, "Expansion factor 1 numerator", outer = TRUE, line = 1)
-    graphics::mtext(side = 2, "Sample weight per trip (lbs)", outer = TRUE, line = 2)
+    graphics::mtext(
+      side = 3,
+      "Expansion factor 1 numerator",
+      outer = TRUE,
+      line = 1
+    )
+    graphics::mtext(
+      side = 2,
+      "Sample weight per trip (lbs)",
+      outer = TRUE,
+      line = 2
+    )
   }
 
   return(Pdata)

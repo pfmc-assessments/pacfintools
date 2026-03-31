@@ -20,7 +20,7 @@
 #' @param defaults The default stratification columns which will typically be
 #'   left at their default value of `c("fleet", "fishyr", "season")`.
 #' @param towid A vector of character values providing the column names that
-#'   generate a unique id for each sample. The default is `"SAMPLE_NO"` but you
+#'   generate a unique id for each sample. The default is `"SAMPLE_NUMBER"` but you
 #'   can pass a vector where all of the columns identified will be united to
 #'   create a unique identifier for the tow/sample.
 #' @param weightid A character value giving the column name that holds the value
@@ -46,18 +46,20 @@
 #' * [getExpansion_2()] should be run before this function.
 #' * [writeComps()] can be run on the output from this function.
 #'
-getComps <- function(Pdata,
-                     strat = NULL,
-                     Comps = c("LEN", "AGE", "AAL"),
-                     defaults = c("fleet", "fishyr", "season"),
-                     towid = c("SAMPLE_NO"),
-                     weightid = "Final_Sample_Size_L",
-                     verbose = TRUE) {
-  if (length(unique(Pdata[["SEX"]])) == 3 & verbose) {
+getComps <- function(
+  Pdata,
+  strat = NULL,
+  Comps = c("LEN", "AGE", "AAL"),
+  defaults = c("fleet", "fishyr", "season"),
+  towid = c("SAMPLE_NUMBER"),
+  weightid = "Final_Sample_Size_L",
+  verbose = TRUE
+) {
+  if (length(unique(Pdata[["SEX_CODE"]])) == 3 & verbose) {
     cli::cli_warn(
       "Sexed and unsexed fish are in the data and n_tows, n_fish, and n_stewart
-      input sample size options will be calculated seperately for sexed and unsexed
-      fish. For single-sex models, it is recommended to set SEX = U for all records
+      input sample size options will be calculated separately for sexed and unsexed
+      fish. For single-sex models, it is recommended to set SEX_CODE = U for all records
       prior to running this function."
     )
   }
@@ -69,13 +71,15 @@ getComps <- function(Pdata,
   Comps <- match.arg(Comps)
   towstrat <- c(
     strat,
-    switch(Comps,
+    switch(
+      Comps,
       LEN = usualSuspects,
       AGE = usualSuspects,
       c(usualSuspects, "lengthcm", "Age")
     )
   )
-  usualSuspects <- switch(Comps,
+  usualSuspects <- switch(
+    Comps,
     LEN = c(usualSuspects, "lengthcm"),
     AGE = c(usualSuspects, "Age"),
     c(usualSuspects, "lengthcm", "Age")
@@ -88,23 +92,23 @@ getComps <- function(Pdata,
   if (!type %in% colnames(Pdata)) {
     cli::cli_abort("{.var {type}} isn't a column in Pdata.")
   }
-  # Only a column named "SEX" works in all caps
-  good_column_for_sex <- grep("SEX", colnames(Pdata))
+  # Only a column named "SEX_CODE" works in all caps
+  good_column_for_sex <- grep("SEX_CODE", colnames(Pdata))
   if (length(good_column_for_sex) == 0) {
-    Pdata[, "SEX"] <- "U"
+    Pdata[, "SEX_CODE"] <- "U"
     cli::cli_bullets(c(
-      "x" = "SEX (case-specific) was missing from the column names of Pdata.",
-      "i" = "A SEX column was added with all rows set to 'U' for unsexed fish."
+      "x" = "SEX_CODE (case-specific) was missing from the column names of Pdata.",
+      "i" = "A SEX_CODE column was added with all rows set to 'U' for unsexed fish."
     ))
   }
-  # FREQ... stores the number of fish that sum to the weightid
-  freqn <- grep("FREQ", colnames(Pdata), value = TRUE)
+  # OBSERVED_FREQUENCY... stores the number of fish that sum to the weightid
+  freqn <- grep("OBSERVED_FREQUENCY", colnames(Pdata), value = TRUE)
   if (length(freqn) == 0) {
-    cli::cli_abort("FREQ is missing from the Pdata.")
+    cli::cli_abort("OBSERVED_FREQUENCY is missing from the Pdata.")
   }
 
   # Create a unique id for each sample where this most often is just the
-  # SAMPLE_NO
+  # SAMPLE_NUMBER
   # apply is faster than dplyr::*
   Pdata[, "uniqueid"] <- apply(
     Pdata[, towid, drop = FALSE],
@@ -116,14 +120,14 @@ getComps <- function(Pdata,
   # Determine the number of tows for each combination of sex available
   comps <- Pdata |>
     dplyr::mutate(
-      sex_group = dplyr::case_when(SEX == "U" ~ "U", .default = "B")
+      sex_group = dplyr::case_when(SEX_CODE == "U" ~ "U", .default = "B")
     ) |>
-    # dplyr::filter(SEX != "U") |>
+    # dplyr::filter(SEX_CODE != "U") |>
     # By stratification variable count # of tows
     dplyr::group_by(dplyr::across(dplyr::all_of(towstrat)), sex_group) |>
     dplyr::mutate(
       n_tows = dplyr::n_distinct(uniqueid),
-      n_fish = sum(FREQ),
+      n_fish = sum(OBSERVED_FREQUENCY),
       ratio = sum(unique(n_fish)) / n_tows,
       n_stewart = dplyr::case_when(
         ratio < 44 ~ n_tows + 0.138 * sum(unique(n_fish)),
@@ -132,14 +136,14 @@ getComps <- function(Pdata,
     ) |>
     # By stratification, sex, and bin value count the weight
     dplyr::group_by(dplyr::across(
-      dplyr::all_of(c(towstrat, type, "SEX"))
+      dplyr::all_of(c(towstrat, type, "SEX_CODE"))
     )) |>
     dplyr::mutate(dplyr::across(c(weightid), .fns = sum)) |>
     # Get rid of extraneous columns
     dplyr::select(
       dplyr::all_of(c(towstrat, type)),
       n_tows,
-      SEX,
+      SEX_CODE,
       n_fish,
       n_stewart,
       weightid

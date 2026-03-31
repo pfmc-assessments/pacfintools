@@ -8,8 +8,7 @@ getGearGroup(Pdata, spp = NULL, verbose = TRUE)
 }
 \arguments{
 \item{Pdata}{A data frame, typically one extracted from PacFIN but for this
-function just one column is needed, \code{GRID}. If a newer data pull is used,
-the function will change \code{PACFIN_GEAR_CODE} to \code{GRID} for you.}
+function just one column is needed, \code{PACFIN_GEAR_CODE}.}
 
 \item{spp}{A character string giving the species name to ensure that the
 methods are species specific. Leave \code{NULL} if generic methods work for
@@ -27,12 +26,13 @@ A modified data frame where an additional column labeled \code{geargroup} is
 added to \code{Pdata}. No original columns are modified in the process.
 }
 \description{
-Data from the PacFIN \href{http://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/gr.txt}{gear table}
-is used to create a column in \code{Pdata} called \code{geargroup}, where
-\verb{Pdata[["GRID"]] is recoded to }geargroup` according to the gear group listed
-in the table.
+Create column for gear called \code{geargroup} according to PacFIN gears
 }
 \details{
+Data from the PacFIN \href{http://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/gr.txt}{gear table}
+is used to create a column in \code{Pdata} called \code{geargroup}, where
+\code{Pdata[["PACFIN_GEAR_CODE"]]} is recoded to \code{geargroup} according to the gear group listed
+in the table.
 For some species the recoding is more intense. For example, sablefish
 \code{GROUPS} are recoded into just three gears, hook and line (HKL), pot (POT),
 and trawl (TWL). This is done internally to maintain consistency across
@@ -42,8 +42,8 @@ to the matching available in the table pulled from online.
 }
 \examples{
 gears <- c("PRT", "FPT", "TWL", "MDP")
-X <- getGearGroup(data.frame(GRID = gears), verbose = TRUE)
-table(X[["geargroup"]])
+X <- getGearGroup(data.frame(PACFIN_GEAR_CODE = gears), verbose = TRUE)
+
 
 }
 \seealso{

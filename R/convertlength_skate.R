@@ -20,12 +20,11 @@
 #' @return A vector of lengths.
 #' See \code{returntype} for detailed information on what can be returned.
 #'
-convertlength_skate <- function(Pdata,
-                                returntype = c("all", "estimated")) {
+convertlength_skate <- function(Pdata, returntype = c("all", "estimated")) {
   matchcol <- function(data) {
-    var_sex <- grep("SEX", colnames(data), value = TRUE)[1]
+    var_sex <- grep("SEX_CODE", colnames(data), value = TRUE)[1]
     var_fish_length_type <- grep(
-      "FISH_LENGTH_TYPE",
+      "FISH_LENGTH_TYPE_CODE",
       colnames(data),
       value = TRUE
     )[1]
@@ -40,20 +39,24 @@ convertlength_skate <- function(Pdata,
 
   # Conversion parameters
   discpar <- data.frame(
-    "SEX" = rep(c("F", "M", "U"), 2),
-    "FISH_LENGTH_TYPE" = c(rep("A", 3), rep("R", 3)),
+    "SEX_CODE" = rep(c("F", "M", "U"), 2),
+    "FISH_LENGTH_TYPE_CODE" = c(rep("A", 3), rep("R", 3)),
     "multiply" = c(c(1.4021, 1.4058, 1.4044), c(12.538, 13.172, 12.538)),
     "add" = c(c(9.117, 5.2334, 7.005), c(70.48, 35.21, 70.48))
   )
   discpar[, "match"] <- matchcol(discpar)
   matches <- match(matchcol(Pdata), discpar[, "match"])
 
-  est <- Pdata[, "FISH_LENGTH"] * discpar[matches, "multiply"] +
+  est <- Pdata[, "FISH_LENGTH"] *
+    discpar[matches, "multiply"] +
     discpar[matches, "add"]
 
-  returned <- switch(returntype,
-    all = ifelse(Pdata[, "FISH_LENGTH_TYPE"] %in% c("A", "R"),
-      est, Pdata[, "FISH_LENGTH"]
+  returned <- switch(
+    returntype,
+    all = ifelse(
+      Pdata[, "FISH_LENGTH_TYPE_CODE"] %in% c("A", "R"),
+      est,
+      Pdata[, "FISH_LENGTH"]
     ),
     estimated = est
   )

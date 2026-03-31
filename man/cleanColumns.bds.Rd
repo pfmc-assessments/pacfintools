@@ -10,10 +10,9 @@ cleanColumns.bds(data)
 \item{data}{A data frame with named columns.}
 }
 \value{
-A data frame with fewer columns and some column names changed.
+A data frame with fewer columns
 }
 \description{
-Many column names are changed in the biological data to match what was
-used in legacy code. As time goes on the code will be reworked to use the
-new name coming from PacFIN. Columns not used in the code are removed.
+Remove unnecessary columns from a data frame from PacFIN to reduce the
+object size.
 }

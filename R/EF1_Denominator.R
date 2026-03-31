@@ -19,14 +19,14 @@
 #' the fish were not weighed themselves. The weight of unsexed fish is calculated
 #' internally by the code and added to the female and male weight.
 #' **todo**: Let Oregon know that this calculation is being done and they may want
-#' to provide UNK_WGT.
+#' to provide WEIGHT_OF_UNKNOWN_LBS.
 #'
 #' California sample weights were previously based on the column labeled
 #' `SPECIES_WEIGHT`. Now, California data is parsed by PacFIN to furnish
 #' species-specific cluster weights. Prior, cluster weights included the weight
-#' of all species in the sample. Now, `CLUSTER_WEIGHT` is the weight in that
+#' of all species in the sample. Now, `CLUSTER_WEIGHT_LBS` is the weight in that
 #' cluster for the species of interest. This was verified for dover sole by
-#' Kelli F. Johnson in February of 2021. Thus, the code uses `CLUSTER_WEIGHT`
+#' Kelli F. Johnson in February of 2021. Thus, the code uses `CLUSTER_WEIGHT_LBS`
 #' rather than `SPECIES_WEIGHT` now.
 #' **todo**: determine if this should be the only cluster-specific value going forward?
 #'
@@ -70,17 +70,19 @@
 #' @author Andi Stephens, Kelli F. Johnson, Chantel R. Wetzel
 #' @seealso [EF1_Numerator], [getExpansion_1], [getExpansion_2]
 #'
-EF1_Denominator <- function(Pdata,
-                            fa,
-                            fb,
-                            ma,
-                            mb,
-                            ua,
-                            ub,
-                            verbose = TRUE,
-                            plot = lifecycle::deprecated(),
-                            col.weight = "weightkg",
-                            savedir = NULL) {
+EF1_Denominator <- function(
+  Pdata,
+  fa,
+  fb,
+  ma,
+  mb,
+  ua,
+  ub,
+  verbose = TRUE,
+  plot = lifecycle::deprecated(),
+  col.weight = "weightkg",
+  savedir = NULL
+) {
   if (lifecycle::is_present(plot)) {
     lifecycle::deprecate_soft(
       when = "0.2.10",
@@ -106,7 +108,7 @@ EF1_Denominator <- function(Pdata,
   #       are in getExpansion_1?
   Pdata$LW_Calc_Wt <- getweight(
     length = Pdata$length,
-    sex = Pdata$SEX,
+    sex = Pdata$SEX_CODE,
     pars = data.frame(
       "A" = c("females" = fa, "males" = ma, "all" = ua),
       "B" = c("females" = fb, "males" = mb, "all" = ub)
@@ -125,10 +127,10 @@ EF1_Denominator <- function(Pdata,
         TRUE ~ weightkg * 2.20462
       )
     ) |>
-    # Group by SAMPLE_NO so all subsequent calculations are done on subsets
+    # Group by SAMPLE_NUMBER so all subsequent calculations are done on subsets
     # of the data, i.e., mean(bestweight) is mean of the bestweight in a
     # specific sample
-    dplyr::group_by(SAMPLE_NO) |>
+    dplyr::group_by(SAMPLE_NUMBER) |>
     dplyr::mutate(
       bestweight = ifelse(
         is.na(bestweight),
@@ -136,7 +138,7 @@ EF1_Denominator <- function(Pdata,
         bestweight
       )
     ) |>
-    # Calculate sample weights and weight of unsexed fish per SAMPLE_NO
+    # Calculate sample weights and weight of unsexed fish per SAMPLE_NUMBER
     dplyr::mutate(
       Wt_Sampled_3_L = sum(
         na.rm = TRUE,
@@ -146,35 +148,53 @@ EF1_Denominator <- function(Pdata,
         na.rm = TRUE,
         ifelse(is.na(Age), NA, bestweight)
       ),
-      UNK_WT = sum(ifelse(SEX == "U", bestweight, 0)),
-      UNK_NUM = sum(SEX == "U")
+      WEIGHT_OF_UNKNOWN_LBS = sum(ifelse(SEX_CODE == "U", bestweight, 0)),
+      UNK_NUM = sum(SEX_CODE == "U")
     ) |>
     # Back out the weight of fish that have no length or Age for each
     # specific sample weight, if all are NA in sample, then set to 0.
     dplyr::mutate(
-      Wt_Sampled_1_A = (-1 * sum(ifelse(is.na(Age), bestweight, 0)) +
-        FEMALES_WGT + MALES_WGT + UNK_WT) *
+      Wt_Sampled_1_A = (-1 *
+        sum(ifelse(is.na(Age), bestweight, 0)) +
+        WEIGHT_OF_FEMALES_LBS +
+        WEIGHT_OF_MALES_LBS +
+        WEIGHT_OF_UNKNOWN_LBS) *
         ifelse(all(is.na(Age)), 0, 1),
-      Wt_Sampled_1_L = (-1 * sum(ifelse(is.na(length), bestweight, 0)) +
-        FEMALES_WGT + MALES_WGT + UNK_WT) *
+      Wt_Sampled_1_L = (-1 *
+        sum(ifelse(is.na(length), bestweight, 0)) +
+        WEIGHT_OF_FEMALES_LBS +
+        WEIGHT_OF_MALES_LBS +
+        WEIGHT_OF_UNKNOWN_LBS) *
         ifelse(all(is.na(length)), 0, 1)
     ) |>
     dplyr::ungroup() |>
-    dplyr::group_by(SAMPLE_NO, CLUSTER_NO) |>
-    # Do the same for CLUSTER_WGT
+    dplyr::group_by(SAMPLE_NUMBER, CLUSTER_SEQUENCE_NUMBER) |>
+    # Do the same for CLUSTER_WEIGHT_LBS
     dplyr::mutate(
-      Wt_Sampled_2_A = (-1 * sum(ifelse(is.na(Age), bestweight, 0)) +
-        CLUSTER_WGT) * ifelse(all(is.na(Age)), 0, 1),
-      Wt_Sampled_2_L = (-1 * sum(ifelse(is.na(length), bestweight, 0)) +
-        CLUSTER_WGT) * ifelse(all(is.na(length)), 0, 1)
+      Wt_Sampled_2_A = (-1 *
+        sum(ifelse(is.na(Age), bestweight, 0)) +
+        CLUSTER_WEIGHT_LBS) *
+        ifelse(all(is.na(Age)), 0, 1),
+      Wt_Sampled_2_L = (-1 *
+        sum(ifelse(is.na(length), bestweight, 0)) +
+        CLUSTER_WEIGHT_LBS) *
+        ifelse(all(is.na(length)), 0, 1)
     ) |>
     # Bring the calculations back to the full scale of the data frame
     dplyr::ungroup() |>
     # Coalesce sets things to downstream values, only if NA, i.e.,
     # Wt_Sampled_[AL] is set by priority left to right 1, 2, 3
     dplyr::mutate(
-      Wt_Sampled_A = dplyr::coalesce(Wt_Sampled_1_A, Wt_Sampled_2_A, Wt_Sampled_3_A),
-      Wt_Sampled_L = dplyr::coalesce(Wt_Sampled_1_L, Wt_Sampled_2_L, Wt_Sampled_3_L)
+      Wt_Sampled_A = dplyr::coalesce(
+        Wt_Sampled_1_A,
+        Wt_Sampled_2_A,
+        Wt_Sampled_3_A
+      ),
+      Wt_Sampled_L = dplyr::coalesce(
+        Wt_Sampled_1_L,
+        Wt_Sampled_2_L,
+        Wt_Sampled_3_L
+      )
     ) |>
     # Return a data frame rather than a tibble
     data.frame()
@@ -182,8 +202,10 @@ EF1_Denominator <- function(Pdata,
   #### Summary and boxplot
   # TODO: revamp the summary and plots
   printemp <- data.frame(cbind(
-    Pdata$Wt_Sampled_1_L, Pdata$Wt_Sampled_2_L,
-    Pdata$Wt_Sampled_3_L, Pdata$Wt_Sampled_L
+    Pdata$Wt_Sampled_1_L,
+    Pdata$Wt_Sampled_2_L,
+    Pdata$Wt_Sampled_3_L,
+    Pdata$Wt_Sampled_L
   ))
 
   names(printemp) <- c("M+F+U", "Cluster", "L-W", "Final Wt_Sampled")
@@ -211,16 +233,20 @@ EF1_Denominator <- function(Pdata,
     if (nNA > 0) {
       graphics::barplot(
         stats::xtabs(
-          NA_Wt_Sampled$FREQ ~ NA_Wt_Sampled$state + NA_Wt_Sampled$fishyr
+          NA_Wt_Sampled$OBSERVED_FREQUENCY ~
+            NA_Wt_Sampled$state + NA_Wt_Sampled$fishyr
         ),
         col = grDevices::rainbow(length(unique(NA_Wt_Sampled$state))),
-        legend.text = TRUE, xlab = "Year",
+        legend.text = TRUE,
+        xlab = "Year",
         ylab = "N samples w/ first-stage expansion denominator = NA",
         args.legend = list(x = "topleft", bty = "n")
       )
     }
     gg <- plotWL(
-      Pdata[, "lengthcm"], Pdata[, "SEX"], Pdata[, "weightkg"],
+      Pdata[, "lengthcm"],
+      Pdata[, "SEX_CODE"],
+      Pdata[, "weightkg"],
       Pdata[, "LW_Calc_Wt"] * 0.453592
     )
     ggplot2::ggsave(

@@ -4,7 +4,7 @@
 \alias{getState}
 \title{Create a state column based on input column specified in \code{source}}
 \usage{
-getState(Pdata, source = c("AGENCY_CODE", "SOURCE_AGID"), verbose = TRUE)
+getState(Pdata, source = c("AGENCY_CODE"), verbose = TRUE)
 }
 \arguments{
 \item{Pdata}{A data frame returned from \code{\link[=PullBDS.PacFIN]{PullBDS.PacFIN()}} containing
@@ -30,26 +30,10 @@ All rows are returned, but users should pay attention to the warning that is
 returned for rows that have no state id.
 }
 \description{
-Create a categorical column that specifies which state each row is from.
+Create a state column based on input column specified in \code{source}
 }
 \details{
-With the creation of the comprehensive bds table in PacFIN, the column called
-\code{SAMPLE_AGENCY} was deprecated; more specifically, the column is
-available but filled with \code{NULL} values.
-Thus, pacfintools no longer maintains \code{SAMPLE_AGENCY} that was being converted
-to \code{SOURCE_AGID} and all identification of
-state records should be based on \code{AGENCY_CODE} or \code{SOURCE_AGID}, where the latter is
-just the converted column name (see \link{cleanColumns}).
-\code{AGENCY_CODE} is a column created by PacFIN to identify which agency provided
-the data. In the 2019 sablefish data there were four unique values in \code{AGENCY_CODE},
-\itemize{
-\item C - CDFW
-\item O - ODFW
-\item W - WDFW
-\item M - \verb{SAMPLE_AGENCY == NMFS Tiburon} samples from 1997.
-None of the \code{M} samples were in the comprehensive table as of 2021.
-}
-
+Create a categorical column, \code{state}, based upon the \code{AGENCY_CODE}.
 It is no longer advisable as of February 14, 2021 to create states based on
 \code{PSMFC_CATCH_AREA_CODE} or \code{PSMFC_ARID} because areas are not mutually
 exclusive to a state. Previous code set areas \code{1[a-z]} to Washington,

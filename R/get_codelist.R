@@ -27,33 +27,38 @@
 #' column names are always in all caps:
 #' \itemize{
 #'   \item{TYPE : }{integer value of 1 (gear code), 2 (gear group), or 3 (all)}
-#'   \item{GRID : }{three letter grid or gear type code}
+#'   \item{PACFIN_GEAR_CODE : }{three letter grid or gear type code}
 #'   \item{GROUP : }{three letter gear grouping code}
-#'   \item{ARID : }{mapping of sub area to areas}
+#'   \item{INPFC_AREA_TYPE_CODE : }{mapping of sub area to areas}
 #'   \item{INPFC : }{International North Pacific Fisheries Commission (INPFC) Area code used in PacFIN}
 #'   \item{TYPE : }{classification of tree structure, i.e., if it is a subarea}
 #'   \item{COUNCIL : }{the management council that the area falls within}
-#'   \item{PCID : }{character port code}
-#'   \item{AGID : }{agency code, e.g., "W" for Washington}
-#'   \item{PORT : }{numberic port code}
+#'   \item{PACFIN_PORT_CODE : }{character port code}
+#'   \item{AGENCY_CODE : }{agency code, e.g., "W" for Washington}
+#'   \item{AGENCY_PORT_CODE : }{numeric port code}
 #'   \item{SHORT : }{short description}
 #'   \item{DESCRIPTION : }{long, detailed description}
 #' }
 #' @examples
-#' availablegrids <- get_codelist("GRID")
+#' availablegrids <- get_codelist("GEAR")
 #' availableports <- get_codelist("PORT")
+#' availableinpfc <- get_codelist("INPFC")
 #'
-get_codelist <- function(x = c("GRID", "INPFC", "PORT")) {
+get_codelist <- function(
+  x = c("GEAR", "INPFC", "PORT")
+) {
   x <- match.arg(x, several.ok = FALSE)
   UseMethod("get_codelist", object = structure(list(), class = x))
 }
 
 #' @export
 #'
-get_codelist.GRID <- function(x) {
+get_codelist.GEAR <- function(x) {
   url <- "https://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/gr.txt"
-  all <- utils::read.fwf(url(url),
-    skip = 5, widths = c(5, 5, 6, 10, 38, 9),
+  all <- utils::read.fwf(
+    url(url),
+    skip = 5,
+    widths = c(5, 5, 6, 10, 38, 9),
     blank.lines.skip = TRUE
   )
   colnames(all) <- toupper(gsub("^\\s+|\\s+$| Name", "", all[1, ]))
@@ -61,10 +66,14 @@ get_codelist.GRID <- function(x) {
   all <- all[-1 * seq(grep("\\.\\.\\.", all[, 3]), NROW(all)), ]
   all <- all[!grepl("^\\s+$", all[, 1]), ]
   all[, c("TYPE", "GRID", "GROUP")] <- t(apply(
-    all[, c("TYPE", "GRID", "GROUP")], 1,
+    all[, c("TYPE", "GRID", "GROUP")],
+    1,
     function(x) gsub("^\\s*|\\s*$", "", x)
   ))
   all <- all[, -which(colnames(all) == "ENTERED")]
+  all$PACFIN_GEAR_CODE <- all$GRID
+  all <- all |>
+    dplyr::relocate(PACFIN_GEAR_CODE, .after = TYPE)
   return(all)
 }
 
@@ -79,6 +88,9 @@ get_codelist.INPFC <- function(x) {
   all[, "INPFC"] <- gsub("\\s*|\\\\|_", "", all[, grep("ARID", colnames(all))])
   all[, "SHORT"] <- all[["NAME"]]
   all <- all[, c("ARID", "INPFC", "TYPE", "COUNCIL", "SHORT", "DESCRIPTION")]
+  all$INPFC_AREA_TYPE_CODE <- all$ARID
+  all <- all |>
+    dplyr::relocate(INPFC_AREA_TYPE_CODE, .before = ARID)
   return(all)
 }
 
@@ -94,7 +106,12 @@ get_codelist.PORT <- function(x) {
     header = FALSE,
     blank.lines.skip = TRUE
   )
-  colnames(all) <- c("PCID", "AGID", "PORT", "DESCRIPTION")
-  all <- all[!is.na(all[["PORT"]]), ]
+  colnames(all) <- c(
+    "PACFIN_PORT_CODE",
+    "AGENCY_CODE",
+    "AGENCY_PORT_CODE",
+    "DESCRIPTION"
+  )
+  all <- all[!is.na(all[["AGENCY_PORT_CODE"]]), ]
   return(all)
 }

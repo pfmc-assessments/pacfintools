@@ -36,10 +36,12 @@
 #' If there are no relevant values for a given stratification-year combination,
 #' then the entry will be zero.
 #'
-formatCatch <- function(catch,
-                        strat,
-                        yearname = "^Year|^Yr|Landing_Y|Sample_Y",
-                        valuename = "ROUND_WEIGHT_LBS") {
+formatCatch <- function(
+  catch,
+  strat,
+  yearname = "^Year|^Yr|Landing_Y|Sample_Y",
+  valuename = "ROUND_WEIGHT_LBS"
+) {
   if ("state" %in% strat & !"state" %in% colnames(catch)) {
     catch <- getState(catch, verbose = FALSE)
   }
@@ -50,9 +52,11 @@ formatCatch <- function(catch,
   # Reshape the data into wide format and replace NA with zeros
   out <- catch |>
     tidyr::pivot_wider(
-      values_fn = sum, values_fill = 0,
+      values_fn = sum,
+      values_fill = 0,
       id_cols = dplyr::matches(match = yearname, ignore.case = TRUE),
-      names_from = strat, names_sep = ".",
+      names_from = strat,
+      names_sep = ".",
       values_from = dplyr::matches(match = valuename, ignore.case = TRUE)
     ) |>
     data.frame()

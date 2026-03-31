@@ -22,10 +22,13 @@
 #' @author Chantel R. Wetzel
 #' @export
 
-tableSample <- function(Pdata,
-                        fname = paste0("fishery_", comps, "_samples.csv"),
-                        strat = "SOURCE_AGID",
-                        comps = c("LEN", "AGE"), remove_yrs = NULL) {
+tableSample <- function(
+  Pdata,
+  fname = paste0("fishery_", comps, "_samples.csv"),
+  strat = "AGENCY_CODE",
+  comps = c("LEN", "AGE"),
+  remove_yrs = NULL
+) {
   Pdata$strat <- apply(Pdata[, strat, drop = FALSE], 1, paste0, collapse = ".")
   comps <- match.arg(comps, several.ok = FALSE)
   if (comps == "LEN") {
@@ -40,7 +43,11 @@ tableSample <- function(Pdata,
     temp <- temp[!temp$SAMPLE_YEAR %in% remove_yrs, ]
   }
 
-  Ntow <- table(temp$SAMPLE_YEAR, temp$strat, !duplicated(as.character(temp$SAMPLE_NO)))[, , "TRUE"]
+  Ntow <- table(
+    temp$SAMPLE_YEAR,
+    temp$strat,
+    !duplicated(as.character(temp$SAMPLE_NUMBER))
+  )[,, "TRUE"]
   Nfish <- table(temp$SAMPLE_YEAR, temp$strat)
 
   samples <- rownames(Ntow)

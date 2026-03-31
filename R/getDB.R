@@ -43,12 +43,14 @@
 #' error message because the main call is wrapped in
 #' \code{\link[base]{tryCatch}}.
 #'
-getDB <- function(sql,
-                  database = "PacFIN",
-                  datasourcename = lifecycle::deprecated(),
-                  username,
-                  password,
-                  asis = FALSE) {
+getDB <- function(
+  sql,
+  database = "PacFIN",
+  datasourcename = lifecycle::deprecated(),
+  username,
+  password,
+  asis = FALSE
+) {
   if (lifecycle::is_present(datasourcename)) {
     lifecycle::deprecate_soft(
       when = "0.2.9",

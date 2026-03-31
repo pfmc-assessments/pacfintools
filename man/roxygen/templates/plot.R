@@ -1,4 +1,4 @@
-#' @param plot Deprecated as of version 0.2.10 and replaced with savedir. 
+#' @param plot Deprecated as of version 0.2.10 and replaced with savedir.
 #'   Argument takes either a logical or character value specifying the file
 #'   name if you want to write the plots to a disk rather than printing them
 #'   to the console. If \code{plot = FALSE} no plots will be generated.

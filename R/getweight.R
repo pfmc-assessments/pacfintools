@@ -28,12 +28,14 @@
 #' parameters input to the function.
 #' Weights are in the same units used to calculate things, i.e., kg.
 #'
-getweight <- function(length,
-                      sex,
-                      pars,
-                      unit.out = c("lb", "kg"),
-                      weight,
-                      unit.in) {
+getweight <- function(
+  length,
+  sex,
+  pars,
+  unit.out = c("lb", "kg"),
+  weight,
+  unit.in
+) {
   unit.out <- match.arg(unit.out, several.ok = FALSE)
 
   #### Option # 1 ... Change units of weight
@@ -42,7 +44,10 @@ getweight <- function(length,
       return(weight)
     }
     if (is.null(unit.in)) {
-      warning(call. = FALSE, "Guessing unit.in for getweight; please input a non-null vector.")
+      warning(
+        call. = FALSE,
+        "Guessing unit.in for getweight; please input a non-null vector."
+      )
       if (all(weight > 300)) {
         unit.in <- rep("G", length(weight))
       } else {
@@ -52,18 +57,22 @@ getweight <- function(length,
     if (any(unit.in == "H", na.rm = TRUE)) {
       message(
         "FISH_WEIGHT units of H are changed to G for ",
-        sum(unit.in == "H", na.rm = TRUE), " fish."
+        sum(unit.in == "H", na.rm = TRUE),
+        " fish."
       )
       unit.in[unit.in == "H"] <- "G"
     }
-    transformweight <- weight * mapply(switch, unit.in,
-      MoreArgs = list(
-        G = 0.00220462,
-        KG = 2.20462,
-        UNK = 0.00220462,
-        0.00220462
+    transformweight <- weight *
+      mapply(
+        switch,
+        unit.in,
+        MoreArgs = list(
+          G = 0.00220462,
+          KG = 2.20462,
+          UNK = 0.00220462,
+          0.00220462
+        )
       )
-    )
     if (unit.out == "kg") {
       transformweight <- transformweight * 0.453592
     }
@@ -79,22 +88,28 @@ getweight <- function(length,
       " sex, must be equal in length."
     )
   }
-  if (is.matrix(pars)) pars <- data.frame(pars)
+  if (is.matrix(pars)) {
+    pars <- data.frame(pars)
+  }
   if ((!"H" %in% row.names(pars)) & "H" %in% sex & "all" %in% row.names(pars)) {
     pars["H", ] <- pars["all", ]
   }
   if ((!"H" %in% row.names(pars)) & "H" %in% sex) {
     stop("H is in the sex vector but no parameters in pars are available.")
   }
-  if (!"females" %in% rownames(pars)) pars["F", ] <- pars["all", ]
-  if (!"males" %in% rownames(pars)) pars["M", ] <- pars["all", ]
-  pars$SEX <- rownames(pars)
-  pars$SEX <- gsub("(^f|^m).+", "\\U\\1", pars$SEX, perl = TRUE)
-  pars$SEX <- gsub("all", "U", pars$SEX)
+  if (!"females" %in% rownames(pars)) {
+    pars["F", ] <- pars["all", ]
+  }
+  if (!"males" %in% rownames(pars)) {
+    pars["M", ] <- pars["all", ]
+  }
+  pars$SEX_CODE <- rownames(pars)
+  pars$SEX_CODE <- gsub("(^f|^m).+", "\\U\\1", pars$SEX_CODE, perl = TRUE)
+  pars$SEX_CODE <- gsub("all", "U", pars$SEX_CODE)
 
   #### Calculate weight assuming length is in mm
-  calcweight <- (pars[match(sex, pars[, "SEX"]), "A"] *
-    (length / 10)^(pars[match(sex, pars[, "SEX"]), "B"]))
+  calcweight <- (pars[match(sex, pars[, "SEX_CODE"]), "A"] *
+    (length / 10)^(pars[match(sex, pars[, "SEX_CODE"]), "B"]))
   if (unit.out == "lb") {
     calcweight <- calcweight * 2.20462
   }

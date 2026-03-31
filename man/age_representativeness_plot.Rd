@@ -19,7 +19,7 @@ age_representativeness_plot(
 function works with data from the West Coast Groundfish Bottom Trawl
 Survey extracted by the nwfscSurvey package as well as PacFIN data.
 Must include either the columns Year, Length_cm, and Age, or,
-for PacFIN data, SAMPLE_YEAR, FISH_LENGTH, and FISH_AGE_YEARS_FINAL.
+for PacFIN data, SAMPLE_YEAR, FISH_LENGTH, and FINAL_FISH_AGE_IN_YEARS.
 Additional columns can be present.}
 
 \item{xlim}{The x limits for the histogram}

@@ -5,7 +5,7 @@
 #'
 #' @param data A data frame containing empirical weights and lengths
 #' from sampled fish.
-#' Sexes should be available in the column `sex` or `SEX`.
+#' Sexes should be available in the column `sex_code` or `SEX_CODE`.
 #' @param col.length A numeric or character value specifying the column
 #' to use in `data` for length information. These lengths are assumed to
 #' be in centimeters. The default value is `lengthcm`, which is added
@@ -47,7 +47,7 @@ getWLpars <- function(
   col.weight <- "weight"
   stopifnotcolumn(data = data, string = col.length)
   stopifnotcolumn(data = data, string = col.weight)
-  stopifnotcolumn(data = data, string = "sex")
+  stopifnotcolumn(data = data, string = "sex_code")
 
   dims <- dim(data)
   data <- data[
@@ -63,9 +63,9 @@ getWLpars <- function(
   }
 
   mresults <- tibble::lst(
-    female = . %>% dplyr::filter(sex == "F"),
-    male = . %>% dplyr::filter(sex == "M"),
-    all = . %>% dplyr::filter(sex %in% c(NA, "F", "M", "U", "H"))
+    female = . %>% dplyr::filter(sex_code == "F"),
+    male = . %>% dplyr::filter(sex_code == "M"),
+    all = . %>% dplyr::filter(sex_code %in% c(NA, "F", "M", "U", "H"))
   ) %>%
     purrr::map_dfr(
       ~ tidyr::nest(.x(data), data = everything()),
@@ -91,7 +91,7 @@ getWLpars <- function(
     data.frame()
 
   if (verbose) {
-    message("weight--length model results by SEX:")
+    message("weight--length model results by sex_code:")
     utils::capture.output(lapply(mresults[["fits"]], summary), type = "message")
   }
 
