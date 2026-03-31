@@ -236,9 +236,18 @@ cleanPacFIN <- function(
     ),
     verbose = verbose
   )
+  # SAMPLE_TYPE fixes:
   # California doesn't record SAMPLE_TYPE so we assume they are all Market samples
   data[data$state == "CA" & is.na(data$SAMPLE_TYPE), "SAMPLE_TYPE"] <- "M"
   # Perhaps add check here to change SAMPLE_TYPE == S samples from Oregon before 1987 to M
+  # Fix SAMPLE_TYPE in Oregon:
+  # According to Ali Whitman, samples before 1987 were designated as special request samples
+  # across the board for some species.  However, they were likely collected based upon
+  # the existing market sample protocol at the time and should be kept
+  data[
+    data$state == "OR" & data$SAMPLE_TYPE == "S" & data$SAMPLE_YEAR < 1987,
+    "SAMPLE_TYPE"
+  ] <- "M"
 
   #### Sex
   data[, "SEX_CODE"] <- nwfscSurvey::codify_sex(
@@ -296,14 +305,6 @@ cleanPacFIN <- function(
   # Check record area:
   data[, "area"] <- getArea(Pdata = data, verbose = verbose)
 
-  #### Bad samples
-  # Remove bad OR samples
-  # data$SAMPLE_TYPE[data$SAMPLE_NUMBER %in% paste0("OR", badORnums)] <- "S"
-  # Via Chantel, from Ali at ODFW, do not keep b/c they don't have EXPANDED_SAMPLE_WEIGHT or FTID
-  # if ("SAMPLE_QUALITY" %in% colnames(Pdata)) {
-  #  Pdata[Pdata[["SAMPLE_QUALITY"]] == 63, "SAMPLE_TYPE"] <- "S"
-  # }
-
   #### Summary and return
   # Identify good records: keep TRUEs
   bad <- data[, 1:2]
@@ -313,11 +314,14 @@ cleanPacFIN <- function(
   bad[, "badsno"] <- is.na(data$SAMPLE_NUMBER)
   bad[, "badstate"] <- !data[, "state"] %in% keep_states
   bad[, "badgear"] <- !data[, "geargroup"] %in% keep_gears
-  bad[, "bador_type_weight"] <- (is.na(data[[
-    "EXPANDED_SAMPLE_WEIGHT"
-  ]]) &
-    data[["SAMPLE_TYPE"]] %in% keep_sample_type &
-    data[["state"]] == "OR")
+  # These records no longer need to be necessarily removed: the first stage
+  # expansion code sets the expansion factor to 1 for records missing sampled
+  # weights or trip weights (EXPANDED_SAMPLE_WEIGHT)
+  #bad[, "bador_type_weight"] <- (is.na(data[[
+  #  "EXPANDED_SAMPLE_WEIGHT"
+  #]]) &
+  #  data[["SAMPLE_TYPE"]] %in% keep_sample_type &
+  #  data[["state"]] == "OR")
   bad[, "remove"] <- ifelse(
     apply(bad[, grep("^bad", colnames(bad))], 1, sum) > 0,
     yes = TRUE,
@@ -337,7 +341,6 @@ cleanPacFIN <- function(
     nnumber <- sum(bad[, "badsno"])
     nstate <- sum(bad[, "badstate"])
     ngear <- sum(bad[, "badgear"])
-    nweight_or <- sum(bad[, "bador_type_weight"])
     nlength <- sum(is.na(data$lengthmm))
     nage <- sum(is.na(data$Age))
     nlenage <- sum(is.na(data$lengthmm) & is.na(data$Age))
@@ -346,14 +349,13 @@ cleanPacFIN <- function(
 
     cli::cli_bullets(c(
       " " = "Summary of data processing and cleaning checks:",
-      "i" = "The number of records potentially removed if clean = TRUE are not mutually exclusive.",
+      "i" = "The number of records potentially removed for the various reasons below if clean = TRUE are not mutually exclusive.",
       "x" = "Number of records not in federal waters: {narea}",
       "x" = "Number of records not in keep_sample_type (SAMPLE_TYPE): {ntype}",
       "x" = "Number of records not in keep_sample_method (SAMPLE_METHOD_CODE): {nmethod}",
       "x" = "Number of records without SAMPLE_NUMBER: {nnumber}",
       "x" = "Number of records not in keep_states: {nstate}",
       "x" = "Number of records not in keep_gears: {ngear}",
-      "x" = "Number of records in Oregon within the requested sample type without a EXPANDED_SAMPLE_WEIGHT: {nweight_or}",
       "i" = "Number of records with bad length type of NA: {nlength}. These lengths should be investigated further to determine if they can be used or not.",
       "i" = "Number of records without length and Age: {nlenage}",
       "i" = "Number of records: {NROW(Pdata)}",
@@ -363,8 +365,8 @@ cleanPacFIN <- function(
 
     if (check_pacfin_species_code_calcom(Pdata$PACFIN_SPECIES_CODE)) {
       if (!check_calcom) {
-        cli::cli_bullets(
-          "x" = "Additional biological data are available from CALCOM for flatfish species pre-1990, please contact E.J. (edward.dick@noaa.gov) and Brenda (BErwin@psmfc.org)."
+        cli::cli_alert_danger(
+          "Additional biological data are available from CALCOM for flatfish species pre-1990, please contact E.J. (edward.dick@noaa.gov) and Brenda (BErwin@psmfc.org)."
         )
       }
     }
