@@ -20,7 +20,7 @@ column."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mat
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pacfintools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -103,18 +103,13 @@ present in <code>Pdata</code>.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-
-<div class="section">
-<h3 id="fish-age-years-final"><code>FISH_AGE_YEARS_FINAL</code><a class="anchor" aria-label="anchor" href="#fish-age-years-final"></a></h3>
-
-
-<p><code>FISH_AGE_YEARS_FINAL</code> is defined in PacFIN as the “age of specimen (best
-age or final age)”. If <code>FISH_AGE_YEARS_FINAL</code> does not have an entry, where
+    <p><code>FINAL_FISH_AGE_IN_YEARS</code> is defined in PacFIN as the “age of specimen (best
+age or final age)”. If <code>FINAL_FISH_AGE_IN_YEARS</code> does not have an entry, where
 this should be the best age available, then the user is warned that they
 should potentially look at the age reads from an individual reader, e.g.,
 `age1` or `age2`, until the state works out what age read is best and
-provides this in `FISH_AGE_YEARS_FINAL`.</p>
-<p>How <code>FISH_AGE_YEARS_FINAL</code> is determined can be unclear because it does not
+provides this in `FINAL_FISH_AGE_IN_YEARS`.</p>
+<p>How <code>FINAL_FISH_AGE_IN_YEARS</code> is determined can be unclear because it does not
 always equal the value from one of the age readers. How the value is
 determined is specific to the lab that conducted the ageing. Sometimes,
 reconciling multiple age reads to determine the best age will lead to the
@@ -126,7 +121,7 @@ contacting the state representative.</p>
 <p>Ageing methods listed in keep (or derivatives of those) will be used to
 filter for ages that are of desired method. Any age that was not estimated
 using one of the desired methods will be replaced with an <code>NA</code>.</p><div class="section">
-<h4 id="deprecated-methods">Deprecated methods<a class="anchor" aria-label="anchor" href="#deprecated-methods"></a></h4>
+<h3 id="deprecated-methods">Deprecated methods<a class="anchor" aria-label="anchor" href="#deprecated-methods"></a></h3>
 
 
 <p>Previously, <code>getAge()</code> averaged over multiple reads if there was no entry in
@@ -135,7 +130,7 @@ package starting with version 0.2.6.</p>
 </div>
 
 <div class="section">
-<h4 id="washington">Washington<a class="anchor" aria-label="anchor" href="#washington"></a></h4>
+<h3 id="washington">Washington<a class="anchor" aria-label="anchor" href="#washington"></a></h3>
 
 
 <p>Washington uses the following order of operations to assign the best age
@@ -152,7 +147,7 @@ choose the final value.</p></li>
 </ul></div>
 
 <div class="section">
-<h4 id="oregon">Oregon<a class="anchor" aria-label="anchor" href="#oregon"></a></h4>
+<h3 id="oregon">Oregon<a class="anchor" aria-label="anchor" href="#oregon"></a></h3>
 
 
 <p>Oregon employs a single age reader, or at least has since 2014. Twenty
@@ -165,7 +160,7 @@ for a third time.</p></li>
 </ul></div>
 
 <div class="section">
-<h4 id="california">California<a class="anchor" aria-label="anchor" href="#california"></a></h4>
+<h3 id="california">California<a class="anchor" aria-label="anchor" href="#california"></a></h3>
 
 
 <p>Ageing of otoliths collected in California is performed by the Cooperative
@@ -182,9 +177,6 @@ resolved age is used;</p></li>
 <li><p>for older fish where the discrepancy cannot be resolved, age1 is used
 because it had the freshest otolith and potentially used the better half.</p></li>
 </ul></div>
-
-
-</div>
 
     </div>
     <div id="author">

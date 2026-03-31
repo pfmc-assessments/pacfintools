@@ -19,7 +19,7 @@ function name get_codelist helps explain what we are getting."><!-- mathjax --><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pacfintools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -58,7 +58,7 @@ function name <code>get_codelist</code> helps explain what we are getting.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_codelist</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GRID"</span>, <span class="st">"INPFC"</span>, <span class="st">"PORT"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_codelist</span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"GEAR"</span>, <span class="st">"INPFC"</span>, <span class="st">"PORT"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -76,15 +76,15 @@ See the function call for the available lists or
     <h2>Value</h2>
     <p>A data frame with the following potential columns, where the
 column names are always in all caps:</p><ul><li><p>TYPE : integer value of 1 (gear code), 2 (gear group), or 3 (all)</p></li>
-<li><p>GRID : three letter grid or gear type code</p></li>
+<li><p>PACFIN_GEAR_CODE : three letter grid or gear type code</p></li>
 <li><p>GROUP : three letter gear grouping code</p></li>
-<li><p>ARID : mapping of sub area to areas</p></li>
+<li><p>INPFC_AREA_TYPE_CODE : mapping of sub area to areas</p></li>
 <li><p>INPFC : International North Pacific Fisheries Commission (INPFC) Area code used in PacFIN</p></li>
 <li><p>TYPE : classification of tree structure, i.e., if it is a subarea</p></li>
 <li><p>COUNCIL : the management council that the area falls within</p></li>
-<li><p>PCID : character port code</p></li>
-<li><p>AGID : agency code, e.g., "W" for Washington</p></li>
-<li><p>PORT : numberic port code</p></li>
+<li><p>PACFIN_PORT_CODE : character port code</p></li>
+<li><p>AGENCY_CODE : agency code, e.g., "W" for Washington</p></li>
+<li><p>AGENCY_PORT_CODE : numeric port code</p></li>
 <li><p>SHORT : short description</p></li>
 <li><p>DESCRIPTION : long, detailed description</p></li>
 </ul></div>
@@ -105,8 +105,9 @@ thank you in advance for collaborating.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">availablegrids</span> <span class="op">&lt;-</span> <span class="fu">get_codelist</span><span class="op">(</span><span class="st">"GRID"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">availablegrids</span> <span class="op">&lt;-</span> <span class="fu">get_codelist</span><span class="op">(</span><span class="st">"GEAR"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">availableports</span> <span class="op">&lt;-</span> <span class="fu">get_codelist</span><span class="op">(</span><span class="st">"PORT"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">availableinpfc</span> <span class="op">&lt;-</span> <span class="fu">get_codelist</span><span class="op">(</span><span class="st">"INPFC"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

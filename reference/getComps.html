@@ -18,7 +18,7 @@ groupings."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pacfintools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -61,7 +61,7 @@ groupings.</p>
 <span>  strat <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  Comps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LEN"</span>, <span class="st">"AGE"</span>, <span class="st">"AAL"</span><span class="op">)</span>,</span>
 <span>  defaults <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fleet"</span>, <span class="st">"fishyr"</span>, <span class="st">"season"</span><span class="op">)</span>,</span>
-<span>  towid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SAMPLE_NO"</span><span class="op">)</span>,</span>
+<span>  towid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SAMPLE_NUMBER"</span><span class="op">)</span>,</span>
 <span>  weightid <span class="op">=</span> <span class="st">"Final_Sample_Size_L"</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -99,7 +99,7 @@ left at their default value of <code>c("fleet", "fishyr", "season")</code>.</p><
 
 <dt id="arg-towid">towid<a class="anchor" aria-label="anchor" href="#arg-towid"></a></dt>
 <dd><p>A vector of character values providing the column names that
-generate a unique id for each sample. The default is <code>"SAMPLE_NO"</code> but you
+generate a unique id for each sample. The default is <code>"SAMPLE_NUMBER"</code> but you
 can pass a vector where all of the columns identified will be united to
 create a unique identifier for the tow/sample.</p></dd>
 

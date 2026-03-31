@@ -20,7 +20,7 @@ they would both use the same landing weight."><!-- mathjax --><script src="https
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pacfintools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -109,10 +109,10 @@ The default is NULL.</p></dd>
     <div id="details">
     <h2>Details</h2>
     <p>Previously, <code>Trip_Sampled_Lbs</code> was calculated differently for each state.
-For California, <code>Species_Percent_Sampled * TOTAL_WGT</code>.
-For Oregon, <code>Pdata$EXP_WT</code> and if missing, the same as California.
-For Washington, <code>Pdata$RWT_LBS</code>, <code>Pdata$TOTAL_WGT</code>, <code>RWT_LBS</code>, or
-<code>median(Pdata$TOTAL_WGT)</code>.
+For California, <code>Species_Percent_Sampled * WEIGHT_OF_LANDING_LBS</code>.
+For Oregon, <code>Pdata$EXPANDED_SAMPLE_WEIGHT</code> and if missing, the same as California.
+For Washington, <code>Pdata$WEIGHT_OF_LANDING_LBS</code>, or
+<code>median(Pdata$WEIGHT_OF_LANDING_LBS)</code>.
 Then, if all else failed, per-year, state-specific medians.</p>
 <p>Now, PacFIN works hard behind the scenes to provide species-specific landing
 weights for each sampled fish. Therefore, we no longer rely on code to

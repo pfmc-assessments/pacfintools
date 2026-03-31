@@ -20,7 +20,7 @@ getExpansion_1."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pacfintools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -152,13 +152,13 @@ model-based weights, which would be the only way they can get weights when
 the fish were not weighed themselves. The weight of unsexed fish is calculated
 internally by the code and added to the female and male weight.
 <strong>todo</strong>: Let Oregon know that this calculation is being done and they may want
-to provide UNK_WGT.</p>
+to provide WEIGHT_OF_UNKNOWN_LBS.</p>
 <p>California sample weights were previously based on the column labeled
 <code>SPECIES_WEIGHT</code>. Now, California data is parsed by PacFIN to furnish
 species-specific cluster weights. Prior, cluster weights included the weight
-of all species in the sample. Now, <code>CLUSTER_WEIGHT</code> is the weight in that
+of all species in the sample. Now, <code>CLUSTER_WEIGHT_LBS</code> is the weight in that
 cluster for the species of interest. This was verified for dover sole by
-Kelli F. Johnson in February of 2021. Thus, the code uses <code>CLUSTER_WEIGHT</code>
+Kelli F. Johnson in February of 2021. Thus, the code uses <code>CLUSTER_WEIGHT_LBS</code>
 rather than <code>SPECIES_WEIGHT</code> now.
 <strong>todo</strong>: determine if this should be the only cluster-specific value going forward?</p>
 <p>Washington does not pretend to provide any information regarding total weight

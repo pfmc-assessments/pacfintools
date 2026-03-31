@@ -22,7 +22,7 @@ US West Coast stock assessments."><!-- mathjax --><script src="https://cdnjs.clo
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pacfintools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -102,12 +102,10 @@ to label as unique fleets. Order matters and will define fleet numbering.
 If the argument is missing, which is the default, then all found gear
 groups are maintained and ordered alphabetically. For more details see
 <code><a href="getGearGroup.html">getGearGroup()</a></code>, which lists a link where you can find the available gear
-groupings and how they link to <code>"GRID"</code> within your data. The vector
+groupings and how they link to <code>"PACFIN_GEAR_CODE"</code> within your data. The vector
 supplied to this argument should consist of only options available in
 <code>unique(GearTable[["GROUP"]])</code>.
-<code>GRID</code> is a legacy term from PacFIN, now identified as <code>PACFIN_GEAR_CODE</code>
-in the biological and fish ticket data, where GR is short for gear and ID
-is short for identification. Typical entries will include character values
+Typical entries will include character values
 such as <code>HKL</code>, <code>POT</code>, <code>TWL</code>, where the latter is short for all non-shrimp
 trawls and <code>TWS</code> is shrimp trawls. Other gear identification codes and
 their definitions include <code>DRG</code> which is dredge gear, <code>MSC</code> which is all
@@ -209,16 +207,16 @@ specified, with added columns</p><ul><li><p>year: initialized from SAMPLE_YEAR<b
 <li><p>fleet: initialized to 1</p></li>
 <li><p>fishery: initialized to 1</p></li>
 <li><p>season: initialized to 1.  Change using <a href="getSeason.html">getSeason</a></p></li>
-<li><p>state: initialized from SOURCE_AGID.  Change using <a href="getState.html">getState</a></p></li>
+<li><p>state: initialized from AGENCY_CODE.  Change using <a href="getState.html">getState</a></p></li>
 <li><p>length: length in mm, where <code>NA</code> indicates length is not available</p></li>
 <li><p>lengthcm: floored cm from FORK_LENGTH when available, otherwise FISH_LENGTH</p></li>
-<li><p>geargroup: the gear group associated with each <a href="http://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/gr.txt" class="external-link">GRID</a></p></li>
+<li><p>geargroup: the gear group associated with each <a href="http://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/gr.txt" class="external-link">PACFIN_GEAR_CODE</a></p></li>
 <li><p>weightkg: fish weight in kg from FISH_WEIGHT and FISH_WEIGHT_UNITS</p></li>
 </ul></div>
     <div id="details">
     <h2>Details</h2>
     <p>The original fields in the returned data are left untouched,
-with the exception of</p><ul><li><p><code>SEX</code>: modified using <code><a href="https://rdrr.io/pkg/nwfscSurvey/man/codify_sex.html" class="external-link">nwfscSurvey::codify_sex()</a></code> and upon return will
+with the exception of</p><ul><li><p><code>SEX_CODE</code>: modified using <code><a href="https://rdrr.io/pkg/nwfscSurvey/man/codify_sex.html" class="external-link">nwfscSurvey::codify_sex()</a></code> and upon return will
 only include character values such that fish with an unidentified sex are
 now <code>"U"</code>.</p></li>
 <li><p>Age: the best ages to use going forward rather than just the first age read.</p></li>
