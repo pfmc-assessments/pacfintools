@@ -263,9 +263,9 @@ cleanPacFIN <- function(
   # Remove bad OR samples
   Pdata$SAMPLE_TYPE[Pdata$SAMPLE_NUMBER %in% paste0("OR", badORnums)] <- "S"
   # Via Chantel, from Ali at ODFW, do not keep b/c they don't have EXPANDED_SAMPLE_WEIGHT or FTID
-  #if ("SAMPLE_QUALITY" %in% colnames(Pdata)) {
+  # if ("SAMPLE_QUALITY" %in% colnames(Pdata)) {
   #  Pdata[Pdata[["SAMPLE_QUALITY"]] == 63, "SAMPLE_TYPE"] <- "S"
-  #}
+  # }
 
   #### Summary and return
   # bad records: keep TRUEs

@@ -44,7 +44,6 @@ to the matching available in the table pulled from online.
 gears <- c("PRT", "FPT", "TWL", "MDP")
 X <- getGearGroup(data.frame(PACFIN_GEAR_CODE = gears), verbose = TRUE)
 
-
 }
 \seealso{
 \itemize{

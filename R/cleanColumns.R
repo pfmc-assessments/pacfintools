@@ -34,7 +34,7 @@ cleanColumns <- function(data) {
 #' @return A data frame with fewer columns
 #'
 cleanColumns.bds <- function(data) {
-  #master <- matrix(
+  # master <- matrix(
   #  scan(
   #    text = "
   #  Comp_FT                      vdrfd
@@ -85,18 +85,18 @@ cleanColumns.bds <- function(data) {
   #  ),
   #  ncol = 2,
   #  byrow = TRUE
-  #)
-  #colnames(master) <- c("raw", "vdrfd")
-  #matches <- match(colnames(data), master[, "raw"])
-  #colnames(data) <- ifelse(
+  # )
+  # colnames(master) <- c("raw", "vdrfd")
+  # matches <- match(colnames(data), master[, "raw"])
+  # colnames(data) <- ifelse(
   #  is.na(matches),
   #  colnames(data),
   #  master[matches, "vdrfd"]
-  #)
+  # )
 
   # CRW: Columns have been collapsed to have
   # TOTAL_WGT for CA and RWT_LBS for WA.
-  #data$RWT_LBS <- data$TOTAL_WGT
+  # data$RWT_LBS <- data$TOTAL_WGT
   data <- data |>
     dplyr::select(-dplyr::matches("VESSEL|AGE_[R]|^NUM|LOAD|COMMON|_ID|agedby"))
 

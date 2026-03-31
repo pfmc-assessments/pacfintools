@@ -37,8 +37,7 @@ comps_bins <- function(
     replacement = "\\1",
     x = cut(vector, breaks = breaks, include.lowest = FALSE, right = FALSE)
   )
-  out <- switch(
-    returnclass,
+  out <- switch(returnclass,
     character = out,
     numeric = utils::type.convert(out, as.is = TRUE)
   )
