@@ -363,7 +363,7 @@ cleanPacFIN <- function(
       "i" = "Number of records removed if clean = TRUE: {nremoved}"
     ))
 
-    if (check_pacfin_species_code_calcom(Pdata$PACFIN_SPECIES_CODE)) {
+    if (check_pacfin_species_code_calcom(data$PACFIN_SPECIES_CODE)) {
       if (!check_calcom) {
         cli::cli_alert_danger(
           "Additional biological data are available from CALCOM for flatfish species pre-1990, please contact E.J. (edward.dick@noaa.gov) and Brenda (BErwin@psmfc.org)."
