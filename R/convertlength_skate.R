@@ -51,8 +51,7 @@ convertlength_skate <- function(Pdata, returntype = c("all", "estimated")) {
     discpar[matches, "multiply"] +
     discpar[matches, "add"]
 
-  returned <- switch(
-    returntype,
+  returned <- switch(returntype,
     all = ifelse(
       Pdata[, "FISH_LENGTH_TYPE_CODE"] %in% c("A", "R"),
       est,

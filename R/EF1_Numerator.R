@@ -9,7 +9,7 @@
 #' Previously, `Trip_Sampled_Lbs` was calculated differently for each state.
 #' For California, `Species_Percent_Sampled * WEIGHT_OF_LANDING_LBS`.
 #' For Oregon, `Pdata$EXPANDED_SAMPLE_WEIGHT` and if missing, the same as California.
-#' For Washington, `Pdata$WEIGHT_OF_LANDING_LBS`, `Pdata$WEIGHT_OF_LANDING_LBS`, or
+#' For Washington, `Pdata$WEIGHT_OF_LANDING_LBS`, or
 #' `median(Pdata$WEIGHT_OF_LANDING_LBS)`.
 #' Then, if all else failed, per-year, state-specific medians.
 #'

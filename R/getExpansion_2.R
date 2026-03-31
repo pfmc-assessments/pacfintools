@@ -92,7 +92,11 @@ getExpansion_2 <- function(
     several.ok = FALSE,
     choices = c(measurements::conv_unit_options[["mass"]], "MT", "LB")
   )
-  Units <- switch(Units, MT = "metric_ton", LB = "lbs", Units)
+  Units <- switch(Units,
+    MT = "metric_ton",
+    LB = "lbs",
+    Units
+  )
 
   # Start clean
   Pdata$Expansion_Factor_2 <- NA

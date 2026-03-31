@@ -1,23 +1,8 @@
 #' Create a state column based on input column specified in `source`
 #'
-#' Create a categorical column that specifies which state each row is from.
 #'
 #' @details
-#' With the creation of the comprehensive bds table in PacFIN, the column called
-#' `SAMPLE_AGENCY` was deprecated; more specifically, the column is
-#' available but filled with `NULL` values.
-#' Thus, pacfintools no longer maintains `SAMPLE_AGENCY` that was being converted
-#' to `AGENCY_CODE` and all identification of
-#' state records should be based on `AGENCY_CODE` or `AGENCY_CODE`, where the latter is
-#' just the converted column name (see [cleanColumns]).
-#' `AGENCY_CODE` is a column created by PacFIN to identify which agency provided
-#' the data. In the 2019 sablefish data there were four unique values in `AGENCY_CODE`,
-#' * C - CDFW
-#' * O - ODFW
-#' * W - WDFW
-#' * M - `SAMPLE_AGENCY == NMFS Tiburon` samples from 1997.
-#' None of the `M` samples were in the comprehensive table as of 2021.
-#'
+#' Create a categorical column, `state`, based upon the `AGENCY_CODE`.
 #' It is no longer advisable as of February 14, 2021 to create states based on
 #' `PSMFC_CATCH_AREA_CODE` or `PSMFC_ARID` because areas are not mutually
 #' exclusive to a state. Previous code set areas `1[a-z]` to Washington,

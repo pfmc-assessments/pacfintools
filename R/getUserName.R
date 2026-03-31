@@ -38,8 +38,7 @@ getUserName <- function(
   stopifnot(length(un_split) == 2)
 
   database <- match.arg(database)
-  out <- switch(
-    database,
+  out <- switch(database,
     "PacFIN" = tolower(paste0(substr(un_split[1], 1, 1), un_split[2])),
     NA
   )

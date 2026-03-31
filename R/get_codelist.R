@@ -29,20 +29,20 @@
 #'   \item{TYPE : }{integer value of 1 (gear code), 2 (gear group), or 3 (all)}
 #'   \item{PACFIN_GEAR_CODE : }{three letter grid or gear type code}
 #'   \item{GROUP : }{three letter gear grouping code}
-#'   \item{ARID : }{mapping of sub area to areas}
+#'   \item{INPFC_AREA_TYPE_CODE : }{mapping of sub area to areas}
 #'   \item{INPFC : }{International North Pacific Fisheries Commission (INPFC) Area code used in PacFIN}
 #'   \item{TYPE : }{classification of tree structure, i.e., if it is a subarea}
 #'   \item{COUNCIL : }{the management council that the area falls within}
 #'   \item{PACFIN_PORT_CODE : }{character port code}
-#'   \item{AGID : }{agency code, e.g., "W" for Washington}
-#'   \item{AGENCY_PORT_CODE  : }{numberic port code}
+#'   \item{AGENCY_CODE : }{agency code, e.g., "W" for Washington}
+#'   \item{AGENCY_PORT_CODE : }{numeric port code}
 #'   \item{SHORT : }{short description}
 #'   \item{DESCRIPTION : }{long, detailed description}
 #' }
 #' @examples
 #' availablegrids <- get_codelist("GEAR")
 #' availableports <- get_codelist("PORT")
-#' availableports <- get_codelist("INPFC")
+#' availableinpfc <- get_codelist("INPFC")
 #'
 get_codelist <- function(
   x = c("GEAR", "INPFC", "PORT")
@@ -71,7 +71,9 @@ get_codelist.GEAR <- function(x) {
     function(x) gsub("^\\s*|\\s*$", "", x)
   ))
   all <- all[, -which(colnames(all) == "ENTERED")]
-  colnames(all)[2] <- "PACFIN_GEAR_CODE"
+  all$PACFIN_GEAR_CODE <- all$GRID
+  all <- all |>
+    dplyr::relocate(PACFIN_GEAR_CODE, .after = TYPE)
   return(all)
 }
 
@@ -86,7 +88,9 @@ get_codelist.INPFC <- function(x) {
   all[, "INPFC"] <- gsub("\\s*|\\\\|_", "", all[, grep("ARID", colnames(all))])
   all[, "SHORT"] <- all[["NAME"]]
   all <- all[, c("ARID", "INPFC", "TYPE", "COUNCIL", "SHORT", "DESCRIPTION")]
-  colnames(all)[1] <- "INPFC_AREA_TYPE_CODE"
+  all$INPFC_AREA_TYPE_CODE <- all$ARID
+  all <- all |>
+    dplyr::relocate(INPFC_AREA_TYPE_CODE, .before = ARID)
   return(all)
 }
 

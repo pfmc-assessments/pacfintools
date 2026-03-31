@@ -27,15 +27,14 @@ cleanColumns <- function(data) {
 #'
 #' Clean columns of PacFIN biological data
 #'
-#' Many column names are changed in the biological data to match what was
-#' used in legacy code. As time goes on the code will be reworked to use the
-#' new name coming from PacFIN. Columns not used in the code are removed.
+#' Remove unnecessary columns from a data frame from PacFIN to reduce the
+#' object size.
 #'
 #' @template data
-#' @return A data frame with fewer columns and some column names changed.
+#' @return A data frame with fewer columns
 #'
 cleanColumns.bds <- function(data) {
-  #master <- matrix(
+  # master <- matrix(
   #  scan(
   #    text = "
   #  Comp_FT                      vdrfd
@@ -86,10 +85,10 @@ cleanColumns.bds <- function(data) {
   #  ),
   #  ncol = 2,
   #  byrow = TRUE
-  #)
-  #colnames(master) <- c("raw", "vdrfd")
-  #matches <- match(colnames(data), master[, "raw"])
-  #colnames(data) <- ifelse(
+  # )
+  # colnames(master) <- c("raw", "vdrfd")
+  # matches <- match(colnames(data), master[, "raw"])
+  # colnames(data) <- ifelse(
   #  is.na(matches),
   #  colnames(data),
   #  master[matches, "vdrfd"]

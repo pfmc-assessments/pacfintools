@@ -17,7 +17,7 @@ Samples can be taken from unsorted landings (i.e., 'ocean run') or from sorted c
 
 ## Filtering
 ### Agencies
-All samples from agencies other than Washington, Oregon, and California, i.e, tribal sampling, are removed. 
+All samples from agencies other than Washington, Oregon, and California. 
 
 ### Sampling
 Random sampling method is the preferred sampling method. Market samples are the preferred sampling type. 
@@ -29,7 +29,7 @@ Ages are first taken from the best age available and then from age readers one t
 Fork length is the primary length type used if available. Secondarily, standard length and then total length become the measurement of choice. 
 
 #### Other length types
-For other length types, i.e., dorsal, unknown, pacfintools will first look to see if there is a valid fork length. Second, if there is not a fork-length measurement then it will use the general length information provided. 
+For other length types, i.e., dorsal, unknown, `pacfintools` will first look to see if there is a valid fork length. Second, if there is not a fork-length measurement then it will use the general length information provided. 
 
 #### Skates
 Skates are unique in that lengths are not typically collected. Instead, inter-spiracle widths, collected by Washington, and disk widths are converted to lengths. 
@@ -38,9 +38,6 @@ Skates are unique in that lengths are not typically collected. Instead, inter-sp
 Many samples were collected by Oregon using non-traditional sampling protocols in an effort to gain extra information about groundfish. For example, the Marine Recreational Information Program funded the collection of additional samples during the winter of 2011-2012. These 'special-permit' samples often do not collect all of the standard information collected by Oregon in their groundfish sampling program but they can provide additional auxiliary information for research topics related to but not directly informing stock assessments. 
 
 On March 19, 2019, Oregon made a correction to PacFIN that properly designated a collection of special-permit samples as SPxxx samples rather than ORxxx samples. The SPxxx sample number provides a flag to stock assessment scientists that the sample should not be used. Prior to 2019, these samples from the late 1970s and early 1980s were included in the data utilized from PacFIN for age and length compositions. The incorrect sample numbers can be found in the object labeled `badORnums`.
-
-### Sample weights
-Oregon and California have gone to great lengths to provide correct species-specific weights of samples. This information is stored in `Pdata[, "EXPANDED_SAMPLE_WEIGHT"]` and `Pdata[, "PACFIN_SPECIES_CODE"]`, respectively. All Oregon and California samples that are missing this information are removed from the data set expanded to create compositions. 
 
 ## Expansion
 Expansions are performed to account for fish that were not sampled or when sampling is unequal across stratums. Expansions are calculated twice, first for fish with lengths and second for fish with ages because less fish are typically aged than lengthed and weights used for the expansions should only include fish that provide information. For example, if 10 fish were lengthed but only five fish were aged the expansion for the ages should only be based on the weight of the aged fish. 
@@ -70,7 +67,7 @@ Unfortunately, the species-specific weight for a given tow or trip is not always
 Weights of the sample are found using the following three methods:
 
   1. Oregon provides the total weight of males, females, and unsexed fish within a given sample; these are summed to calculate the weight of all fish within the sample. 
-  2. The species-specific weight for the species of concern within that sample is provided by California as `PACFIN_SPECIES_CODE`.
+  2. The species-specific weight for the species of concern within that sample is provided by California as `SPECIES_WEIGHT_LBS`.
   3. The weight of all fish within the sample are summed. Fish weights are preferably empirically measured weights and secondarily calculated using a weight--length relationship. For fish in a sample without a length, the median length of all fish within the sample is used. 
 
 ### Stage-2 expansion
