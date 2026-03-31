@@ -302,36 +302,63 @@ cleanPacFIN <- function(
   # }
 
   #### Summary and return
-  # bad records: keep TRUEs
+  # Identify good records: keep TRUEs
   bad <- data[, 1:2]
-  bad[, "goodarea"] <- is.na(data$area)
-  bad[, "goodstype"] <- data$SAMPLE_TYPE %in% keep_sample_type
-  bad[, "goodsmeth"] <- data$SAMPLE_METHOD_CODE %in% keep_sample_method
-  bad[, "goodsno"] <- !is.na(data$SAMPLE_NUMBER)
-  bad[, "goodstate"] <- data[, "state"] %in% keep_states
-  bad[, "goodgear"] <- data[, "geargroup"] %in% keep_gears
-  bad[, "goodEXPANDED_SAMPLE_WEIGHT"] <- !(is.na(data[[
+  bad[, "badarea"] <- !is.na(data$area)
+  bad[, "badstype"] <- !data$SAMPLE_TYPE %in% keep_sample_type
+  bad[, "badsmeth"] <- !data$SAMPLE_METHOD_CODE %in% keep_sample_method
+  bad[, "badsno"] <- is.na(data$SAMPLE_NUMBER)
+  bad[, "badstate"] <- !data[, "state"] %in% keep_states
+  bad[, "badgear"] <- !data[, "geargroup"] %in% keep_gears
+  bad[, "bador_type_weight"] <- (is.na(data[[
     "EXPANDED_SAMPLE_WEIGHT"
   ]]) &
+    data[["SAMPLE_TYPE"]] %in% keep_sample_type &
     data[["state"]] == "OR")
-  bad[, "keep"] <- apply(bad[, grep("^good", colnames(bad))], 1, all)
+  bad[, "remove"] <- ifelse(
+    apply(bad[, grep("^bad", colnames(bad))], 1, sum) > 0,
+    yes = TRUE,
+    no = FALSE
+  )
+  bad[, "n_removed_reasons"] <- apply(
+    bad[, grep("^bad", colnames(bad))],
+    1,
+    sum
+  )
 
   # Report removals
   if (verbose) {
-    ntype <- sum(!bad[, "goodstype"])
-    nmethod <- sum(!bad[, "goodsmeth"])
-    nnumber <- sum(!bad[, "goodsno"])
+    narea <- sum(bad[, "badarea"])
+    ntype <- sum(bad[, "badstype"])
+    nmethod <- sum(bad[, "badsmeth"])
+    nnumber <- sum(bad[, "badsno"])
+    nstate <- sum(bad[, "badstate"])
+    ngear <- sum(bad[, "badgear"])
+    nweight_or <- sum(
+      !(is.na(data[[
+        "EXPANDED_SAMPLE_WEIGHT"
+      ]]) &
+        data[["SAMPLE_TYPE"]] %in% keep_sample_type &
+        data[["state"]] == "OR")
+    )
     nlength <- sum(is.na(data$lengthmm))
     nage <- sum(is.na(data$Age))
     nlenage <- sum(is.na(data$lengthmm) & is.na(data$Age))
-    nclean <- sum(bad[, "keep"])
-    nremoved <- NROW(data) - sum(bad[, "keep"])
+    nclean <- NROW(data) - sum(bad[, "remove"])
+    nremoved <- sum(bad[, "remove"])
+
     cli::cli_bullets(c(
       " " = "Summary of data processing and cleaning checks:",
+      "i" = "The number of records potentially removed if clean = TRUE are not mutually exclusive.",
+      "x" = "Number of records not in federal waters: {narea}",
       "x" = "Number of records not in keep_sample_type (SAMPLE_TYPE): {ntype}",
       "x" = "Number of records not in keep_sample_method (SAMPLE_METHOD_CODE): {nmethod}",
-      "x" = "Number of records with bad length type of NA: {nlength}",
-      "x" = "Number of records without length and Age: {nlenage}",
+      "x" = "Number of records without SAMPLE_NUMBER: {nnumber}",
+      "x" = "Number of records not in keep_states: {nstate}",
+      "x" = "Number of records not in keep_gears: {ngear}",
+      "x" = "Number of records in Oregon with a request sample type without EXPANDED_SAMPLE_WEIGHT: {nweight_or}",
+      "i" = "Number of records with bad length type of NA: {nlength}",
+      "i" = "Number of records without length and Age: {nlenage}",
       "i" = "Number of records: {NROW(Pdata)}",
       "i" = "Number of records remaining if clean = TRUE: {nclean}",
       "i" = "Number of records removed if clean = TRUE: {nremoved}"
@@ -346,9 +373,14 @@ cleanPacFIN <- function(
     }
   }
 
-  data[, "clean"] <- bad[, "keep"]
+  clean_vector <- ifelse(
+    bad[, "remove"] == TRUE,
+    yes = FALSE,
+    no = TRUE
+  )
+  data[, "clean"] <- clean_vector
   if (clean) {
-    data <- data[bad[, "keep"], ]
+    data <- data[clean_vector, ]
   }
 
   return(data)
