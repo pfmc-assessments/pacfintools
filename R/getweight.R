@@ -15,7 +15,7 @@
 #' @param weight A vector of fish weights, where the units for each
 #' measurement are specified in `unit.in`.
 #' @param unit.in A vector of units for each measurement in `weight`.
-#' Options include `KG`, `G`, `LB`, `P`, `UNK`. Where, the latter leads to
+#' Options include `KG`, `G`, `P`, `UNK`. Where, the latter leads to
 #' the assumption that your units are in grams and will be converted
 #' as such.
 #'

@@ -22,7 +22,7 @@ The output from \code{\link{getWLpars}} is formatted correctly as is.}
 measurement are specified in \code{unit.in}.}
 
 \item{unit.in}{A vector of units for each measurement in \code{weight}.
-Options include \code{KG}, \code{G}, \code{LB}, \code{P}, \code{UNK}. Where, the latter leads to
+Options include \code{KG}, \code{G}, \code{P}, \code{UNK}. Where, the latter leads to
 the assumption that your units are in grams and will be converted
 as such.}
 
