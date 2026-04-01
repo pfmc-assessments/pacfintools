@@ -168,7 +168,7 @@ cleanPacFIN <- function(
       when = "0.4.1",
       what = paste0("cleanPacFIN(savedir = )"),
       details = paste0(
-        "This function no calls plotCleaned() which used savedir to create and save plots. Please call this function separately if plots of cleaned data are needed."
+        "This function no longer calls plotCleaned() which used savedir to create and save plots. Please call this function separately if plots of cleaned data are needed."
       )
     )
   }
@@ -275,7 +275,7 @@ cleanPacFIN <- function(
 
   #### Weight (random units in)
   data[, "weightkg"] <- getweight(
-    length = lengthmm,
+    length = data[["lengthmm"]],
     weight = data[["FISH_WEIGHT"]],
     unit.in = data[["FISH_WEIGHT_UNITS"]],
     unit.out = "kg"
@@ -335,7 +335,7 @@ cleanPacFIN <- function(
       "x" = "Number of records without SAMPLE_NUMBER: {nnumber}",
       "x" = "Number of records not in keep_states: {nstate}",
       "x" = "Number of records not in keep_gears: {ngear}",
-      "i" = "Number of records with bad length type of NA: {nlength}. These lengths should be investigated further to determine if they can be used or not.",
+      "i" = "Number of records with length of NA: {nlength}. These lengths should be investigated further to determine if they can be used or not.",
       "i" = "Number of records without length and Age: {nlenage}",
       "i" = "Number of records: {NROW(Pdata)}",
       "i" = "Number of records remaining if clean = TRUE: {nclean}",
