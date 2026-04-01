@@ -328,16 +328,15 @@ cleanPacFIN <- function(
 
     cli::cli_bullets(c(
       " " = "Summary of data processing and cleaning checks:",
-      "i" = "The number of records potentially removed for the various reasons below if clean = TRUE are not mutually exclusive.",
+      "i" = "The number of records potentially removed for the various reasons below if clean = TRUE are notPdata mutually exclusive.",
       "x" = "Number of records not in federal waters: {narea}",
       "x" = "Number of records not in keep_sample_type (SAMPLE_TYPE): {ntype}",
       "x" = "Number of records not in keep_sample_method (SAMPLE_METHOD_CODE): {nmethod}",
       "x" = "Number of records without SAMPLE_NUMBER: {nnumber}",
       "x" = "Number of records not in keep_states: {nstate}",
       "x" = "Number of records not in keep_gears: {ngear}",
-      "i" = "Number of records with length of NA: {nlength}. These lengths should be investigated further to determine if they can be used or not.",
+      "i" = "Number of records with length of NA: {nlength}.",
       "i" = "Number of records without length and Age: {nlenage}",
-      "i" = "Number of records: {NROW(Pdata)}",
       "i" = "Number of records remaining if clean = TRUE: {nclean}",
       "i" = "Number of records removed if clean = TRUE: {nremoved}"
     ))

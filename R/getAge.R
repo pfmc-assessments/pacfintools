@@ -179,32 +179,17 @@ getAge <- function(
       sort(na.last = TRUE) |>
       sQuote() |>
       glue::glue_collapse(sep = ", ", last = " and ")
-    table_summary <- dplyr::mutate(
+    table_summary_na <- dplyr::mutate(
       .data = Pdata,
       final_age = out,
       age = rlang::eval_tidy(dplyr::sym(column_with_age))
     ) |>
       dplyr::count(age, final_age) |>
-      dplyr::arrange(final_age)
-    table_summary_na <- dplyr::filter(
-      .data = table_summary,
-      is.na(final_age) &
-        !is.na(age)
-    ) |>
+      dplyr::arrange(final_age) |>
+      dplyr::filter(is.na(final_age) & !is.na(age)) |>
       dplyr::select(-final_age)
-    table_summary_n_age <- dplyr::filter(
-      .data = table_summary,
-      !is.na(final_age)
-    ) |>
-      dplyr::select(, -age) |>
-      tidyr::complete(
-        final_age = 0:max(final_age, na.rm = TRUE),
-        fill = list(n = 0)
-      ) |>
-      dplyr::pull(n) |>
-      paste(collapse = ", ")
     text_n_na <- if (NROW(table_summary_na) > 0) {
-      NROW(table_summary_na)
+      sum(table_summary_na[["n"]])
     } else {
       "0"
     }
@@ -220,23 +205,13 @@ getAge <- function(
         all_ages != ""
       ) |>
       NROW()
-    text_n_missing_final <- glue::glue(
-      "{text_n_missing_final} rows were missing a final age"
-    )
-    names(text_n_missing_final) <- ifelse(
-      substr(text_n_missing_final, 1, 1) == "0",
-      "v",
-      "x"
-    )
 
     # Print messages to users
     cli::cli_bullets(c(
       " " = "{.fn getAge} summary information -",
-      "i" = "{text_n_missing_final}",
-      "i" = "Age methods {text_age_methods} were present.",
-      "i" = "Age methods {glue::glue_collapse(sQuote(keep), sep = ', ', last = ' and ')} were desired.",
-      "i" = "{sum(table_summary_na[['n']])} ages with uage methods not included in keep_age_method.",
-      "v" = "Total number of ages by age (years) changed to `NA` is {text_n_na}"
+      "i" = "{text_n_missing_final} rows were missing a final age in FINAL_FISH_AGE_IN_YEARS.",
+      "i" = "Age methods {text_age_methods} were present. Age methods {glue::glue_collapse(sQuote(keep), sep = ', ', last = ' and ')} were included in keep_age_method.",
+      "i" = "{text_n_na} ages with age methods not included in keep_age_method where Age is set to NA."
     ))
   }
 

@@ -80,21 +80,20 @@ getAgeMethod <- function(Pdata, verbose = TRUE) {
   })
   # Add it to the internal data frame so it is included in the printed summary
   # even though Pdata is not returned, just used_method
-  Pdata[, "age_method"] <- used_method
+  #Pdata[, "age_method"] <- used_method
 
-  if (verbose) {
-    returned_methods_n <- table(used_method, useNA = "always")
-    text_returned_methods_n <- glue::glue(
-      "{names(returned_methods_n)} (n = {returned_methods_n})"
-    ) |>
-      glue::glue_collapse(sep = ", ", last = " and ")
-    cli::cli_bullets(c(
-      " " = "{.fn getAgeMethod} summary information -",
-      "i" = "Age methods were originally coded to {text_original_methods}",
-      "i" = "Age methods are now coded to {text_returned_methods_n}"
-    ))
-    #print(summaryAgeMethod(Pdata, verbose = TRUE))
-  }
+  #if (verbose) {
+  #  returned_methods_n <- table(used_method, useNA = "always")
+  #  text_returned_methods_n <- glue::glue(
+  #    "{names(returned_methods_n)} (n = {returned_methods_n})"
+  #  ) |>
+  #    glue::glue_collapse(sep = ", ", last = " and ")
+  #  cli::cli_bullets(c(
+  #    " " = "{.fn getAgeMethod} summary information -",
+  #    "i" = "Age methods were originally coded to {text_original_methods}",
+  #    "i" = "Age methods are now coded to {text_returned_methods_n}"
+  #  ))
+  #}
 
   return(used_method)
 }

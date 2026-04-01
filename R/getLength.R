@@ -210,6 +210,16 @@ getLength <- function(Pdata, keep, verbose = TRUE) {
   )
 
   if (verbose) {
+    available_length_types <- table(
+      Pdata[[var_fish_length_type]],
+      useNA = "always"
+    )
+    message_available_length_types <- paste0(
+      names(available_length_types),
+      " (",
+      available_length_types,
+      ")"
+    )
     types <- unique(Pdata[
       !is.na(Pdata[["length"]]),
       var_fish_length_type
@@ -218,10 +228,9 @@ getLength <- function(Pdata, keep, verbose = TRUE) {
     n <- sum(Pdata[['FISH_LENGTH_UNITS']] == 'CM', na.rm = TRUE)
     cli::cli_bullets(c(
       " " = "{.fn getLength} summary information -",
-      "i" = "The following length types were kept in the data: {types}",
-      "i" = "Lengths range from {min(Pdata[['length']], na.rm = TRUE)}--{max(Pdata[['length']], na.rm = TRUE)} (mm)",
-      "v" = "{n0} fish had lengths of 0 (mm) and were changed to NAs",
-      "i" = "{n} lengths (cm) and were converted to mm."
+      "i" = "The following length types were available in the data: {message_available_length_types}.",
+      "i" = "The following length types were kept in the data: {types}.",
+      "i" = "Lengths range from {min(Pdata[['length']], na.rm = TRUE)}--{max(Pdata[['length']], na.rm = TRUE)} (mm)"
     ))
     if ("D" %in% types) {
       cli::cli_alert_danger(
