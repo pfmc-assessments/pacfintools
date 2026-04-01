@@ -159,12 +159,16 @@ getExpansion_1 <- function(
     ))
   }
 
+  #Used in plotting later on
+  NA_EF1 <- Pdata[is.na(Pdata$Expansion_Factor_1_L), ]
+  nNA <- NROW(NA_EF1)
+  # Counts to report
+  n_na <- sum(is.na(Pdata$Expansion_Factor_1_L))
+  n_inf <- sum(
+    !is.na(Pdata$Expansion_Factor_1_L) &
+      !is.finite(Pdata$Expansion_Factor_1_L)
+  )
   if (verbose) {
-    n_na <- sum(is.na(Pdata$Expansion_Factor_1_L))
-    n_inf <- sum(
-      !is.na(Pdata$Expansion_Factor_1_L) &
-        !is.finite(Pdata$Expansion_Factor_1_L)
-    )
     cli::cli_bullets(c(
       "x" = "{n_na} {.code NA} Expansion_Factor_1 values replaced by 1.",
       "x" = "{n_inf} not finite numbers and Expansion_Factor_1 values replaced by 1."
