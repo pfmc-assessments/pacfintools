@@ -47,7 +47,7 @@ EF1_Numerator <- function(
       details = "Please use savedir to create and save plots."
     )
   }
-  # Define trip samle pounds based upon either EXPANDED_SAMPLE_WEIGHT or WEIGHT_OF_LANDING_LBS
+  # Define trip sample pounds based upon either EXPANDED_SAMPLE_WEIGHT or WEIGHT_OF_LANDING_LBS
   # Oregon primarily uses EXPANDED_SAMPLE_WEIGHT
   # California and Washington primarily use WEIGHT OF LANDED LBS
   Pdata$Trip_Sampled_Lbs <- dplyr::coalesce(
