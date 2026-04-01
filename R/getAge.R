@@ -191,7 +191,7 @@ getAge <- function(
     text_n_na <- if (NROW(table_summary_na) > 0) {
       sum(table_summary_na[["n"]])
     } else {
-      "0"
+      0
     }
     text_n_missing_final <- tidyr::unite(
       data = Pdata,
@@ -210,9 +210,19 @@ getAge <- function(
     cli::cli_bullets(c(
       " " = "{.fn getAge} summary information -",
       "i" = "{text_n_missing_final} rows were missing a final age in FINAL_FISH_AGE_IN_YEARS.",
-      "i" = "Age methods {text_age_methods} were present. Age methods {glue::glue_collapse(sQuote(keep), sep = ', ', last = ' and ')} were included in keep_age_method.",
-      "i" = "{text_n_na} ages with age methods not included in keep_age_method where Age is set to NA."
+      "i" = "Age methods {text_age_methods} were present. Age methods {glue::glue_collapse(sQuote(keep), sep = ', ', last = ' and ')} were included in keep_age_method."
     ))
+    percent_removing <- text_n_na /
+      sum(!is.na(Pdata[["FINAL_FISH_AGE_IN_YEARS"]]))
+    if (percent_removing > 0.05) {
+      cli::cli_alert_warning(
+        "{text_n_na} ages with age methods not included in keep_age_method where Age is set to NA."
+      )
+    } else {
+      cli::cli_alert_info(
+        "{text_n_na} ages with age methods not included in keep_age_method where Age is set to NA."
+      )
+    }
   }
 
   return(out)
