@@ -6,7 +6,7 @@
 #' in [cleanPacFIN]. If a specialized season structure is required,
 #' `getSeason` should be run immediately after [cleanPacFIN].
 #'
-#' @inheritParams cleanPacFIN
+#' @param Pdata A data object of biological data created using [cleanPacFIN()]].
 #' @param season_type Specify a `numeric` value for season type.
 #' If negative then all months will be assigned to season `1`.
 #' If `0` then seasons will be assigned from `Pdata$SAMPLE_MONTH`,
@@ -22,8 +22,10 @@
 #' @param yearDown Used to provide a list of months (i.e., `1:12`)
 #' for which to adjust the year (`Pdata$fishyr`) down. For example,
 #' if winter months belong to the previous year then use `yearUp = 1:2`.
-#' @param plotResults A logical value specifying if plots should or should not
+#' @param plotResults Deprecated. A logical value specifying if plots should or should not
 #' be created and shown in the console.
+#' @param savedir Directory where output plots should be saved. The default
+#' argument is NULL.
 #' @inheritParams cleanPacFIN
 #'
 #' @return An additional column `season` is added to `Pdata`.
@@ -44,9 +46,17 @@ getSeason <- function(
   season_type = -1,
   yearUp = NULL,
   yearDown = NULL,
-  plotResults = FALSE,
+  plotResults = lifecycle::deprecated(),
+  savedir = NULL,
   verbose = TRUE
 ) {
+  if (lifecycle::is_present(plotResults)) {
+    lifecycle::deprecate_warn(
+      when = "0.4.1",
+      what = paste0("getSeason(plotResults = )"),
+      details = "Please use getSeason(savedir = ) to save the plot to disk instead of showing it in the console."
+    )
+  }
   if (season_type < 0) {
     Pdata$season <- 1
   }
@@ -98,7 +108,7 @@ getSeason <- function(
     }
   } # End if yearDown
 
-  if (plotResults) {
+  if (!is.null(savedir)) {
     plot_data <- Pdata |>
       dplyr::mutate(
         season = as.factor(season),

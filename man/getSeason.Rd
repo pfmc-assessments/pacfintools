@@ -9,15 +9,13 @@ getSeason(
   season_type = -1,
   yearUp = NULL,
   yearDown = NULL,
-  plotResults = FALSE,
+  plotResults = lifecycle::deprecated(),
+  savedir = NULL,
   verbose = TRUE
 )
 }
 \arguments{
-\item{Pdata}{A data frame returned from \code{\link[=PullBDS.PacFIN]{PullBDS.PacFIN()}} containing
-biological samples. These data are stored in the Pacific Fishieries
-Information Network (PacFIN) data warehouse, which originated in 2014 and
-are pulled using sql calls.}
+\item{Pdata}{A data object of biological data created using \code{\link[=cleanPacFIN]{cleanPacFIN()}}].}
 
 \item{season_type}{Specify a \code{numeric} value for season type.
 If negative then all months will be assigned to season \code{1}.
@@ -37,8 +35,11 @@ if winter months belong to the following year then use \code{yearUp = 11:12}.}
 for which to adjust the year (\code{Pdata$fishyr}) down. For example,
 if winter months belong to the previous year then use \code{yearUp = 1:2}.}
 
-\item{plotResults}{A logical value specifying if plots should or should not
+\item{plotResults}{Deprecated. A logical value specifying if plots should or should not
 be created and shown in the console.}
+
+\item{savedir}{Directory where output plots should be saved. The default
+argument is NULL.}
 
 \item{verbose}{A logical specifying if output should be written to the
 screen or not. Good for testing and exploring your data but can be turned

@@ -5,8 +5,8 @@
 #' are meant to be included in the stock assessment document, but rather,
 #' are for exploring the data.
 #'
-#' @inheritParams cleanPacFIN
-#' @template savedir
+#' @param Pdata A data object created using [cleanPacFIN()]].
+#' @param savedir Directory where output will be saved. The directory where the file should be saved.
 #' @return The following figures are saved to `savedir`:
 #'   * PacFIN_comp_Nbystate.png
 #'   * PacFIN_comp_distributions.png
@@ -22,7 +22,7 @@
 #' @seealso This function is called by [cleanPacFIN] and heavily
 #' relies on [getGearGroup] to create gear categories.
 #'
-plotCleaned <- function(Pdata, savedir = getwd()) {
+plotCleaned <- function(Pdata, savedir) {
   #### Checks
   SPID <- sort(unique(Pdata$PACFIN_SPECIES_CODE))
   if (length(SPID) > 1) {
