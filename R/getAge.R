@@ -108,7 +108,7 @@ getAge <- function(
       "`getAge()` only works with data pulled by `PullBDS.PacFIN()`, 
       which moves double reads to columns 
       rather than leaving them in rows within AGE_IN_YEARS.
-      Please change `Pdata` to recent output from `PullBDS.PacFIN()."
+      Please change `Pdata` to recent output from `PullBDS.PacFIN()`."
     )
   }
   keep <- unique(codify_age_method(keep))
@@ -235,8 +235,8 @@ getAge <- function(
       "i" = "{text_n_missing_final}",
       "i" = "Age methods {text_age_methods} were present.",
       "i" = "Age methods {glue::glue_collapse(sQuote(keep), sep = ', ', last = ' and ')} were desired.",
-      "i" = "{sum(table_summary_na[['n']])} ages used undesired age methods.",
-      "v" = "Number of ages by age (years) changed to `NA` is {paste(text_n_na, collapse = ', ')}"
+      "i" = "{sum(table_summary_na[['n']])} ages with uage methods not included in keep_age_method.",
+      "v" = "Total number of ages by age (years) changed to `NA` is {text_n_na}"
     ))
   }
 

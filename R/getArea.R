@@ -93,9 +93,9 @@ getArea <- function(Pdata, verbose = TRUE) {
     n_eez <- sum(out == "Outside EEZ", na.rm = TRUE)
     cli::cli_bullets(c(
       " " = "{.fn getArea} summary information -",
-      "i" = "There were {n_sound} records determined to be from Sound and Straits (4A) and were removed.",
-      "i" = "There were {n_can} records determined to be from Canadian waters (5B) and were removed.",
-      "i" = "There were {n_eez} records determined to be from outside the EEZ (9U) and were removed."
+      "i" = "There were {n_sound} records determined to be from Sound and Straits (4A).",
+      "i" = "There were {n_can} records determined to be from Canadian waters (5B).",
+      "i" = "There were {n_eez} records determined to be from outside the EEZ (9U)."
     ))
   }
   return(out)
