@@ -85,6 +85,22 @@ getExpansion_2 <- function(
   }
 
   nwfscSurvey::check_dir(dir = savedir, verbose = verbose)
+  # Check for matching years between Pdata and Catch data
+  if (length(unique(Pdata$fishyr)) == 0) {
+    cli::cli_abort("Pdata must have a column named fishyr.")
+  }
+  years_in_catch <- unique(Catch[, grep(
+    "year",
+    colnames(Catch),
+    ignore.case = TRUE
+  )])
+  years_in_pdata <- unique(Pdata$fishyr)
+  if (any(!years_in_pdata %in% years_in_catch)) {
+    cli::cli_abort(
+      "The following years are in Pdata but not in Catch: {paste(years_in_pdata[!years_in_pdata %in% years_in_catch], collapse = ', ')}.
+      In order to perform the second stage expansion a catch values is required for all Pdata years."
+    )
+  }
   #### Set up
   # Check Unit input
   Units <- match.arg(
@@ -92,11 +108,7 @@ getExpansion_2 <- function(
     several.ok = FALSE,
     choices = c(measurements::conv_unit_options[["mass"]], "MT", "LB")
   )
-  Units <- switch(Units,
-    MT = "metric_ton",
-    LB = "lbs",
-    Units
-  )
+  Units <- switch(Units, MT = "metric_ton", LB = "lbs", Units)
 
   # Start clean
   Pdata$Expansion_Factor_2 <- NA
@@ -147,11 +159,10 @@ getExpansion_2 <- function(
 
     if (sum(Pstrat %in% Catchgears) == 0) {
       cli::cli_abort(
-        "No Pdata stratifications,\n",
-        paste(Pstrat, collapse = ", "),
-        "\n",
-        "were found in catch columns,\n",
-        paste(Catchgears, collapse = ", ")
+        "No Pdata stratifications {paste(Pstrat, collapse = ",
+        ")} were found in catch columns,
+        {paste(Catchgears, collapse = ",
+        ")}"
       )
     } else {
       Pdata <- Pdata[Pdata[, "stratification"] %in% colnames(Catch), ]
@@ -160,14 +171,16 @@ getExpansion_2 <- function(
         unique(Pdata[, "stratification"])
       )]
       if (verbose) {
-        cli::cli_inform("Data were truncated to just these stratifications:")
-        cli::cli_inform(
-          "Catch: ",
-          paste(sort(names(Catch)[-1]), collapse = ", ")
+        cli::cli_alert_info(
+          "Data were truncated to just these stratifications:"
         )
-        cli::cli_inform(
-          "Pdata: ",
-          paste(sort(unique(Pdata$stratification)), collapse = ", ")
+        cli::cli_alert_warning(
+          "Catch: {paste(sort(names(Catch)[-1]), collapse = ",
+          ")}"
+        )
+        cli::cli_alert_warning(
+          "Pdata: {paste(sort(unique(Pdata$stratification)), collapse = ",
+          ")}"
         )
       }
     }
@@ -294,15 +307,9 @@ getExpansion_2 <- function(
   #### Summary information
   if (verbose) {
     cli::cli_bullets(c(
-      "i" = glue::glue(
-        "There were {nNA} NA records replaced with a value of 1 during second-stage expansions."
-      ),
-      "i" = glue::glue(
-        "Maximum second-stage length expansion capped at the {maxExp} quantile of {round(max(Pdata$Final_Sample_Size_L), 2)}"
-      ),
-      "i" = glue::glue(
-        "Maximum second-stage age expansion capped at the {maxExp} quantile of {round(max(Pdata$Final_Sample_Size_A), 2)}"
-      )
+      "i" = "There were {nNA} NA records replaced with a value of 1 during second-stage expansions.",
+      "i" = "Maximum second-stage length expansion capped at the {maxExp} quantile of {round(max(Pdata$Final_Sample_Size_L), 2)}",
+      "i" = "Maximum second-stage age expansion capped at the {maxExp} quantile of {round(max(Pdata$Final_Sample_Size_A), 2)}"
     ))
   }
 
@@ -320,7 +327,7 @@ getExpansion_2 <- function(
         main = "Second-stage expansion values of NA replaced by 1"
       )
     } else {
-      cli::cli_inform(
+      cli::cli_alert_info(
         "Specify savedir if you want a figure to show the NA Expansion_Factor_2 values replaced by 1."
       )
     }
@@ -337,5 +344,5 @@ getExpansion_2 <- function(
     )
   }
 
-  invisible(Pdata)
-} # End function getExpansion_2
+  return(Pdata)
+}
