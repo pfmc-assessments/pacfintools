@@ -229,6 +229,11 @@ cleanPacFIN <- function(
   ] <- "M"
 
   #### Sex
+  if (verbose) {
+    cli::cli_alert_info(
+      "nwfscSurvey::codify_sex() summary information -"
+    )
+  }
   data[, "SEX_CODE"] <- nwfscSurvey::codify_sex(
     data[, "SEX_CODE"]
   )

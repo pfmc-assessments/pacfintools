@@ -216,7 +216,8 @@ getAge <- function(
       sum(!is.na(Pdata[["FINAL_FISH_AGE_IN_YEARS"]]))
     if (percent_removing > 0.05) {
       cli::cli_alert_warning(
-        "{text_n_na} ages with age methods not included in keep_age_method where Age is set to NA."
+        "{text_n_na} ages with age methods not included in keep_age_method where Age is set to NA.
+        This is more than 5% of the available ages data, investigate if you are missing important age data."
       )
     } else {
       cli::cli_alert_info(

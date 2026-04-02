@@ -226,12 +226,21 @@ getLength <- function(Pdata, keep, verbose = TRUE) {
     ])
     n0 <- sum(Pdata[["length"]] == 0, na.rm = TRUE)
     n <- sum(Pdata[['FISH_LENGTH_UNITS']] == 'CM', na.rm = TRUE)
+    n_not_include <- NROW(Pdata) -
+      sum(Pdata[["FISH_LENGTH_TYPE_CODE"]] %in% keep)
     cli::cli_bullets(c(
       " " = "{.fn getLength} summary information -",
       "i" = "The following length types were available in the data: {message_available_length_types}.",
       "i" = "The following length types were kept in the data: {types}.",
-      "i" = "Lengths range from {min(Pdata[['length']], na.rm = TRUE)}--{max(Pdata[['length']], na.rm = TRUE)} (mm)"
+      "i" = "Lengths range from {min(Pdata[['length']], na.rm = TRUE)}--{max(Pdata[['length']], na.rm = TRUE)} (mm)."
     ))
+    if (n_not_include / NROW(Pdata) > 0.05) {
+      cli::cli_alert_warning(
+        "{n_not_include} lengths were not included because their FISH_LENGTH_TYPE_CODE was not in keep_length_type with lengthcm set to NA. 
+        This is more than 5% of the data, investigate if you are missing important length data."
+      )
+    }
+
     if ("D" %in% types) {
       cli::cli_alert_danger(
         "The data includes dorsal lengths and should be investigated to ensure that these lengths should be used."
