@@ -69,7 +69,7 @@
 getExpansion_2 <- function(
   Pdata,
   Catch,
-  Units = "LB",
+  Units = "MT",
   Convert = lifecycle::deprecated(),
   maxExp = 0.95,
   stratification.cols,
@@ -137,8 +137,7 @@ getExpansion_2 <- function(
         }
       } else {
         cli::cli_abort(
-          "Pdata must have stratification column or provide
-          {.var stratification.cols}."
+          "Pdata must have stratification column or provide {.var stratification.cols}."
         )
       }
     }
@@ -151,40 +150,14 @@ getExpansion_2 <- function(
   Catchgears <- sort(names(Catch)[-1])
   Pstrat <- sort(unique(Pdata$stratification))
   if (!identical(Pstrat, Catchgears)) {
-    out_message <- paste(collapse = ", ", Catchgears)
-    cli::cli_inform("Catch names: {out_message}")
-    out_message <- paste(collapse = ", ", Pstrat)
-    cli::cli_inform("Data strata: {out_message}")
+    out_message_catchgears <- paste(collapse = ", ", Catchgears)
+    out_message_pstrat <- paste(collapse = ", ", Pstrat)
+    cli::cli_bullets(c(
+      "i" = "Catch names: {out_message_catchgears}",
+      "i" = "Data strata: {out_message_pstrat}"
+    ))
     cli::cli_abort("Mismatch between strata in dataset and names in catch.")
-
-    if (sum(Pstrat %in% Catchgears) == 0) {
-      cli::cli_abort(
-        "No Pdata stratifications {paste(Pstrat, collapse = ",
-        ")} were found in catch columns,
-        {paste(Catchgears, collapse = ",
-        ")}"
-      )
-    } else {
-      Pdata <- Pdata[Pdata[, "stratification"] %in% colnames(Catch), ]
-      Catch <- Catch[, c(
-        colnames(Catch)[yearcol],
-        unique(Pdata[, "stratification"])
-      )]
-      if (verbose) {
-        cli::cli_alert_info(
-          "Data were truncated to just these stratifications:"
-        )
-        cli::cli_alert_warning(
-          "Catch: {paste(sort(names(Catch)[-1]), collapse = ",
-          ")}"
-        )
-        cli::cli_alert_warning(
-          "Pdata: {paste(sort(unique(Pdata$stratification)), collapse = ",
-          ")}"
-        )
-      }
-    }
-  } # End if
+  }
 
   # Convert Catch to lbs.
   Catch[, -1] <- measurements::conv_unit(
@@ -238,28 +211,9 @@ getExpansion_2 <- function(
       cli::cli_alert_danger(
         "There are {sum(tows$catch == 0)} bds records where catch was 0 in the Catch
         file for the requested stratification. The following years and stratifications
-        have 0 catch but bds data: {missing_data}"
+        have 0 catch but bds data: {missing_data}."
       )
     }
-  }
-
-  # Find which trips don't have catch values associated with them
-  trips_without_catch <- dplyr::filter(tows, is.na(catch))
-  if (NROW(trips_without_catch) > 0) {
-    NoCatch <- dplyr::group_by(
-      .data = trips_without_catch,
-      fishyr,
-      stratification
-    ) |>
-      dplyr::count(Sum_Sampled_Lbs)
-    if (length(NoCatch) > 0 && verbose) {
-      cli::cli_alert_danger(
-        "The following years and stratification are not included in the Catch
-        file but were found for in the Pdata, where n is the number of rows
-        with missing Catch information:"
-      )
-      print(NoCatch)
-    } # End if
   }
 
   # Expansion is calculated by dividing the catch by the Sum_Sampled_Lbs.
@@ -288,9 +242,21 @@ getExpansion_2 <- function(
     "EF2"
   )[[1]]
 
-  NA_EF2 <- Pdata[is.na(Pdata$Expansion_Factor_2), ]
-  nNA <- nrow(NA_EF2)
-  Pdata$Expansion_Factor_2[is.na(Pdata$Expansion_Factor_2)] <- 1
+  exp_factor_range <- round(quantile(Pdata$Expansion_Factor_2, 1), 2)
+  length_exp_factor_range <- round(
+    quantile(
+      Pdata$Expansion_Factor_2 * Pdata$Expansion_Factor_1_L,
+      1
+    ),
+    2
+  )
+  age_exp_factor_range <- round(
+    quantile(
+      Pdata$Expansion_Factor_2 * Pdata$Expansion_Factor_1_A,
+      1
+    ),
+    2
+  )
   Pdata$Expansion_Factor_2 <- capValues(
     DataCol = Pdata$Expansion_Factor_2,
     maxVal = maxExp
@@ -307,31 +273,11 @@ getExpansion_2 <- function(
   #### Summary information
   if (verbose) {
     cli::cli_bullets(c(
-      "i" = "There were {nNA} NA records replaced with a value of 1 during second-stage expansions.",
-      "i" = "Maximum second-stage length expansion capped at the {maxExp} quantile of {round(max(Pdata$Final_Sample_Size_L), 2)}",
-      "i" = "Maximum second-stage age expansion capped at the {maxExp} quantile of {round(max(Pdata$Final_Sample_Size_A), 2)}"
+      "i" = "Maximum second-stage Expansion_Factor is {exp_factor_range} and is capped at {maxExp} quantile of {round(max(Pdata$Expansion_Factor_2), 2)}",
+      "i" = "Maximum second-stage length expansion is {length_exp_factor_range} and is capped at the {maxExp} quantile of {round(max(Pdata$Final_Sample_Size_L), 2)}",
+      "i" = "Maximum second-stage age expansion is {age_exp_factor_range} and is capped at the {maxExp} quantile of {round(max(Pdata$Final_Sample_Size_A), 2)}"
     ))
   }
-
-  if (nNA > 0) {
-    NA_EF2[, "OBSERVED_FREQUENCY"] <- 1
-    if (!is.null(savedir)) {
-      grDevices::png(file.path(savedir, "PacFIN_exp2_NAreplace.png"))
-      on.exit(grDevices::dev.off(), add = TRUE, after = FALSE)
-      graphics::barplot(
-        stats::xtabs(NA_EF2$OBSERVED_FREQUENCY ~ NA_EF2$state + NA_EF2$fishyr),
-        col = grDevices::rainbow(3),
-        legend.text = TRUE,
-        xlab = "Year",
-        ylab = "Samples",
-        main = "Second-stage expansion values of NA replaced by 1"
-      )
-    } else {
-      cli::cli_alert_info(
-        "Specify savedir if you want a figure to show the NA Expansion_Factor_2 values replaced by 1."
-      )
-    }
-  } # End if
 
   if (!is.null(savedir)) {
     grDevices::png(file.path(savedir, "PacFIN_exp2_summarybyyear.png"))
