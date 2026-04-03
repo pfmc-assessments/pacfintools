@@ -19,7 +19,7 @@ Other, more standard lengths, are filtered for types in keep."><!-- mathjax --><
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pacfintools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
       </span>
     </div>
 
@@ -58,7 +58,7 @@ Other, more standard lengths, are filtered for types in <code>keep</code>.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">getLength</span><span class="op">(</span><span class="va">Pdata</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">keep</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">getLength</span><span class="op">(</span><span class="va">Pdata</span>, <span class="va">keep</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -72,19 +72,19 @@ Information Network (PacFIN) data warehouse, which originated in 2014 and
 are pulled using sql calls.</p></dd>
 
 
+<dt id="arg-keep">keep<a class="anchor" aria-label="anchor" href="#arg-keep"></a></dt>
+<dd><p>A vector of values that represent what you want to keep. Values
+of <code>NA</code>, <code>""</code>, and numeric values are acceptable. Often, it is helpful to
+run `unique(, useNA = "always") on the relevant data prior to running the
+function to see what types are present.</p></dd>
+
+
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>A logical specifying if output should be written to the
 screen or not. Good for testing and exploring your data but can be turned
 off when output indicates information that you already know. The printing
 of output to the screen does not affect any of the returned objects. The
 default is to always print to the screen, i.e., <code>verbose = TRUE</code>.</p></dd>
-
-
-<dt id="arg-keep">keep<a class="anchor" aria-label="anchor" href="#arg-keep"></a></dt>
-<dd><p>A vector of values that represent what you want to keep. Values
-of <code>NA</code>, <code>""</code>, and numeric values are acceptable. Often, it is helpful to
-run `unique(, useNA = "always") on the relevant data prior to running the
-function to see what types are present.</p></dd>
 
 </dl></div>
     <div id="value">

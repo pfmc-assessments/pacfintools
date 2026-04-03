@@ -20,7 +20,7 @@ are for exploring the data."><!-- mathjax --><script src="https://cdnjs.cloudfla
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pacfintools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
       </span>
     </div>
 
@@ -60,7 +60,7 @@ are for exploring the data.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plotCleaned</span><span class="op">(</span><span class="va">Pdata</span>, savedir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plotCleaned</span><span class="op">(</span><span class="va">Pdata</span>, <span class="va">savedir</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -68,15 +68,11 @@ are for exploring the data.</p>
 
 
 <dl><dt id="arg-pdata">Pdata<a class="anchor" aria-label="anchor" href="#arg-pdata"></a></dt>
-<dd><p>A data frame returned from <code><a href="PullBDS.PacFIN.html">PullBDS.PacFIN()</a></code> containing
-biological samples. These data are stored in the Pacific Fishieries
-Information Network (PacFIN) data warehouse, which originated in 2014 and
-are pulled using sql calls.</p></dd>
+<dd><p>A data object created using <code><a href="cleanPacFIN.html">cleanPacFIN()</a></code>].</p></dd>
 
 
 <dt id="arg-savedir">savedir<a class="anchor" aria-label="anchor" href="#arg-savedir"></a></dt>
-<dd><p>A file path to the directory where the results will be saved.
-The default is NULL.</p></dd>
+<dd><p>Directory where output will be saved. The directory where the file should be saved.</p></dd>
 
 </dl></div>
     <div id="value">

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pacfintools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">getGearGroup</span><span class="op">(</span><span class="va">Pdata</span>, spp <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">getGearGroup</span><span class="op">(</span><span class="va">Pdata</span>, keep_gears <span class="op">=</span> <span class="cn">NULL</span>, spp <span class="op">=</span> <span class="cn">NULL</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -64,6 +64,25 @@
 <dl><dt id="arg-pdata">Pdata<a class="anchor" aria-label="anchor" href="#arg-pdata"></a></dt>
 <dd><p>A data frame, typically one extracted from PacFIN but for this
 function just one column is needed, <code>PACFIN_GEAR_CODE</code>.</p></dd>
+
+
+<dt id="arg-keep-gears">keep_gears<a class="anchor" aria-label="anchor" href="#arg-keep-gears"></a></dt>
+<dd><p>A character vector including the gear types you want
+to label as unique fleets. Order matters and will define fleet numbering.
+If the argument is missing, which is the default, then all found gear
+groups are maintained and ordered alphabetically. For more details see
+<code>getGearGroup()</code>, which lists a link where you can find the available gear
+groupings and how they link to <code>"PACFIN_GEAR_CODE"</code> within your data. The vector
+supplied to this argument should consist of only options available in
+<code>unique(GearTable[["GROUP"]])</code>.
+Typical entries will include character values
+such as <code>HKL</code>, <code>POT</code>, <code>TWL</code>, where the latter is short for all non-shrimp
+trawls and <code>TWS</code> is shrimp trawls. Other gear identification codes and
+their definitions include <code>DRG</code> which is dredge gear, <code>MSC</code> which is all
+other miscellaneous gear such as diving or river trawls, <code>NET</code> which is all
+non-trawl net gear, <code>NTW</code> which is non-trawl gear, and <code>TLS</code> which is
+trolling gear. As a special case, <code>MID</code> is available for spiny dogfish to
+extract mid-water trawl data as a separate fleet.</p></dd>
 
 
 <dt id="arg-spp">spp<a class="anchor" aria-label="anchor" href="#arg-spp"></a></dt>
@@ -114,10 +133,10 @@ to the matching available in the table pulled from online.</p>
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">gears</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PRT"</span>, <span class="st">"FPT"</span>, <span class="st">"TWL"</span>, <span class="st">"MDP"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu">getGearGroup</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>PACFIN_GEAR_CODE <span class="op">=</span> <span class="va">gears</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Gear groupings reflect those in the table at</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> https://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/gr.txt</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> `PACFIN_GEAR_CODE` was used to create `geargroup`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> geargroup includes: MDP (1), POT (1), and TWL (2)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   `getGearGroup()` summary information -</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> geargroup includes: ALL (1), MDP (1), POT (1), and TWL (1)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The following gears were not included in keep_gears and will be removed if</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   clean = TRUE: ALL (1), MDP (1), POT (1), and TWL (1).</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

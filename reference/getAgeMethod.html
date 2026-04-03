@@ -19,7 +19,7 @@ best estimate of the age of the otolith."><!-- mathjax --><script src="https://c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pacfintools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
       </span>
     </div>
 
@@ -88,7 +88,11 @@ default is to always print to the screen, i.e., <code>verbose = TRUE</code>.</p>
     <h2>Details</h2>
     <p>When more than one age estimate matches what is thought to be the best age,
 then the ageing methods for all ages that match the best age will be
-returned as a single entry separated by "–". Most often, double reads are performed using the same method but there are cases, e.g., CARE exchanges or research questions on differences between methods, when a single otolith is read using multiple methods. For example, some petrale sole otoliths were read using both surface and break and burn reads.</p>
+returned as a single entry separated by "–". Most often, double reads are
+performed using the same method but there are cases, e.g., CARE exchanges or
+research questions on differences between methods, when a single otolith is
+read using multiple methods. For example, some petrale sole otoliths were
+read using both surface and break and burn reads.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -105,13 +109,6 @@ returned as a single entry separated by "–". Most often, double reads are perf
 <span class="r-in"><span>  FINAL_FISH_AGE_IN_YEARS <span class="op">=</span> <span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">getAgeMethod</span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   `getAgeMethod()` summary information -</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Age methods were originally coded to ‘B’ or ‘S’</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Age methods are now coded to B--S (n = 1), S (n = 9) and NA (n = 0)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Number of samples (n) per combinations of ageing methods</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   AGE_METHOD1 AGE_METHOD2 Age method for best age n</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1           B           S                    B--S 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2           B           S                       S 9</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "S"    "S"    "S"    "S"    "S"    "S"    "S"    "S"    "S"    "B--S"</span>
 <span class="r-in"><span><span class="co"># [1] "S"    "S"    "S"    "S"    "S"    "S"    "S"    "S"    "S"    "B--S"</span></span></span>
 </code></pre></div>

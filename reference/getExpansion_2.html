@@ -19,7 +19,7 @@ amount of that catch that was sampled."><!-- mathjax --><script src="https://cdn
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">pacfintools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.1</span>
       </span>
     </div>
 
@@ -133,8 +133,14 @@ default is to always print to the screen, i.e., <code>verbose = TRUE</code>.</p>
 
 
 <dt id="arg-savedir">savedir<a class="anchor" aria-label="anchor" href="#arg-savedir"></a></dt>
-<dd><p>A file path to the directory where the results will be saved.
-The default is NULL.</p></dd>
+<dd><p>Deprecated. This function no longer creates plots of cleaned data,
+but you can call <code><a href="plotCleaned.html">plotCleaned()</a></code> separately if you want to create these plots.</p></dd>
+
+
+<dt id="arg-directory">Directory<a class="anchor" aria-label="anchor" href="#arg-directory"></a></dt>
+<dd><p>where plots should be saved. The default
+argument is NULL. If a directory is provided, then summary plots will be saved
+to this location. If NULL, then no plots will be created.</p></dd>
 
 </dl></div>
     <div id="value">
