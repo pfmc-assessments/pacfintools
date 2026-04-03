@@ -36,6 +36,9 @@
 #'   were needed between functions. You can use as many levels of stratification
 #'   as you want except year because it is already included in the call to
 #'   [stats::aggregate].
+#' @param Directory where plots should be saved. The default
+#' argument is NULL. If a directory is provided, then summary plots will be saved
+#' to this location. If NULL, then no plots will be created.
 #' @inheritParams cleanPacFIN
 #'
 #'

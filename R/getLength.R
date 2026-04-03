@@ -15,7 +15,7 @@
 #' @return A vector of lengths in millimeters. Values of `NA` indicate that
 #' the length should not be used in down-stream calculations.
 #'
-getLength <- function(Pdata, verbose = TRUE, keep) {
+getLength <- function(Pdata, keep, verbose = TRUE) {
   # Initial checks
   # Early return
   if (all(is.na(Pdata[["FISH_LENGTH"]]))) {
@@ -32,12 +32,8 @@ getLength <- function(Pdata, verbose = TRUE, keep) {
   )
   if (NROW(data_with_length)) {
     cli::cli_abort(
-      glue::glue(
-        "FISH_LENGTH_UNITS contains units other than 'CM' or 'MM' for fish",
-        " with lengths, please assign a unit like 'CM' or 'MM' to each row."
-      ),
-      wrap = TRUE,
-      call = NULL
+      "FISH_LENGTH_UNITS contains units other than 'CM' or 'MM' for fish
+        with lengths, please assign a unit like 'CM' or 'MM' to each row."
     )
   }
 
@@ -59,13 +55,8 @@ getLength <- function(Pdata, verbose = TRUE, keep) {
   good_types_string <- glue::glue_collapse(sQuote(good_types), sep = ", ")
   if (any(!Pdata[[var_fish_length_type]] %in% good_types)) {
     cli::cli_abort(
-      glue::glue(
-        "getLength can only accommodate the following FISH_LENGTH_TYPEs,
-        please contact the package maintainer to add additional types:
-        {good_types_string}
-        "
-      ),
-      call = NULL
+      "getLength() can only accommodate the following FISH_LENGTH_TYPE_CODEs: {good_types_string}.
+       Please contact the package maintainer to add additional types."
     )
   }
 
@@ -77,46 +68,40 @@ getLength <- function(Pdata, verbose = TRUE, keep) {
       Pdata[[var_fish_length_type]] == "F"
   )
   if (length(check.calt) > 0) {
-    message(
-      "Changing ",
-      length(check.calt),
-      " CA FISH_LENGTH_TYPE == 'F' to 'T'.",
-      " Vlada is working on getting these entries fixed in PacFIN."
+    change_vals <- length(check.calt)
+    cli::cli_inform(
+      "Changing {change_vals} CA FISH_LENGTH_TYPE == F to T.
+      Vlada is working on getting these entries fixed in PacFIN."
     )
     Pdata[check.calt, var_fish_length_type] <- "T"
   }
-  rm(check.calt)
 
   # Move FISH_LENGTH to FORK_LENGTH if FORK_LENGTH is NA and type is F
   # for downstream code to work
-
   Pdata[, "FORK_LENGTH"] <- ifelse(
     is.na(Pdata[["FORK_LENGTH"]]) & Pdata[[var_fish_length_type]] == "F",
     yes = Pdata[, "FISH_LENGTH"],
     no = Pdata[, "FORK_LENGTH"]
   )
 
-  # Species-specific code
-  # Convert FISH_LENGTH from disk width to length
-  width2length <- convertlength_skate(Pdata, returntype = "estimated")
-
   # Spiny dogfish (Squalus suckleyi; DSRK)
-  check.dogfish <- Pdata[[var_spid]] == "DSRK" & !is.na(Pdata[["FORK_LENGTH"]])
-  if (sum(check.dogfish) > 0 & verbose) {
-    message(
-      sum(check.dogfish),
-      " fork lengths were converted to total lengths using\n",
-      "Tribuzio and Kruse (2012)."
-    )
+  if (length(grep("DSRK", Pdata[[var_spid]])) > 0) {
+    check.dogfish <- !is.na(Pdata[["FORK_LENGTH"]])
+    if (sum(check.dogfish) > 0 & verbose) {
+      total_check_dogfish <- sum(check.dogfish)
+      cli::cli_inform(
+        "{total_check_dogfish} fork lengths were converted to total lengths using Tribuzio and Kruse (2012)."
+      )
+    }
+    Pdata[check.dogfish, "FORK_LENGTH"] <-
+      ifelse(Pdata[check.dogfish, "FISH_LENGTH_UNITS"] == "MM", 12.2, 1.22) +
+      1.07 * Pdata[check.dogfish, "FORK_LENGTH"]
   }
-  Pdata[check.dogfish, "FORK_LENGTH"] <-
-    ifelse(Pdata[check.dogfish, "FISH_LENGTH_UNITS"] == "MM", 12.2, 1.22) +
-    1.07 * Pdata[check.dogfish, "FORK_LENGTH"]
 
   # Fix incorrect FISH_LENGTH_UNITS for hake
-  if (length(grep("PWHT", Pdata[["PACFIN_SPECIES_CODE"]])) > 0) {
+  if (length(grep("PWHT", Pdata[[var_spid]])) > 0) {
     if (verbose) {
-      message("Still fixing WA FISH_LENGTH_UNITS")
+      cli::cli_inform("Still fixing WA FISH_LENGTH_UNITS for Pacific hake.")
     }
     Pdata[, "FISH_LENGTH_UNITS"] <- ifelse(
       tolower(Pdata[, "FISH_LENGTH_UNITS"]) == "cm" &
@@ -128,77 +113,87 @@ getLength <- function(Pdata, verbose = TRUE, keep) {
 
   # Make "length" column in mm
   # Start with fork lengths for those that are available and if "F" in keep
+  keep_list <- keep[keep %in% c("", "A", "F", NA)]
   Pdata$length <- ifelse(
-    Pdata[[var_fish_length_type]] %in% c("", "A", "F", NA),
-    Pdata$FORK_LENGTH,
-    NA
+    Pdata[[var_fish_length_type]] %in% keep_list,
+    yes = Pdata$FORK_LENGTH,
+    no = NA
   )
 
-  # Work with skate data
-  # A is disc width
-  # R is inter-spiracle width for skates (used by WDFW)
-  if (all(Pdata$PACFIN_SPECIES_CODE %in% c("LSKT", "BSKT"))) {
-    Pdata$length <- ifelse(
-      "A" %in% keep & Pdata[[var_fish_length_type]] == "A",
-      width2length,
-      Pdata$length
-    )
-  }
-  Pdata$length <- ifelse(
-    "R" %in% keep & Pdata[[var_fish_length_type]] == "R",
-    width2length,
-    Pdata$length
-  )
-
-  # Work with dorsal length
-  if (
-    verbose &
-      "D" %in% keep &
-      length(grep("D", Pdata[[var_fish_length_type]]) > 0)
-  ) {
-    message("Using dorsal lengths, are you sure you want dorsal lengths?")
-  }
   Pdata$length <- ifelse(
     "D" %in%
       keep &
       Pdata[[var_fish_length_type]] == "D" &
       Pdata$FORK_LENGTH != Pdata$FISH_LENGTH,
-    Pdata$FORK_LENGTH,
-    Pdata$length
+    yes = Pdata$FORK_LENGTH,
+    no = Pdata$length
   )
 
   # Work with standard length measurements and unknown type
   Pdata$length <- ifelse(
     "S" %in% keep & Pdata[[var_fish_length_type]] == "S",
-    Pdata$FISH_LENGTH,
-    Pdata$length
+    yes = Pdata$FISH_LENGTH,
+    no = Pdata$length
   )
   Pdata$length <- ifelse(
     "T" %in% keep & Pdata[[var_fish_length_type]] == "T",
-    Pdata$FISH_LENGTH,
-    Pdata$length
+    yes = Pdata$FISH_LENGTH,
+    no = Pdata$length
   )
   Pdata$length <- ifelse(
     "U" %in% keep & Pdata[[var_fish_length_type]] == "U",
-    ifelse(is.na(Pdata$FORK_LENGTH), Pdata$FISH_LENGTH, Pdata$FORK_LENGTH),
-    Pdata$length
+    yes = ifelse(
+      is.na(Pdata$FORK_LENGTH),
+      yes = Pdata$FISH_LENGTH,
+      no = Pdata$FORK_LENGTH
+    ),
+    no = Pdata$length
   )
   Pdata$length <- ifelse(
     "" %in% keep & Pdata[[var_fish_length_type]] == "",
-    Pdata$FISH_LENGTH,
-    Pdata$length
+    yes = Pdata$FISH_LENGTH,
+    no = Pdata$length
   )
   Pdata$length <- ifelse(
     NA %in% keep & is.na(Pdata[[var_fish_length_type]]),
-    ifelse(is.na(Pdata$FORK_LENGTH), Pdata$FISH_LENGTH, Pdata$FORK_LENGTH),
-    Pdata$length
+    yes = ifelse(
+      is.na(Pdata$FORK_LENGTH),
+      yes = Pdata$FISH_LENGTH,
+      no = Pdata$FORK_LENGTH
+    ),
+    no = Pdata$length
   )
+
+  # Work with skate data
+  # A is disc width
+  # R is inter-spiracle width for skates (used by WDFW)
+  if (all(Pdata[[var_spid]] %in% c("LSKT", "BSKT"))) {
+    # Species-specific code
+    # Convert FISH_LENGTH from disk width to length
+    width2length <- convertlength_skate(Pdata, returntype = "estimated")
+
+    Pdata$length <- ifelse(
+      "A" %in% keep & Pdata[[var_fish_length_type]] == "A",
+      yes = width2length,
+      no = Pdata$length
+    )
+
+    Pdata$length <- ifelse(
+      "R" %in% keep & Pdata[[var_fish_length_type]] == "R",
+      yes = width2length,
+      no = Pdata$length
+    )
+  }
 
   # A double check that lengths for methods not in keep are NA
   Pdata$length <- ifelse(
     Pdata[[var_fish_length_type]] %in% keep,
-    Pdata$length,
-    NA
+    yes = ifelse(
+      is.na(Pdata$FORK_LENGTH),
+      yes = Pdata$FISH_LENGTH,
+      no = Pdata$FORK_LENGTH
+    ),
+    no = NA
   )
 
   # Assign all fish of length zero to NA
@@ -215,22 +210,49 @@ getLength <- function(Pdata, verbose = TRUE, keep) {
   )
 
   if (verbose) {
-    cli::cli_alert_info(paste(
-      "The following length types were kept in the data:",
-      sQuote(unique(Pdata[!is.na(Pdata[["length"]]), var_fish_length_type]))
+    available_length_types <- table(
+      Pdata[[var_fish_length_type]],
+      useNA = "always"
+    )
+    message_available_length_types <- paste0(
+      names(available_length_types),
+      " (",
+      available_length_types,
+      ")"
+    )
+    types <- unique(Pdata[
+      !is.na(Pdata[["length"]]),
+      var_fish_length_type
+    ])
+    n0 <- sum(Pdata[["length"]] == 0, na.rm = TRUE)
+    n <- sum(Pdata[["FISH_LENGTH_UNITS"]] == "CM", na.rm = TRUE)
+    n_not_include <- NROW(Pdata) -
+      sum(Pdata[["FISH_LENGTH_TYPE_CODE"]] %in% keep)
+    cli::cli_bullets(c(
+      " " = "{.fn getLength} summary information -",
+      "i" = "The following length types were available in the data: {message_available_length_types}.",
+      "i" = "The following length types were kept in the data: {types}.",
+      "i" = "Lengths range from {min(Pdata[['length']], na.rm = TRUE)}--{max(Pdata[['length']], na.rm = TRUE)} (mm)."
     ))
-    cli::cli_alert_info(glue::glue(
-      "Lengths ranged from {min(Pdata[['length']], na.rm = TRUE)}--",
-      "{max(Pdata[['length']], na.rm = TRUE)} (mm)"
-    ))
-    cli::cli_alert_info(glue::glue(
-      sum(Pdata[["length"]] == 0, na.rm = TRUE),
-      " fish had lengths of 0 (mm) and were changed to NAs"
-    ))
-    cli::cli_alert_info(glue::glue(
-      "{sum(Pdata[['FISH_LENGTH_UNITS']] == 'CM', na.rm = TRUE)}",
-      " lengths (cm) and were converted to mm"
-    ))
+    if (n_not_include / NROW(Pdata) > 0.05) {
+      cli::cli_alert_warning(
+        "{n_not_include} lengths were not included because their FISH_LENGTH_TYPE_CODE was not in keep_length_type with lengthcm set to NA.
+        This is more than 5% of the data, investigate if you are missing important length data."
+      )
+    }
+
+    if ("D" %in% types) {
+      cli::cli_alert_warning(
+        "The data includes dorsal lengths. These data should be investigated to ensure that these lengths should be used. Update the
+        keep_length_type argument if these data should be omitted."
+      )
+    }
+    if ("T" %in% types) {
+      cli::cli_alert_warning(
+        "The data includes total lengths which may or may not make sense to keep depending upon your species. Update the
+        keep_length_type argument if these data should be omitted."
+      )
+    }
   }
   return(Pdata[["length"]])
 }

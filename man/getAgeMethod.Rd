@@ -29,7 +29,11 @@ best estimate of the age of the otolith.
 \details{
 When more than one age estimate matches what is thought to be the best age,
 then the ageing methods for all ages that match the best age will be
-returned as a single entry separated by "--". Most often, double reads are performed using the same method but there are cases, e.g., CARE exchanges or research questions on differences between methods, when a single otolith is read using multiple methods. For example, some petrale sole otoliths were read using both surface and break and burn reads.
+returned as a single entry separated by "--". Most often, double reads are
+performed using the same method but there are cases, e.g., CARE exchanges or
+research questions on differences between methods, when a single otolith is
+read using multiple methods. For example, some petrale sole otoliths were
+read using both surface and break and burn reads.
 }
 \examples{
 data <- data.frame(

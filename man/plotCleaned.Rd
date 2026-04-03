@@ -4,16 +4,12 @@
 \alias{plotCleaned}
 \title{Plot cleaned fishery age- or length-composition data.}
 \usage{
-plotCleaned(Pdata, savedir = getwd())
+plotCleaned(Pdata, savedir)
 }
 \arguments{
-\item{Pdata}{A data frame returned from \code{\link[=PullBDS.PacFIN]{PullBDS.PacFIN()}} containing
-biological samples. These data are stored in the Pacific Fishieries
-Information Network (PacFIN) data warehouse, which originated in 2014 and
-are pulled using sql calls.}
+\item{Pdata}{A data object created using \code{\link[=cleanPacFIN]{cleanPacFIN()}}].}
 
-\item{savedir}{A file path to the directory where the results will be saved.
-The default is NULL.}
+\item{savedir}{Directory where output will be saved. The directory where the file should be saved.}
 }
 \value{
 The following figures are saved to \code{savedir}:

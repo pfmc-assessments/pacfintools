@@ -104,11 +104,11 @@ getAge <- function(
     )
   }
   if ("AGE_IN_YEARS" %in% colnames(Pdata)) {
-    stop(
-      "`getAge()` only works with data pulled by `PullBDS.PacFIN()`, ",
-      "which moves double reads to columns ",
-      "rather than leaving them in rows within AGE_IN_YEARS.",
-      "Please change `Pdata` to recent output from `PullBDS.PacFIN()."
+    cli::cli_abort(
+      "`getAge()` only works with data pulled by `PullBDS.PacFIN()`,
+      which moves double reads to columns
+      rather than leaving them in rows within AGE_IN_YEARS.
+      Please change `Pdata` to recent output from `PullBDS.PacFIN()`."
     )
   }
   keep <- unique(codify_age_method(keep))
@@ -179,38 +179,19 @@ getAge <- function(
       sort(na.last = TRUE) |>
       sQuote() |>
       glue::glue_collapse(sep = ", ", last = " and ")
-    table_summary <- dplyr::mutate(
+    table_summary_na <- dplyr::mutate(
       .data = Pdata,
       final_age = out,
       age = rlang::eval_tidy(dplyr::sym(column_with_age))
     ) |>
       dplyr::count(age, final_age) |>
-      dplyr::arrange(final_age)
-    table_summary_na <- dplyr::filter(
-      .data = table_summary,
-      is.na(final_age) &
-        !is.na(age)
-    ) |>
+      dplyr::arrange(final_age) |>
+      dplyr::filter(is.na(final_age) & !is.na(age)) |>
       dplyr::select(-final_age)
-    table_summary_n_age <- dplyr::filter(
-      .data = table_summary,
-      !is.na(final_age)
-    ) |>
-      dplyr::select(, -age) |>
-      tidyr::complete(
-        final_age = 0:max(final_age, na.rm = TRUE),
-        fill = list(n = 0)
-      ) |>
-      dplyr::pull(n) |>
-      paste(collapse = ", ")
     text_n_na <- if (NROW(table_summary_na) > 0) {
-      apply(
-        table_summary_na,
-        MARGIN = 1,
-        FUN = function(x) sprintf("age-%d (n = %d)", x[1], x[2])
-      )
+      sum(table_summary_na[["n"]])
     } else {
-      "0"
+      0
     }
     text_n_missing_final <- tidyr::unite(
       data = Pdata,
@@ -224,41 +205,25 @@ getAge <- function(
         all_ages != ""
       ) |>
       NROW()
-    text_n_missing_final <- glue::glue(
-      "{text_n_missing_final} rows were missing a final age"
-    )
-    names(text_n_missing_final) <- ifelse(
-      substr(text_n_missing_final, 1, 1) == "0",
-      "v",
-      "x"
-    )
 
     # Print messages to users
     cli::cli_bullets(c(
       " " = "{.fn getAge} summary information -",
-      text_n_missing_final,
-      "i" = glue::glue(
-        "
-        The distribution (in numbers) for fish aged
-        0--{max(out, na.rm = TRUE)} years is {table_summary_n_age}
-      "
-      ),
-      "i" = "Age methods {text_age_methods} were present",
-      "i" = glue::glue(
-        "
-        Age methods
-        {glue::glue_collapse(sQuote(keep), sep = ', ', last = ' and ')}
-        were desired
-      "
-      ),
-      "i" = "{sum(table_summary_na[['n']])} ages used undesired age methods",
-      "v" = glue::glue(
-        "
-        Number of ages by age (years) changed to `NA` is
-        {paste(text_n_na, collapse = ', ')}
-      "
-      )
+      "i" = "{text_n_missing_final} rows were missing a final age in FINAL_FISH_AGE_IN_YEARS.",
+      "i" = "Age methods {text_age_methods} were present. Age methods {glue::glue_collapse(sQuote(keep), sep = ', ', last = ' and ')} were included in keep_age_method."
     ))
+    percent_removing <- text_n_na /
+      sum(!is.na(Pdata[["FINAL_FISH_AGE_IN_YEARS"]]))
+    if (percent_removing > 0.05) {
+      cli::cli_alert_warning(
+        "{text_n_na} ages with age methods not included in keep_age_method where Age is set to NA.
+        This is more than 5% of the available ages data, investigate if you are missing important age data."
+      )
+    } else {
+      cli::cli_alert_info(
+        "{text_n_na} ages with age methods not included in keep_age_method where Age is set to NA."
+      )
+    }
   }
 
   return(out)
@@ -281,13 +246,12 @@ grep_final_age <- function(x) {
   )
   out <- all[!grepl(pattern = "CODE", x = all)]
   if (length(out) == 0) {
-    stop("A match to AGE.*FINAL|FINAL.*AGE was not found.")
+    cli::cli_abort("A match to AGE.*FINAL|FINAL.*AGE was not found.")
   }
   if (length(out) > 1) {
-    stop(
-      "Please remove all but one of the following columns and rerun the\n",
-      " function:\n",
-      paste(out, collapse = "\n")
+    message <- paste(out, collapse = "\n")
+    cli::cli_abort(
+      "Please remove all but one of the following columns and rerun the function: {message}"
     )
   }
   return(out)

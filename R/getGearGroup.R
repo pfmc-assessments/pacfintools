@@ -30,14 +30,7 @@
 #' gears <- c("PRT", "FPT", "TWL", "MDP")
 #' X <- getGearGroup(data.frame(PACFIN_GEAR_CODE = gears), verbose = TRUE)
 #'
-getGearGroup <- function(Pdata, spp = NULL, verbose = TRUE) {
-  # Checks
-  if (verbose) {
-    cli::cli_bullets(c(
-      "i" = "Gear groupings reflect those in the table at",
-      "https://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/gr.txt"
-    ))
-  }
+getGearGroup <- function(Pdata, keep_gears = NULL, spp = NULL, verbose = TRUE) {
   if (!"PACFIN_GEAR_CODE" %in% colnames(Pdata)) {
     cli::cli_abort("Pdata must have 'PACFIN_GEAR_CODE' column.")
   }
@@ -99,9 +92,7 @@ getGearGroup <- function(Pdata, spp = NULL, verbose = TRUE) {
     if (any(grepl("dogfish|dsrk", spp, ignore.case = TRUE))) {
       if (verbose) {
         cli::cli_bullets(c(
-          "i" = "Dogfish uses a mid-water trawl (MID), TWL (including shrimp),
-                 and HKL fleets",
-          "i" = "everything else is assigned to MSC."
+          "i" = "Dogfish uses a mid-water trawl (MID), TWL (including shrimp), and HKL fleets. Everything else is assigned to MSC."
         ))
       }
       GearTable[grepl("MIDWATER", GearTable[["DESCRIPTION"]]), "GROUP"] <- "MID"
@@ -130,9 +121,24 @@ getGearGroup <- function(Pdata, spp = NULL, verbose = TRUE) {
       table_gears,
       ")"
     )
+    other_gears <- table(Pdata[
+      which(!Pdata$geargroup %in% keep_gears),
+      "geargroup"
+    ])
+    if (length(other_gears) > 0) {
+      other_gear_message_table <- paste0(
+        names(other_gears),
+        " (",
+        other_gears,
+        ")"
+      )
+    } else {
+      other_gear_message_table <- "none"
+    }
     cli::cli_bullets(c(
-      "i" = "`PACFIN_GEAR_CODE` was used to create `geargroup`",
-      "i" = "geargroup includes: {message_table}"
+      " " = "{.fn getGearGroup} summary information -",
+      "i" = "geargroup includes: {message_table}",
+      "i" = "The following gears were not included in keep_gears and will be removed if clean = TRUE: {other_gear_message_table}."
     ))
   }
 

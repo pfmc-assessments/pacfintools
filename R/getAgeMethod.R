@@ -7,7 +7,11 @@
 #' @details
 #' When more than one age estimate matches what is thought to be the best age,
 #' then the ageing methods for all ages that match the best age will be
-#' returned as a single entry separated by "--". Most often, double reads are performed using the same method but there are cases, e.g., CARE exchanges or research questions on differences between methods, when a single otolith is read using multiple methods. For example, some petrale sole otoliths were read using both surface and break and burn reads.
+#' returned as a single entry separated by "--". Most often, double reads are
+#' performed using the same method but there are cases, e.g., CARE exchanges or
+#' research questions on differences between methods, when a single otolith is
+#' read using multiple methods. For example, some petrale sole otoliths were
+#' read using both surface and break and burn reads.
 #'
 #' @inheritParams cleanPacFIN
 #' @inheritParams cleanPacFIN
@@ -76,21 +80,20 @@ getAgeMethod <- function(Pdata, verbose = TRUE) {
   })
   # Add it to the internal data frame so it is included in the printed summary
   # even though Pdata is not returned, just used_method
-  Pdata[, "age_method"] <- used_method
+  # Pdata[, "age_method"] <- used_method
 
-  if (verbose) {
-    returned_methods_n <- table(used_method, useNA = "always")
-    text_returned_methods_n <- glue::glue(
-      "{names(returned_methods_n)} (n = {returned_methods_n})"
-    ) |>
-      glue::glue_collapse(sep = ", ", last = " and ")
-    cli::cli_bullets(c(
-      " " = "{.fn getAgeMethod} summary information -",
-      "i" = "Age methods were originally coded to {text_original_methods}",
-      "i" = "Age methods are now coded to {text_returned_methods_n}"
-    ))
-    print(summaryAgeMethod(Pdata, verbose = TRUE))
-  }
+  # if (verbose) {
+  #  returned_methods_n <- table(used_method, useNA = "always")
+  #  text_returned_methods_n <- glue::glue(
+  #    "{names(returned_methods_n)} (n = {returned_methods_n})"
+  #  ) |>
+  #    glue::glue_collapse(sep = ", ", last = " and ")
+  #  cli::cli_bullets(c(
+  #    " " = "{.fn getAgeMethod} summary information -",
+  #    "i" = "Age methods were originally coded to {text_original_methods}",
+  #    "i" = "Age methods are now coded to {text_returned_methods_n}"
+  #  ))
+  # }
 
   return(used_method)
 }
@@ -126,11 +129,11 @@ getAgeMethod <- function(Pdata, verbose = TRUE) {
 #' prior to returning the table.
 #'
 summaryAgeMethod <- function(Pdata, verbose = FALSE) {
-  if (verbose) {
-    cli::cli_bullets(c(
-      "i" = "Number of samples (n) per combinations of ageing methods"
-    ))
-  }
+  # if (verbose) {
+  #  cli::cli_bullets(c(
+  #    "i" = "Number of samples (n) per combinations of ageing methods"
+  #  ))
+  # }
   old_column_name <- c(
     "Age method for best age" = "age_method"
   )
