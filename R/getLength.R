@@ -246,6 +246,11 @@ getLength <- function(Pdata, keep, verbose = TRUE) {
         "The data includes dorsal lengths and should be investigated to ensure that these lengths should be used."
       )
     }
+    if ("T" %in% types) {
+      cli::cli_alert_danger(
+        "The data includes total lengths which may or may not make sense to keep depending upon your species.."
+      )
+    }
   }
   return(Pdata[["length"]])
 }
