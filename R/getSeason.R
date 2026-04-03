@@ -127,7 +127,7 @@ getSeason <- function(
       filename = file.path(savedir, "PacFIN_comp_season.png"),
       height = 7,
       width = 7,
-      units = 'in'
+      units = "in"
     )
   } # End if plotResults
 

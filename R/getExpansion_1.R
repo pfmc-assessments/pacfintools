@@ -159,7 +159,7 @@ getExpansion_1 <- function(
     ))
   }
 
-  #Used in plotting later on
+  # Used in plotting later on
   NA_EF1 <- Pdata[is.na(Pdata$Expansion_Factor_1_L), ]
   nNA <- NROW(NA_EF1)
   # Counts to report

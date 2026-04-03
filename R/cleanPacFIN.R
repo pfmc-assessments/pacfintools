@@ -161,7 +161,7 @@ cleanPacFIN <- function(
       what = paste0("cleanPacFIN(CLEAN = )"),
       details = "Please use cleanPacFIN(clean =)."
     )
-    clean = CLEAN
+    clean <- CLEAN
   }
   if (lifecycle::is_present(savedir)) {
     lifecycle::deprecate_warn(
@@ -249,7 +249,7 @@ cleanPacFIN <- function(
       "R",
       "S",
       "T",
-      "U", #unknown
+      "U", # unknown
       NA
     )))
   }
@@ -301,9 +301,9 @@ cleanPacFIN <- function(
   # These records no longer need to be necessarily removed: the first stage
   # expansion code sets the expansion factor to 1 for records missing sampled
   # weights or trip weights (EXPANDED_SAMPLE_WEIGHT)
-  #bad[, "bador_type_weight"] <- (is.na(data[[
+  # bad[, "bador_type_weight"] <- (is.na(data[[
   #  "EXPANDED_SAMPLE_WEIGHT"
-  #]]) &
+  # ]]) &
   #  data[["SAMPLE_TYPE"]] %in% keep_sample_type &
   #  data[["state"]] == "OR")
   bad[, "remove"] <- ifelse(
