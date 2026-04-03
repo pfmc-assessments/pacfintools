@@ -225,7 +225,7 @@ getLength <- function(Pdata, keep, verbose = TRUE) {
       var_fish_length_type
     ])
     n0 <- sum(Pdata[["length"]] == 0, na.rm = TRUE)
-    n <- sum(Pdata[['FISH_LENGTH_UNITS']] == 'CM', na.rm = TRUE)
+    n <- sum(Pdata[["FISH_LENGTH_UNITS"]] == "CM", na.rm = TRUE)
     n_not_include <- NROW(Pdata) -
       sum(Pdata[["FISH_LENGTH_TYPE_CODE"]] %in% keep)
     cli::cli_bullets(c(
@@ -236,7 +236,7 @@ getLength <- function(Pdata, keep, verbose = TRUE) {
     ))
     if (n_not_include / NROW(Pdata) > 0.05) {
       cli::cli_alert_warning(
-        "{n_not_include} lengths were not included because their FISH_LENGTH_TYPE_CODE was not in keep_length_type with lengthcm set to NA. 
+        "{n_not_include} lengths were not included because their FISH_LENGTH_TYPE_CODE was not in keep_length_type with lengthcm set to NA.
         This is more than 5% of the data, investigate if you are missing important length data."
       )
     }

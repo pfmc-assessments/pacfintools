@@ -105,8 +105,8 @@ getAge <- function(
   }
   if ("AGE_IN_YEARS" %in% colnames(Pdata)) {
     cli::cli_abort(
-      "`getAge()` only works with data pulled by `PullBDS.PacFIN()`, 
-      which moves double reads to columns 
+      "`getAge()` only works with data pulled by `PullBDS.PacFIN()`,
+      which moves double reads to columns
       rather than leaving them in rows within AGE_IN_YEARS.
       Please change `Pdata` to recent output from `PullBDS.PacFIN()`."
     )

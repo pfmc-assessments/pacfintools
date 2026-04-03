@@ -80,9 +80,9 @@ getAgeMethod <- function(Pdata, verbose = TRUE) {
   })
   # Add it to the internal data frame so it is included in the printed summary
   # even though Pdata is not returned, just used_method
-  #Pdata[, "age_method"] <- used_method
+  # Pdata[, "age_method"] <- used_method
 
-  #if (verbose) {
+  # if (verbose) {
   #  returned_methods_n <- table(used_method, useNA = "always")
   #  text_returned_methods_n <- glue::glue(
   #    "{names(returned_methods_n)} (n = {returned_methods_n})"
@@ -93,7 +93,7 @@ getAgeMethod <- function(Pdata, verbose = TRUE) {
   #    "i" = "Age methods were originally coded to {text_original_methods}",
   #    "i" = "Age methods are now coded to {text_returned_methods_n}"
   #  ))
-  #}
+  # }
 
   return(used_method)
 }
@@ -129,11 +129,11 @@ getAgeMethod <- function(Pdata, verbose = TRUE) {
 #' prior to returning the table.
 #'
 summaryAgeMethod <- function(Pdata, verbose = FALSE) {
-  #if (verbose) {
+  # if (verbose) {
   #  cli::cli_bullets(c(
   #    "i" = "Number of samples (n) per combinations of ageing methods"
   #  ))
-  #}
+  # }
   old_column_name <- c(
     "Age method for best age" = "age_method"
   )
