@@ -242,13 +242,15 @@ getLength <- function(Pdata, keep, verbose = TRUE) {
     }
 
     if ("D" %in% types) {
-      cli::cli_alert_danger(
-        "The data includes dorsal lengths and should be investigated to ensure that these lengths should be used."
+      cli::cli_alert_warning(
+        "The data includes dorsal lengths. These data should be investigated to ensure that these lengths should be used. Update the
+        keep_length_type argument if these data should be omitted."
       )
     }
     if ("T" %in% types) {
-      cli::cli_alert_danger(
-        "The data includes total lengths which may or may not make sense to keep depending upon your species.."
+      cli::cli_alert_warning(
+        "The data includes total lengths which may or may not make sense to keep depending upon your species. Update the
+        keep_length_type argument if these data should be omitted."
       )
     }
   }
