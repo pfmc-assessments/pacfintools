@@ -5,8 +5,8 @@
 #' are meant to be included in the stock assessment document, but rather,
 #' are for exploring the data.
 #'
-#' @inheritParams cleanPacFIN
-#' @template savedir
+#' @param Pdata A data object created using [cleanPacFIN()]].
+#' @param savedir Directory where output will be saved. The directory where the file should be saved.
 #' @return The following figures are saved to `savedir`:
 #'   * PacFIN_comp_Nbystate.png
 #'   * PacFIN_comp_distributions.png
@@ -22,13 +22,13 @@
 #' @seealso This function is called by [cleanPacFIN] and heavily
 #' relies on [getGearGroup] to create gear categories.
 #'
-plotCleaned <- function(Pdata, savedir = getwd()) {
+plotCleaned <- function(Pdata, savedir) {
   #### Checks
   SPID <- sort(unique(Pdata$PACFIN_SPECIES_CODE))
   if (length(SPID) > 1) {
-    warning(
-      "plotCleaned is only meant to work with one species;",
-      "\nfigures will be a summary of all species in your data."
+    cli::cli_alert_danger(
+      "plotCleaned() is only meant to work with one species;
+      figures will be a summary of all species in your data."
     )
   }
 
@@ -44,7 +44,7 @@ plotCleaned <- function(Pdata, savedir = getwd()) {
     mgp = c(1.5, 0.5, 0)
   )
   graphics::barplot(
-    stats::xtabs(!is.na(Pdata$length) ~ Pdata$state + Pdata$fishyr),
+    stats::xtabs(!is.na(Pdata$lengthmm) ~ Pdata$state + Pdata$fishyr),
     col = grDevices::rainbow(length(unique(Pdata$state))),
     legend.text = TRUE,
     xaxt = "n",
@@ -95,7 +95,9 @@ plotCleaned <- function(Pdata, savedir = getwd()) {
   )
   nGRID <- length(unique(Pdata$PACFIN_GEAR_CODE))
   graphics::barplot(
-    stats::xtabs(!is.na(Pdata$length) ~ Pdata$PACFIN_GEAR_CODE + Pdata$fishyr),
+    stats::xtabs(
+      !is.na(Pdata$lengthcm) ~ Pdata$PACFIN_GEAR_CODE + Pdata$fishyr
+    ),
     col = grDevices::rainbow(nGRID),
     legend.text = TRUE,
     xlab = "",
@@ -133,7 +135,7 @@ plotCleaned <- function(Pdata, savedir = getwd()) {
       mgp = c(1.5, 0.5, 0)
     )
     graphics::barplot(
-      stats::xtabs(!is.na(Pdata$length) ~ Pdata$geargroup + Pdata$fishyr),
+      stats::xtabs(!is.na(Pdata$lengthcm) ~ Pdata$geargroup + Pdata$fishyr),
       col = grDevices::rainbow(length(unique(Pdata$geargroup))),
       legend.text = TRUE,
       xaxt = "n",
@@ -174,13 +176,13 @@ plotCleaned <- function(Pdata, savedir = getwd()) {
   gg <- ggplot2::ggplot(
     data = Pdata,
     ggplot2::aes(
-      x = .data[["lengthcm"]],
-      y = .data[["Age"]]
+      x = .data[["Age"]],
+      y = .data[["lengthcm"]]
     )
   ) +
     ggplot2::geom_point() +
     ggplot2::theme_bw() +
-    ggplot2::labs(x = "Length (cm)", y = "Age (year)")
+    ggplot2::labs(x = "Age (year)", y = "Length (cm)")
   suppressWarnings(ggplot2::ggsave(
     gg,
     file = file.path(savedir, "PacFIN_comp_lengthvage.png"),

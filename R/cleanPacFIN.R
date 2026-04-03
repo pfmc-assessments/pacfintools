@@ -1,6 +1,6 @@
 #' Clean raw PacFIN data
 #'
-#' Clean raw PacFIN data to remove unsuitable samples if `CLEAN = TRUE` and
+#' Clean raw PacFIN data to remove unsuitable samples if `clean = TRUE` and
 #' convert units of measured quantities to work with downstream functions.
 #' Raw data are meant to be inclusive of everything from PacFIN so users can
 #' explore all that is available, but this means that raw data will **ALWAYS**
@@ -40,8 +40,6 @@
 #'   of sampling methods you want to keep. The default is to keep \code{"R"},
 #'   which refers to samples that were sampled randomly. Available types include
 #'   random (R), stratified (S), systematic (N), purposive (P), and special (X).
-#'   As of February 17, 2021, Washington is the only state with a sample type of
-#'   `""`, and it was limited to two special samples of yelloweye rockfish.
 #' @param keep_length_type A vector of character values specifying the types of
 #'   length samples to keep. There is no default value, though users will
 #'   typically want to keep `c("", "F", "A")`, but should also think about using
@@ -58,7 +56,7 @@
 #'   However, a vector of `c("B", "BB", S", "", NA, 1, 2)` will keep all unaged
 #'   fish and those that were aged with break and burn and surface reads. You do
 #'   not really need to include such a verbose vector of values though because
-#'   numbers are converted to appropriate character codes in [getAge].
+#'   numbers are converted to appropriate character codes in [getAge()].
 #'   Therefore, something like `c("B", "S")` would be sufficient to keep all
 #'   break and burn and surface reads.
 #' @param keep_missing_lengths *Deprecated*. Just subset them using
@@ -69,7 +67,10 @@
 #'   is defined using a two-letter abbreviation, e.g., `WA`. The default is to
 #'   keep data from all three states, `keep_states = c("WA", "OR", "CA")`. Add
 #'   `'UNK'` to the vector if you want to keep data not assigned to a state.
-#' @param CLEAN A logical value used when you want to remove data from the input
+#' @param clean A logical value used when you want to remove data from the input
+#'   data set. The default is `TRUE`. Where the opposite returns the original
+#'   data with additional columns and reports on what would have been removed.
+#' @param CLEAN *Deprecated* A logical value used when you want to remove data from the input
 #'   data set. The default is `TRUE`. Where the opposite returns the original
 #'   data with additional columns and reports on what would have been removed.
 #' @param spp A character string giving the species name to ensure that the
@@ -81,7 +82,8 @@
 #'   off when output indicates information that you already know. The printing
 #'   of output to the screen does not affect any of the returned objects. The
 #'   default is to always print to the screen, i.e., `verbose = TRUE`.
-#' @template savedir
+#' @param savedir Deprecated. This function no longer creates plots of cleaned data,
+#'   but you can call [plotCleaned()] separately if you want to create these plots.
 #'
 #' @export
 #' @return The input data filtered for desired areas and record types
@@ -90,7 +92,6 @@
 #' * year: initialized from SAMPLE_YEAR\cr
 #' * fleet: initialized to 1
 #' * fishery: initialized to 1
-#' * season: initialized to 1.  Change using [getSeason]
 #' * state: initialized from AGENCY_CODE.  Change using [getState]
 #' * length: length in mm, where `NA` indicates length is not available
 #' * lengthcm: floored cm from FORK_LENGTH when available, otherwise FISH_LENGTH
@@ -104,51 +105,34 @@
 #' only include character values such that fish with an unidentified sex are
 #' now `"U"`.
 #' * Age: the best ages to use going forward rather than just the first age read.
-#'
-#' \subsection{CLEAN}{
 #' The data are put through various tests before they are returned
-#' and the results of these tests are stored in the \code{CLEAN} column.
-#' Thus, sometimes it is informative to run \code{cleanPacFIN(CLEAN = FALSE)}
+#' and the results of these tests are stored in the \code{clean} column.
+#' Thus, sometimes it is informative to run \code{cleanPacFIN(clean = FALSE)}
 #' and use frequency tables to inspect which groups of data will be removed
-#' from the data set when you change the code to be \code{CLEAN = FALSE}.
-#' For example, many early length compositions do not have information on
-#' the weight of fish that were sampled, and thus, there is no way to infer
-#' how much the entire sample weighed or how much the tow/trip weighed.
-#' Therefore, these data cannot be expanded and are removed using
-#' \code{CLEAN = TRUE}. Some stock assessment authors or even previous
-#' versions of this very code attempted to use adjacent years to inform
-#' weights. The number of assumptions for this was great and state
-#' representatives discouraged inferring data that did not exist.
-#' }
-#'
-#' \subsection{Furthermore}{
-#' The values created as new columns are for use by other functions in this package.
-#' In particular, `fishyr` and `season` are useful if there are multiple
-#' seasons (e.g., winter and summer, as in the petrale sole assessment), and the
-#' year is adjusted so that "winter" occurs in one year, rather than across two.
-#'
+#' from the data set when you change the code to be \code{clean = TRUE}.
 #' The `fleet`, `fishery`, and `state` columns are meant for use in
 #' stratifying the data according to the particulars of an assessment.
-#' }
 #'
-#' @seealso [getState], [getSeason]
+#'
+#' @seealso [getState()], [getLength()], [getAge()], [getAgeMethod()], [getweight()], [getArea()]
 #'
 #' @author Andi Stephens, Kelli F. Johnson, Chantel R. Wetzel
 
 cleanPacFIN <- function(
   Pdata,
-  keep_INPFC = lifecycle::deprecated(),
-  keep_gears,
+  keep_gears = NULL,
+  keep_length_type = NULL,
   keep_sample_type = c("M"),
   keep_sample_method = "R",
-  keep_length_type,
   keep_age_method = NULL,
-  keep_missing_lengths = lifecycle::deprecated(),
   keep_states = c("WA", "OR", "CA"),
-  CLEAN = TRUE,
+  clean = TRUE,
+  CLEAN = lifecycle::deprecated(),
+  keep_INPFC = lifecycle::deprecated(),
+  keep_missing_lengths = lifecycle::deprecated(),
   spp = NULL,
   verbose = TRUE,
-  savedir = NULL
+  savedir = lifecycle::deprecated()
 ) {
   #### Deprecate old input arguments
   if (lifecycle::is_present(keep_INPFC)) {
@@ -171,190 +155,216 @@ cleanPacFIN <- function(
       )
     )
   }
-
-  nwfscSurvey::check_dir(dir = savedir, verbose = verbose)
-  #### CLEAN COLUMNS
-  if (check_columns_downloaded(Pdata)) {
-    Pdata <- cleanColumns(Pdata)
+  if (lifecycle::is_present(CLEAN)) {
+    lifecycle::deprecate_warn(
+      when = "0.4.1",
+      what = paste0("cleanPacFIN(CLEAN = )"),
+      details = "Please use cleanPacFIN(clean =)."
+    )
+    clean = CLEAN
   }
-  check_calcom <- any(Pdata[["AGENCY_CODE"]] == "CalCOM")
-
-  #### Fill in missing input arguments
-  Pdata <- getGearGroup(
-    Pdata = Pdata,
-    spp = spp,
-    verbose = verbose
-  )
-  if (missing(keep_gears)) {
-    keep_gears <- sort(unique(Pdata[, "geargroup"]))
-  }
-  Pdata[, "fleet"] <- Pdata[, "geargroup"] # match(Pdata$geargroup, keep_gears)
-  if (missing(keep_length_type)) {
-    keep_length_type <- sort(unique(c(
-      Pdata[, "FISH_LENGTH_TYPE_CODE"],
-      "",
-      "A",
-      "D",
-      "F",
-      "R",
-      "S",
-      "T",
-      "U",
-      NA
-    )))
-  }
-  if (is.null(keep_age_method)) {
-    keep_age_method <- unique(
-      unlist(Pdata[, grep("AGE_METHOD[0-9]*$", colnames(Pdata))])
+  if (lifecycle::is_present(savedir)) {
+    lifecycle::deprecate_warn(
+      when = "0.4.1",
+      what = paste0("cleanPacFIN(savedir = )"),
+      details = paste0(
+        "This function no longer calls plotCleaned() which used savedir to create and save plots. Please call this function separately if plots of cleaned data are needed."
+      )
     )
   }
 
+  #### CLEAN COLUMNS
+  if (check_columns_downloaded(Pdata)) {
+    data_columns <- cleanColumns(Pdata)
+  } else {
+    data_columns <- Pdata
+  }
+  check_calcom <- any(data_columns[["AGENCY_CODE"]] == "CalCOM")
+
+  # If the user has not specified which gears to keep, set keep_gears to
+  # all present gear groups
+  if (is.null(keep_gears)) {
+    keep_gears <- unique(GearTable$GROUP)
+  }
+  #### Fill in missing input arguments
+  data <- getGearGroup(
+    Pdata = data_columns,
+    keep_gears = keep_gears,
+    spp = spp,
+    verbose = verbose
+  )
+  data[, "fleet"] <- data[, "geargroup"]
+
   #### Column names
-  if (!"fishery" %in% colnames(Pdata)) {
-    Pdata[, "fishery"] <- 1
+  if (!"fishery" %in% colnames(data)) {
+    data[, "fishery"] <- 1
   }
-  Pdata$fishyr <- Pdata$SAMPLE_YEAR
-  Pdata$year <- Pdata$SAMPLE_YEAR
-  if (!missing(savedir)) {
-    grDevices::png(filename = file.path(savedir, "PacFIN_comp_season.png"))
-    on.exit(grDevices::dev.off(), add = TRUE, after = FALSE)
-  }
-  Pdata <- getSeason(Pdata, verbose = verbose, plotResults = !missing(savedir))
+  data$fishyr <- data$SAMPLE_YEAR
+  data$year <- data$SAMPLE_YEAR
+  # removing the getSeason call since there are no arguements passed to
+  # cleanPacFIN that are used in this function.
+  data$season <- 1
 
   #### Areas
-  Pdata <- getState(
-    Pdata,
-    verbose = verbose,
-    source = ifelse("AGID" %in% colnames(Pdata), "AGID", "AGENCY_CODE")
+  data <- getState(
+    Pdata = data,
+    source = ifelse(
+      "AGENCY_CODE" %in% colnames(data),
+      "AGENCY_CODE",
+      "AGID"
+    ),
+    verbose = verbose
   )
+  # SAMPLE_TYPE fixes:
   # California doesn't record SAMPLE_TYPE so we assume they are all Market samples
-  Pdata[Pdata$state == "CA" & is.na(Pdata$SAMPLE_TYPE), "SAMPLE_TYPE"] <- "M"
+  data[data$state == "CA" & is.na(data$SAMPLE_TYPE), "SAMPLE_TYPE"] <- "M"
+  # Perhaps add check here to change SAMPLE_TYPE == S samples from Oregon before 1987 to M
+  # Fix SAMPLE_TYPE in Oregon:
+  # According to Ali Whitman, samples before 1987 were designated as special request samples
+  # across the board for some species.  However, they were likely collected based upon
+  # the existing market sample protocol at the time and should be kept
+  data[
+    data$state == "OR" & data$SAMPLE_TYPE == "S" & data$SAMPLE_YEAR < 1987,
+    "SAMPLE_TYPE"
+  ] <- "M"
 
   #### Sex
-  Pdata[, "SEX_CODE"] <- nwfscSurvey::codify_sex(Pdata[, "SEX_CODE"])
+  if (verbose) {
+    cli::cli_alert_info(
+      "nwfscSurvey::codify_sex() summary information -"
+    )
+  }
+  data[, "SEX_CODE"] <- nwfscSurvey::codify_sex(
+    data[, "SEX_CODE"]
+  )
 
   #### Lengths
-  Pdata[, "length"] <- getLength(
-    Pdata,
-    verbose = verbose,
-    keep = keep_length_type
+  if (is.null(keep_length_type)) {
+    keep_length_type <- sort(unique(c(
+      data[, "FISH_LENGTH_TYPE_CODE"],
+      "",
+      "A", # alternative length
+      "D", # dorsal length
+      "F", # fork length
+      "R",
+      "S",
+      "T",
+      "U", #unknown
+      NA
+    )))
+  }
+  data[, "length"] <- getLength(
+    Pdata = data,
+    keep = keep_length_type,
+    verbose = verbose
   )
-  Pdata[, "lengthcm"] <- floor(Pdata[, "length"] / 10)
+  data[, "lengthmm"] <- data[, "length"]
+  data[, "lengthcm"] <- floor(data[, "lengthmm"] / 10)
 
-  #### Age (originally in cleanAges)
-  # Named to "Age" to match nwfscSurvey where Age is used.
-  Pdata[, "Age"] <- getAge(
-    Pdata,
+  # Deal with ages
+  if (is.null(keep_age_method)) {
+    keep_age_method <- unique(
+      unlist(data[, grep("AGE_METHOD[0-9]*$", colnames(data))])
+    )
+  }
+  data[, "Age"] <- getAge(
+    Pdata = data,
     verbose = verbose,
     keep = keep_age_method
   )
   # TODO: speed up this function
-  Pdata[, "age_method"] <- getAgeMethod(Pdata)
+  data[, "age_method"] <- getAgeMethod(
+    Pdata = data,
+    verbose = verbose
+  )
 
   #### Weight (random units in)
-  Pdata[, "weightkg"] <- getweight(
-    length = NULL,
-    weight = Pdata[["FISH_WEIGHT"]],
-    unit.in = Pdata[["FISH_WEIGHT_UNITS"]],
+  data[, "weightkg"] <- getweight(
+    length = data[["lengthmm"]],
+    weight = data[["FISH_WEIGHT"]],
+    unit.in = data[["FISH_WEIGHT_UNITS"]],
     unit.out = "kg"
   )
 
-  #### Bad samples
-  # Remove bad OR samples
-  Pdata$SAMPLE_TYPE[Pdata$SAMPLE_NUMBER %in% paste0("OR", badORnums)] <- "S"
-  # Via Chantel, from Ali at ODFW, do not keep b/c they don't have EXPANDED_SAMPLE_WEIGHT or FTID
-  # if ("SAMPLE_QUALITY" %in% colnames(Pdata)) {
-  #  Pdata[Pdata[["SAMPLE_QUALITY"]] == 63, "SAMPLE_TYPE"] <- "S"
-  # }
+  # Check record area:
+  data[, "area"] <- getArea(Pdata = data, verbose = verbose)
 
   #### Summary and return
-  # bad records: keep TRUEs
-  bad <- Pdata[, 1:2]
-  bad[, "goodarea"] <- is.na(getArea(Pdata, verbose = verbose))
-  bad[, "goodstype"] <- Pdata$SAMPLE_TYPE %in% keep_sample_type
-  bad[, "goodsmeth"] <- Pdata$SAMPLE_METHOD_CODE %in% keep_sample_method
-  bad[, "goodsno"] <- !is.na(Pdata$SAMPLE_NUMBER)
-  bad[, "goodstate"] <- Pdata[, "state"] %in% keep_states
-  bad[, "goodgear"] <- Pdata[, "geargroup"] %in% keep_gears
-  bad[, "goodEXPANDED_SAMPLE_WEIGHT"] <- !(is.na(Pdata[[
-    "EXPANDED_SAMPLE_WEIGHT"
-  ]]) &
-    Pdata[["state"]] == "OR")
-  bad[, "keep"] <- apply(bad[, grep("^good", colnames(bad))], 1, all)
+  # Identify good records: keep TRUEs
+  bad <- data[, 1:2]
+  bad[, "badarea"] <- !is.na(data$area)
+  bad[, "badstype"] <- !data$SAMPLE_TYPE %in% keep_sample_type
+  bad[, "badsmeth"] <- !data$SAMPLE_METHOD_CODE %in% keep_sample_method
+  bad[, "badsno"] <- is.na(data$SAMPLE_NUMBER)
+  bad[, "badstate"] <- !data[, "state"] %in% keep_states
+  bad[, "badgear"] <- !data[, "geargroup"] %in% keep_gears
+  # These records no longer need to be necessarily removed: the first stage
+  # expansion code sets the expansion factor to 1 for records missing sampled
+  # weights or trip weights (EXPANDED_SAMPLE_WEIGHT)
+  #bad[, "bador_type_weight"] <- (is.na(data[[
+  #  "EXPANDED_SAMPLE_WEIGHT"
+  #]]) &
+  #  data[["SAMPLE_TYPE"]] %in% keep_sample_type &
+  #  data[["state"]] == "OR")
+  bad[, "remove"] <- ifelse(
+    apply(bad[, grep("^bad", colnames(bad))], 1, sum) > 0,
+    yes = TRUE,
+    no = FALSE
+  )
+  bad[, "n_removed_reasons"] <- apply(
+    bad[, grep("^bad", colnames(bad))],
+    1,
+    sum
+  )
 
   # Report removals
   if (verbose) {
-    message("\n")
-    message(
-      "N SAMPLE_TYPEs changed from M to S",
-      " for special samples from OR: ",
-      sum(Pdata$SAMPLE_NUMBER %in% paste0("OR", badORnums))
-    )
-    message(
-      "N not in keep_sample_type (SAMPLE_TYPE): ",
-      sum(!bad[, "goodstype"])
-    )
-    message("N with SAMPLE_TYPE of NA: ", sum(is.na(Pdata[["SAMPLE_TYPE"]])))
-    message(
-      "N not in keep_sample_method (SAMPLE_METHOD_CODE): ",
-      sum(!bad[, "goodsmeth"])
-    )
-    message(
-      "N with SAMPLE_NUMBER of NA: ",
-      sum(!bad[, "goodsno"])
-    )
-    message("N without length: ", sum(is.na(Pdata$length)))
-    message("N without Age: ", sum(is.na(Pdata$Age)))
-    message(
-      "N without length and Age: ",
-      sum(is.na(Pdata$length) | is.na(Pdata$Age))
-    )
-    message(
-      "N sample weights not available for OR: ",
-      sum(!bad[, "goodEXPANDED_SAMPLE_WEIGHT"])
-    )
-    message("N records: ", NROW(Pdata))
-    message("N remaining if CLEAN: ", sum(bad[, "keep"]))
-    message("N removed if CLEAN: ", NROW(Pdata) - sum(bad[, "keep"]))
-    if (check_pacfin_species_code_calcom(Pdata$PACFIN_SPECIES_CODE)) {
-      if (check_calcom) {
-        cli::cli_alert_success(
-          "Data are from a flatfish and CalCOM data are present"
-        )
-      } else {
+    narea <- sum(bad[, "badarea"])
+    ntype <- sum(bad[, "badstype"])
+    nmethod <- sum(bad[, "badsmeth"])
+    nnumber <- sum(bad[, "badsno"])
+    nstate <- sum(bad[, "badstate"])
+    ngear <- sum(bad[, "badgear"])
+    nlength <- sum(is.na(data$lengthmm))
+    nage <- sum(is.na(data$Age))
+    nlenage <- sum(is.na(data$lengthmm) & is.na(data$Age))
+    nclean <- NROW(data) - sum(bad[, "remove"])
+    nremoved <- sum(bad[, "remove"])
+
+    cli::cli_bullets(c(
+      " " = "Summary of data processing and cleaning checks:",
+      "i" = "Number of records with length of NA: {nlength}.",
+      "i" = "Number of records without length and Age: {nlenage}",
+      " " = "The following records would be removed if clean = TRUE. Users should inspect these records to make sure that those record should be removed from the cleaned data or if the keep arguments should be revised.",
+      " " = "The number of records potentially removed for the various reasons below if clean = TRUE are not mutually exclusive.",
+      "!" = "Number of records not in federal waters: {narea}",
+      "!" = "Number of records not in keep_sample_type (SAMPLE_TYPE): {ntype}",
+      "!" = "Number of records not in keep_sample_method (SAMPLE_METHOD_CODE): {nmethod}",
+      "!" = "Number of records without SAMPLE_NUMBER: {nnumber}",
+      "!" = "Number of records not in keep_states: {nstate}",
+      "!" = "Number of records not in keep_gears: {ngear}",
+      "i" = "Number of records remaining if clean = TRUE: {nclean}",
+      "i" = "Number of records removed if clean = TRUE: {nremoved}"
+    ))
+
+    if (check_pacfin_species_code_calcom(data$PACFIN_SPECIES_CODE)) {
+      if (!check_calcom) {
         cli::cli_alert_danger(
-          "Data are from a flatfish but no CalCOM data are present, check with E.J."
+          "Additional biological data are available from CALCOM for flatfish species pre-1990, please contact E.J. (edward.dick@noaa.gov) and Brenda (BErwin@psmfc.org)."
         )
       }
     }
   }
 
-  if (!missing(savedir)) {
-    plotCleaned(Pdata, savedir = savedir)
+  clean_vector <- ifelse(
+    bad[, "remove"] == TRUE,
+    yes = FALSE,
+    no = TRUE
+  )
+  data[, "clean"] <- clean_vector
+  if (clean) {
+    data <- data[clean_vector, ]
   }
 
-  Pdata[, "CLEAN"] <- bad[, "keep"]
-  if (CLEAN) {
-    Pdata <- Pdata[bad[, "keep"], ]
-  }
-
-  if (!missing(savedir)) {
-    wlpars <- getWLpars(Pdata, verbose = FALSE)
-    utils::write.table(
-      wlpars,
-      sep = ",",
-      row.names = FALSE,
-      col.names = TRUE,
-      file = file.path(savedir, "PacFIN_WLpars.csv")
-    )
-    if (verbose) {
-      message(
-        "WL parameter estimates: see 'PacFIN_WLpars.csv'\n",
-        "If some rows are NA, consider setting ALL of them individually\n",
-        "'getExpansion_1('fa' = , 'fb' = , 'ma' = , ...)"
-      )
-    }
-  }
-
-  return(Pdata)
+  return(data)
 }

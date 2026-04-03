@@ -51,9 +51,9 @@ test_that("Expand biological data", {
     weight_length_estimates = weight_length_estimates,
     Units = "MT",
     maxExp = 0.95,
-    verbose = FALSE
+    verbose = TRUE
   )
-  expect_equal(sum(expanded_comps[, "Final_Sample_Size_L"]), 9219564)
+  expect_equal(sum(expanded_comps[, "Final_Sample_Size_L"]), 12565513)
   expect_equal(
     round(sum(expanded_comps[, "Final_Sample_Size_A"]), 0),
     1899150
@@ -65,9 +65,9 @@ test_that("Expand biological data", {
     weightid = "Final_Sample_Size_L",
     verbose = FALSE
   )
-  expect_equal(nrow(length_comps_long), 1499)
+  expect_equal(nrow(length_comps_long), 1533)
   expect_equal(ncol(length_comps_long), 9)
-  expect_equal(round(sum(length_comps_long[, "comp"]), 0), 9168900)
+  expect_equal(sum(length_comps_long[, "comp"]), 12563732)
 
   length_composition_data <- writeComps(
     inComps = length_comps_long,
@@ -75,10 +75,13 @@ test_that("Expand biological data", {
     comp_bins = seq(18, 90, by = 2),
     verbose = FALSE
   )
-  expect_equal(nrow(length_composition_data), 6)
+  expect_equal(nrow(length_composition_data), 24)
   expect_equal(ncol(length_composition_data), 80)
-  expect_equal(sum(length_composition_data$input_n), 6567.254, tolerance = 1e-3)
-  expect_equal(sum(length_composition_data[, 7:80]), 9168900, tolerance = 1e-3)
+  expect_equal(sum(length_composition_data$input_n), 7485.9, tolerance = 1e-3)
+  expect_equal(
+    sum(length_composition_data[, 7:ncol(length_composition_data)]),
+    12563732
+  )
 
   age_comps_long <- getComps(
     Pdata = dplyr::filter(expanded_comps, !is.na(Age)),

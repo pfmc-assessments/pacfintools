@@ -3,7 +3,6 @@ PacFIN.*RData
 .Rproj.user
 password.txt
 .history/
-data-raw/*
 inst/extdata/*
 vignettes/*.html
 vignettes/*.md

@@ -66,7 +66,7 @@ getArea <- function(Pdata, verbose = TRUE) {
     ignore.case = TRUE
   )
   if (length(column_numbers) == 0) {
-    stop("Your data does not have a column indicating the area.")
+    cli::cli_abort("Your data does not have a column indicating the area.")
   }
 
   # Use unite() to paste (b/c it is faster than glue) all entries into a
@@ -87,29 +87,16 @@ getArea <- function(Pdata, verbose = TRUE) {
   out[grepl("3[DN]", strings, ignore.case = TRUE)] <- "CAN (VNCVR)"
   out[grepl("5[a-z]", strings, ignore.case = TRUE)] <- "CAN"
 
-  if (verbose && sum(!is.na(out)) != 0) {
-    message(
-      "\n The table below summarizes the number of records that are outside\n",
-      " the area included in U.S. West Coast population assessments.\n",
-      " Columns with information about area of landing were pasted together\n ",
-      "and searched for specific strings indicative of an excluded region."
-    )
-    utils::capture.output(
-      type = "message",
-      dplyr::count(
-        data.frame(region = out, strings),
-        strings,
-        region
-      ) |>
-        dplyr::filter(!is.na(region))
-    )
-  }
-  if (verbose && sum(!is.na(out)) == 0) {
-    message(
-      "\n No records were determined to be outside of the area included in\n",
-      " U.S. West Coast population assessments. You should perform\n",
-      " additional explorations to confirm this."
-    )
+  if (verbose) {
+    n_sound <- sum(out == "Sound and Straits", na.rm = TRUE)
+    n_can <- sum(out %in% c("CAN", "CAN (VNCVR)"), na.rm = TRUE)
+    n_eez <- sum(out == "Outside EEZ", na.rm = TRUE)
+    cli::cli_bullets(c(
+      " " = "{.fn getArea} summary information -",
+      "i" = "There were {n_sound} records determined to be from Sound and Straits (4A).",
+      "i" = "There were {n_can} records determined to be from Canadian waters (5B).",
+      "i" = "There were {n_eez} records determined to be from outside the EEZ (9U)."
+    ))
   }
   return(out)
 }

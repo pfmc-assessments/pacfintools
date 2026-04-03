@@ -4,11 +4,28 @@
 \alias{getGearGroup}
 \title{Create column for gear called \code{geargroup} according to PacFIN gears}
 \usage{
-getGearGroup(Pdata, spp = NULL, verbose = TRUE)
+getGearGroup(Pdata, keep_gears = NULL, spp = NULL, verbose = TRUE)
 }
 \arguments{
 \item{Pdata}{A data frame, typically one extracted from PacFIN but for this
 function just one column is needed, \code{PACFIN_GEAR_CODE}.}
+
+\item{keep_gears}{A character vector including the gear types you want
+to label as unique fleets. Order matters and will define fleet numbering.
+If the argument is missing, which is the default, then all found gear
+groups are maintained and ordered alphabetically. For more details see
+\code{\link[=getGearGroup]{getGearGroup()}}, which lists a link where you can find the available gear
+groupings and how they link to \code{"PACFIN_GEAR_CODE"} within your data. The vector
+supplied to this argument should consist of only options available in
+\code{unique(GearTable[["GROUP"]])}.
+Typical entries will include character values
+such as \code{HKL}, \code{POT}, \code{TWL}, where the latter is short for all non-shrimp
+trawls and \code{TWS} is shrimp trawls. Other gear identification codes and
+their definitions include \code{DRG} which is dredge gear, \code{MSC} which is all
+other miscellaneous gear such as diving or river trawls, \code{NET} which is all
+non-trawl net gear, \code{NTW} which is non-trawl gear, and \code{TLS} which is
+trolling gear. As a special case, \code{MID} is available for spiny dogfish to
+extract mid-water trawl data as a separate fleet.}
 
 \item{spp}{A character string giving the species name to ensure that the
 methods are species specific. Leave \code{NULL} if generic methods work for

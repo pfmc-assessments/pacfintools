@@ -36,6 +36,9 @@
 #'   were needed between functions. You can use as many levels of stratification
 #'   as you want except year because it is already included in the call to
 #'   [stats::aggregate].
+#' @param Directory where plots should be saved. The default
+#' argument is NULL. If a directory is provided, then summary plots will be saved
+#' to this location. If NULL, then no plots will be created.
 #' @inheritParams cleanPacFIN
 #'
 #'
@@ -92,11 +95,7 @@ getExpansion_2 <- function(
     several.ok = FALSE,
     choices = c(measurements::conv_unit_options[["mass"]], "MT", "LB")
   )
-  Units <- switch(Units,
-    MT = "metric_ton",
-    LB = "lbs",
-    Units
-  )
+  Units <- switch(Units, MT = "metric_ton", LB = "lbs", Units)
 
   # Start clean
   Pdata$Expansion_Factor_2 <- NA
