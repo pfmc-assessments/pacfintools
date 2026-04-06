@@ -69,9 +69,8 @@ getLength <- function(Pdata, keep, verbose = TRUE) {
   )
   if (length(check.calt) > 0) {
     change_vals <- length(check.calt)
-    cli::cli_inform(
-      "Changing {change_vals} CA FISH_LENGTH_TYPE == F to T.
-      Vlada is working on getting these entries fixed in PacFIN."
+    cli::cli_alert_info(
+      "Changing {change_vals} CA FISH_LENGTH_TYPE == F to T for Pacific spiny dogfish."
     )
     Pdata[check.calt, var_fish_length_type] <- "T"
   }
