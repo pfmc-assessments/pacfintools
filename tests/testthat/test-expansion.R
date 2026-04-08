@@ -68,7 +68,7 @@ test_that("Expand biological data", {
   )
 
   length_comps_long <- getComps(
-    Pdata = expanded_comps |> dplyr::filter(!is.na(lengthcm)),
+    Pdata = expanded_comps,
     Comps = "LEN",
     weightid = "Final_Sample_Size_L",
     verbose = FALSE
@@ -93,7 +93,7 @@ test_that("Expand biological data", {
   )
 
   age_comps_long <- getComps(
-    Pdata = dplyr::filter(expanded_comps, !is.na(Age)),
+    Pdata = expanded_comps,
     Comps = "AGE",
     weightid = "Final_Sample_Size_A",
     verbose = FALSE
