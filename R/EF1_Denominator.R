@@ -107,7 +107,7 @@ EF1_Denominator <- function(
   #       parameters if the sex does not exist. What happens if missing values
   #       are in getExpansion_1?
   Pdata$LW_Calc_Wt <- getweight(
-    length = Pdata$length,
+    length = Pdata$lengthmm,
     sex = Pdata$SEX_CODE,
     pars = data.frame(
       "A" = c("females" = fa, "males" = ma, "all" = ua),
@@ -134,51 +134,55 @@ EF1_Denominator <- function(
     dplyr::mutate(
       bestweight = ifelse(
         is.na(bestweight),
-        mean(bestweight),
-        bestweight
+        yes = mean(bestweight),
+        no = bestweight
       )
     ) |>
     # Calculate sample weights and weight of unsexed fish per SAMPLE_NUMBER
     dplyr::mutate(
       Wt_Sampled_3_L = sum(
         na.rm = TRUE,
-        ifelse(is.na(length), NA, bestweight)
+        ifelse(is.na(length), yes = NA, no = bestweight)
       ),
       Wt_Sampled_3_A = sum(
         na.rm = TRUE,
-        ifelse(is.na(Age), NA, bestweight)
+        ifelse(is.na(Age), yes = NA, no = bestweight)
       ),
-      WEIGHT_OF_UNKNOWN_LBS = sum(ifelse(SEX_CODE == "U", bestweight, 0)),
+      WEIGHT_OF_UNKNOWN_LBS = sum(ifelse(
+        SEX_CODE == "U",
+        yes = bestweight,
+        no = 0
+      )),
       UNK_NUM = sum(SEX_CODE == "U")
     ) |>
     # Back out the weight of fish that have no length or Age for each
     # specific sample weight, if all are NA in sample, then set to 0.
     dplyr::mutate(
       Wt_Sampled_1_A = (-1 *
-        sum(ifelse(is.na(Age), bestweight, 0)) +
+        sum(ifelse(is.na(Age), yes = bestweight, no = 0)) +
         WEIGHT_OF_FEMALES_LBS +
         WEIGHT_OF_MALES_LBS +
         WEIGHT_OF_UNKNOWN_LBS) *
-        ifelse(all(is.na(Age)), 0, 1),
+        ifelse(all(is.na(Age)), yes = 0, no = 1),
       Wt_Sampled_1_L = (-1 *
-        sum(ifelse(is.na(length), bestweight, 0)) +
+        sum(ifelse(is.na(length), yes = bestweight, no = 0)) +
         WEIGHT_OF_FEMALES_LBS +
         WEIGHT_OF_MALES_LBS +
         WEIGHT_OF_UNKNOWN_LBS) *
-        ifelse(all(is.na(length)), 0, 1)
+        ifelse(all(is.na(length)), yes = 0, no = 1)
     ) |>
     dplyr::ungroup() |>
     dplyr::group_by(SAMPLE_NUMBER, CLUSTER_SEQUENCE_NUMBER) |>
     # Do the same for CLUSTER_WEIGHT_LBS
     dplyr::mutate(
       Wt_Sampled_2_A = (-1 *
-        sum(ifelse(is.na(Age), bestweight, 0)) +
+        sum(ifelse(is.na(Age), yes = bestweight, no = 0)) +
         CLUSTER_WEIGHT_LBS) *
-        ifelse(all(is.na(Age)), 0, 1),
+        ifelse(all(is.na(Age)), yes = 0, no = 1),
       Wt_Sampled_2_L = (-1 *
-        sum(ifelse(is.na(length), bestweight, 0)) +
+        sum(ifelse(is.na(length), yes = bestweight, no = 0)) +
         CLUSTER_WEIGHT_LBS) *
-        ifelse(all(is.na(length)), 0, 1)
+        ifelse(all(is.na(length)), yes = 0, no = 1)
     ) |>
     # Bring the calculations back to the full scale of the data frame
     dplyr::ungroup() |>
@@ -199,48 +203,81 @@ EF1_Denominator <- function(
     # Return a data frame rather than a tibble
     data.frame()
 
-  #### Summary and boxplot
-  # TODO: revamp the summary and plots
-  printemp <- data.frame(cbind(
-    Pdata$Wt_Sampled_1_L,
-    Pdata$Wt_Sampled_2_L,
-    Pdata$Wt_Sampled_3_L,
-    Pdata$Wt_Sampled_L
-  ))
-
-  names(printemp) <- c("M+F+U", "Cluster", "L-W", "Final Wt_Sampled")
-
-  # if (verbose) {
-  #  cli::cli_alert_info("Sample weights")
-  #  print(summary(printemp))
-  # }
-
-  NA_Wt_Sampled <- Pdata[is.na(Pdata$Wt_Sampled_L), ]
+  NA_Wt_Sampled <- Pdata[Pdata$Wt_Sampled_L == 0, ]
   nNA <- NROW(NA_Wt_Sampled)
-
   if (!is.null(savedir)) {
     plot1 <- file.path(savedir, "PacFIN_exp1_denom.png")
+    plot_na <- file.path(savedir, "PacFIN_expansion_1_NA_denominator.png")
     plot2 <- file.path(savedir, "PacFIN_WL.png")
-    grDevices::png(plot1)
-    on.exit(grDevices::dev.off(), add = TRUE, after = FALSE)
-    graphics::par(mfrow = c(1, ifelse(nNA > 0, 2, 1)), mgp = c(2.5, 0.5, 0))
-    graphics::boxplot(
-      as.data.frame(printemp),
-      names = names(printemp),
-      ylab = "Sample weight (lbs)",
-      xlab = "First-stage expansion denominator"
+    #### Summary and boxplot
+    # TODO: revamp the summary and plots
+    data_long <-
+      tidyr::pivot_longer(
+        data = Pdata[, c(
+          "fishyr",
+          "state",
+          "Wt_Sampled_1_L",
+          "Wt_Sampled_2_L",
+          "Wt_Sampled_3_L",
+          "Wt_Sampled_L"
+        )],
+        cols = dplyr::starts_with("Wt"),
+        names_to = "Weight_Calc",
+        values_to = "Sample_Weight"
+      ) |>
+      dplyr::mutate(
+        Weight_Calc = dplyr::case_when(
+          Weight_Calc == "Wt_Sampled_1_L" ~ "Alt 1: Weight of Sample",
+          Weight_Calc == "Wt_Sampled_2_L" ~ "Alt 2: Cluster Weight",
+          Weight_Calc == "Wt_Sampled_3_L" ~ "Alt 3: Length-Weight",
+          .default = "Final Sample Weight"
+        )
+      )
+    g1 <- ggplot2::ggplot(
+      data_long,
+      ggplot2::aes(x = as.factor(Weight_Calc), y = Sample_Weight)
+    ) +
+      ggplot2::geom_boxplot() +
+      ggplot2::theme_bw() +
+      ggplot2::ylab("Sample Weight (lbs)") +
+      ggplot2::xlab("Calculation Type") +
+      ggplot2::ggtitle(
+        "First Stage Expansion Denominator: Calculation of Sample Weight"
+      ) +
+      ggplot2::facet_grid("state", scales = "free_y")
+    ggplot2::ggsave(
+      plot = g1,
+      filename = plot2,
+      width = 12,
+      height = 12,
+      units = "in"
     )
     if (nNA > 0) {
-      graphics::barplot(
-        stats::xtabs(
-          NA_Wt_Sampled$OBSERVED_FREQUENCY ~
-            NA_Wt_Sampled$state + NA_Wt_Sampled$fishyr
-        ),
-        col = grDevices::rainbow(length(unique(NA_Wt_Sampled$state))),
-        legend.text = TRUE,
-        xlab = "Year",
-        ylab = "N samples w/ first-stage expansion denominator = NA",
-        args.legend = list(x = "topleft", bty = "n")
+      g_na <- ggplot2::ggplot(
+        NA_Wt_Sampled |> dplyr::mutate(Count = 1),
+        ggplot2::aes(x = as.factor(fishyr), y = Count)
+      ) +
+        ggplot2::geom_bar(stat = "identity") +
+        ggplot2::theme_bw() +
+        ggplot2::ylab("Count") +
+        ggplot2::xlab("Year") +
+        ggplot2::ggtitle(
+          "First Stage Expansion Denomintor with NA Wt_Sampled_L"
+        ) +
+        ggplot2::theme(
+          axis.text.x = ggplot2::element_text(
+            angle = 90,
+            vjust = 0.5,
+            hjust = 0.5
+          )
+        ) +
+        ggplot2::facet_grid("state")
+      ggplot2::ggsave(
+        plot = g_na,
+        filename = plot_na,
+        width = 12,
+        height = 12,
+        units = "in"
       )
     }
     gg <- plotWL(
@@ -252,14 +289,22 @@ EF1_Denominator <- function(
     ggplot2::ggsave(
       gg,
       file = plot2,
-      width = 6,
-      height = 6,
+      width = 9,
+      height = 9,
       units = "in"
     )
   }
-  if (nNA == 0 && verbose) {
-    cli::cli_alert_success("Sample Wts found for all samples.")
+  if (verbose) {
+    if (nNA == 0) {
+      cli::cli_alert_success(
+        "Sample weights were able to be determined for all samples."
+      )
+    }
+    if (nNA != 0) {
+      cli::cli_alert_warning(
+        "Sample weights were not available for {nNA} samples (sampled weightkg and lengthmm may be NA)."
+      )
+    }
   }
-
   return(Pdata)
 }
