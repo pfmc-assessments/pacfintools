@@ -92,11 +92,15 @@ getExpansion_2 <- function(
   if (length(unique(Pdata$fishyr)) == 0) {
     cli::cli_abort("Pdata must have a column named fishyr.")
   }
-  years_in_catch <- unique(Catch[, grep(
-    "year",
-    colnames(Catch),
-    ignore.case = TRUE
-  )])
+  yearcol <- grep("year", colnames(Catch), ignore.case = TRUE)
+  if (length(yearcol) == 0) {
+    cli::cli_abort("Catch must have a column named Year or year.")
+  }
+  if (length(unique(Catch[["year"]])) == 0) {
+    years_in_catch <- Catch[["Year"]]
+  } else {
+    years_in_catch <- Catch[["year"]]
+  }
   years_in_pdata <- unique(Pdata$fishyr)
   if (any(!years_in_pdata %in% years_in_catch)) {
     cli::cli_abort(
@@ -148,7 +152,6 @@ getExpansion_2 <- function(
 
   # Check Catch columns against Pdata
   # Ensure Year is first column
-  yearcol <- grep("year", colnames(Catch), ignore.case = TRUE)
   Catch <- Catch[, c(yearcol, seq(1:NCOL(Catch))[-yearcol])]
   Catchgears <- sort(names(Catch)[-1])
   Pstrat <- sort(unique(Pdata$stratification))
@@ -210,13 +213,12 @@ getExpansion_2 <- function(
         collapse = "-"
       )
     )
-    if (verbose) {
-      cli::cli_alert_danger(
-        "There are {sum(tows$catch == 0)} bds records where catch was 0 in the Catch
-        file for the requested stratification. The following years and stratifications
-        have 0 catch but bds data: {missing_data}."
-      )
-    }
+    cli::cli_abort(
+      "There are {sum(tows$catch == 0)} bds records where catch was 0 in the Catch
+      file for the requested stratification. The following years and stratifications
+      have 0 catch but bds data: {missing_data}. All years in Pdata need to have 
+      Catch for second-stage expansion."
+    )
   }
 
   # Expansion is calculated by dividing the catch by the Sum_Sampled_Lbs.
@@ -283,13 +285,31 @@ getExpansion_2 <- function(
   }
 
   if (!is.null(savedir)) {
-    grDevices::png(file.path(savedir, "PacFIN_exp2_summarybyyear.png"))
-    on.exit(grDevices::dev.off(), add = TRUE, after = FALSE)
-    graphics::boxplot(
-      Pdata$Expansion_Factor_2 ~ Pdata$fishyr,
-      main = "",
-      xlab = "Year",
-      ylab = "Second-stage expansion factor"
+    file_name <- file.path(savedir, "PacFIN_expansion_2.png")
+    g1 <- ggplot2::ggplot(
+      Pdata,
+      ggplot2::aes(x = as.factor(fishyr), y = Expansion_Factor_2)
+    ) +
+      ggplot2::geom_point(size = 2) +
+      ggplot2::theme_bw() +
+      ggplot2::ylab("Expansion Factor") +
+      ggplot2::xlab("Year") +
+      ggplot2::ggtitle(
+        "Second Stage Expansion"
+      ) +
+      ggplot2::facet_grid("stratification", scales = "free_y") +
+      ggplot2::theme(
+        axis.text.x = ggplot2::element_text(
+          angle = 90,
+          vjust = 0.5,
+          hjust = 0.5
+        )
+      )
+    ggplot2::ggsave(
+      filename = file_name,
+      plot = g1,
+      height = 9,
+      width = 9
     )
   }
 
