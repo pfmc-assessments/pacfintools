@@ -334,7 +334,6 @@ cleanPacFIN <- function(
 
     cli::cli_bullets(c(
       " " = "Summary of data processing and cleaning checks:",
-      "i" = "Number of records with length of NA: {nlength}.",
       " " = "The following records would be removed if clean = TRUE. Users should inspect these records to make sure that those record should be removed from the cleaned data or if the keep arguments should be revised.",
       " " = "The number of records potentially removed for the various reasons below if clean = TRUE are not mutually exclusive.",
       "!" = "Number of records not in federal waters: {narea}",
