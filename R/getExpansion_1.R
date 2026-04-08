@@ -158,7 +158,7 @@ getExpansion_1 <- function(
     Pdata$Expansion_Factor_1_L[Pdata$state == "WA"] <- 1
     Pdata$Expansion_Factor_1_A[Pdata$state == "WA"] <- 1
     cli::cli_alert_info(
-      #"i" = "Fish tickets do not represent whole trips in WA.",
+      # "i" = "Fish tickets do not represent whole trips in WA.",
       "Washington state expansions set to 1 because {.code Exp_WA = {Exp_WA}}."
     )
   }

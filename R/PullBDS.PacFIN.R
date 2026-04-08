@@ -147,7 +147,7 @@ PullBDS.PacFIN <- function(
       last = " and "
     )
     cli::cli_alert_warning(
-      "FISH_ID includes NULL(s) for {sum(fish_id)} rows. 
+      "FISH_ID includes NULL(s) for {sum(fish_id)} rows.
       These rows have been removed from the data; but you should contact
       state representatives for {message} to let them know."
     )
