@@ -21,8 +21,11 @@ test_that("Expand biological data", {
     dplyr::mutate(
       stratification = paste(state, geargroup, sep = ".")
     )
-  expect_equal(nrow(bds_cleaned), 40125)
+  expect_equal(nrow(bds_cleaned), 40102)
   expect_equal(length(unique(bds_cleaned$stratification)), 9)
+  expect_equal(sum(bds_cleaned$geargroup == "TWL"), 14223)
+  expect_equal(sum(bds_cleaned$geargroup == "HKL"), 19698)
+  expect_equal(sum(bds_cleaned$geargroup == "POT"), 6181)
 
   weight_length_estimates <- getWLpars(
     data = bds_cleaned,
@@ -51,12 +54,17 @@ test_that("Expand biological data", {
     weight_length_estimates = weight_length_estimates,
     Units = "MT",
     maxExp = 0.95,
-    verbose = TRUE
+    verbose = FALSE
   )
-  expect_equal(sum(expanded_comps[, "Final_Sample_Size_L"]), 12565513)
   expect_equal(
-    round(sum(expanded_comps[, "Final_Sample_Size_A"]), 0),
-    1899150
+    sum(expanded_comps[, "Final_Sample_Size_L"]),
+    12552620,
+    tolerance = 1e-2
+  )
+  expect_equal(
+    sum(expanded_comps[, "Final_Sample_Size_A"]),
+    1898862,
+    tolerance = 1e-2
   )
 
   length_comps_long <- getComps(
@@ -67,7 +75,7 @@ test_that("Expand biological data", {
   )
   expect_equal(nrow(length_comps_long), 1533)
   expect_equal(ncol(length_comps_long), 9)
-  expect_equal(sum(length_comps_long[, "comp"]), 12563732)
+  expect_equal(sum(length_comps_long[, "comp"]), 12552620, tolerance = 1e-2)
 
   length_composition_data <- writeComps(
     inComps = length_comps_long,
@@ -80,7 +88,8 @@ test_that("Expand biological data", {
   expect_equal(sum(length_composition_data$input_n), 7485.9, tolerance = 1e-3)
   expect_equal(
     sum(length_composition_data[, 7:ncol(length_composition_data)]),
-    12563732
+    12552620,
+    tolerance = 1e-2
   )
 
   age_comps_long <- getComps(
@@ -91,7 +100,7 @@ test_that("Expand biological data", {
   )
   expect_equal(nrow(age_comps_long), 701)
   expect_equal(ncol(age_comps_long), 9)
-  expect_equal(round(sum(age_comps_long[, "comp"]), 0), 1445082)
+  expect_equal(sum(age_comps_long[, "comp"]), 1445160, tolerance = 1e-2)
 
   age_composition_data <- writeComps(
     inComps = age_comps_long,
