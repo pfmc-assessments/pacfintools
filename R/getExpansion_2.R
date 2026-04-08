@@ -155,7 +155,7 @@ getExpansion_2 <- function(
   Catch <- Catch[, c(yearcol, seq(1:NCOL(Catch))[-yearcol])]
   Catchgears <- sort(names(Catch)[-1])
   Pstrat <- sort(unique(Pdata$stratification))
-  if (!identical(Pstrat, Catchgears)) {
+  if (!any(Pstrat %in% Catchgears)) {
     out_message_catchgears <- paste(collapse = ", ", Catchgears)
     out_message_pstrat <- paste(collapse = ", ", Pstrat)
     cli::cli_bullets(c(
@@ -163,6 +163,15 @@ getExpansion_2 <- function(
       "i" = "Data strata: {out_message_pstrat}"
     ))
     cli::cli_abort("Mismatch between strata in dataset and names in catch.")
+  }
+  if (!identical(Pstrat, Catchgears)) {
+    out_message_catchgears <- paste(collapse = ", ", Catchgears)
+    out_message_pstrat <- paste(collapse = ", ", Pstrat)
+    cli::cli_bullets(c(
+      "!" = "The data by stratification in Pdata do not have samples for all catch fleets",
+      " " = "Catch names: {out_message_catchgears}",
+      " " = "Data strata: {out_message_pstrat}"
+    ))
   }
 
   # Convert Catch to lbs.

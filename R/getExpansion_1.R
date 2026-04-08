@@ -157,15 +157,15 @@ getExpansion_1 <- function(
   if (Exp_WA != TRUE) {
     Pdata$Expansion_Factor_1_L[Pdata$state == "WA"] <- 1
     Pdata$Expansion_Factor_1_A[Pdata$state == "WA"] <- 1
-    cli::cli_bullets(c(
-      "i" = "Fish tickets do not represent whole trips in WA.",
-      "i" = "WA expansions set to 1 because {.code Exp_WA = {Exp_WA}}."
-    ))
+    cli::cli_alert_info(
+      #"i" = "Fish tickets do not represent whole trips in WA.",
+      "Washington state expansions set to 1 because {.code Exp_WA = {Exp_WA}}."
+    )
   }
 
   # Used in plotting later on
   NA_EF1 <- Pdata[is.na(Pdata$Expansion_Factor_1_L), ]
-  nNA <- NROW(NA_EF1)
+  nNA <- sum(is.na(Pdata$Expansion_Factor_1_L))
   # Counts to report
   n_na <- sum(is.na(Pdata$Expansion_Factor_1_L))
   n_inf <- sum(
@@ -236,12 +236,14 @@ getExpansion_1 <- function(
   Pdata$Expansion_Factor_1_L[!is.finite(Pdata$Expansion_Factor_1_L)] <- 1
   Pdata$Expansion_Factor_1_A[!is.finite(Pdata$Expansion_Factor_1_A)] <- 1
 
+  max_quantile_length <- round(quantile(Pdata$Expansion_Factor_1_L, 1), 2)
+  max_quantile_age <- round(quantile(Pdata$Expansion_Factor_1_A, 1), 2)
   Pdata$Expansion_Factor_1_L <- capValues(Pdata$Expansion_Factor_1_L, maxExp)
   Pdata$Expansion_Factor_1_A <- capValues(Pdata$Expansion_Factor_1_A, maxExp)
   if (verbose) {
     cli::cli_bullets(c(
-      "i" = "Maximum first-stage length expansion capped at the {maxExp} quantile of {round(max(Pdata$Expansion_Factor_1_L), 2)}",
-      "i" = "Maximum first-stage age expansion capped at the {maxExp} quantile of {round(max(Pdata$Expansion_Factor_1_A), 2)}"
+      "i" = "Maximum first-stage length expansion is {max_quantile_length} and is capped at the {maxExp} quantile of {round(max(Pdata$Expansion_Factor_1_L), 2)}",
+      "i" = "Maximum first-stage age expansion is {max_quantile_age} and is capped at the {maxExp} quantile of {round(max(Pdata$Expansion_Factor_1_A), 2)}"
     ))
   }
 
@@ -253,8 +255,9 @@ getExpansion_1 <- function(
     if (nNA > 0) {
       g1 <- ggplot2::ggplot(
         Pdata |>
-          dplyr::filter(replace_na_inf == TRUE) |>
-          dplyr::mutate(Count = 1),
+          dplyr::mutate(
+            Count = dplyr::case_when(replace_na_inf == TRUE ~ 1, .default = 0)
+          ),
         ggplot2::aes(x = as.factor(fishyr), y = Count, fill = state)
       ) +
         ggplot2::geom_bar(stat = "identity") +
