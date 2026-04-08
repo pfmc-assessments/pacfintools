@@ -56,7 +56,7 @@ getWLpars <- function(
   ]
   if (verbose) {
     n <- dims[1] - nrow(data)
-    cli::cli_inform(
+    cli::cli_alert_info(
       "Calculating the weight-length relationship from {nrow(data)}, nfish
       because {n} fish did not have empirical weights and lengths."
     )
@@ -91,8 +91,13 @@ getWLpars <- function(
     data.frame()
 
   if (verbose) {
-    message("weight--length model results by sex_code:")
-    utils::capture.output(lapply(mresults[["fits"]], summary), type = "message")
+    out_message <- utils::capture.output(
+      lapply(mresults[["fits"]], summary),
+      type = "message"
+    )
+    cli::cli_alert_info(
+      "weight--length model results by sex_code: {out_message}"
+    )
   }
 
   return(WLresults)

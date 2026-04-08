@@ -298,6 +298,7 @@ cleanPacFIN <- function(
   bad[, "badsno"] <- is.na(data$SAMPLE_NUMBER)
   bad[, "badstate"] <- !data[, "state"] %in% keep_states
   bad[, "badgear"] <- !data[, "geargroup"] %in% keep_gears
+  bad[, "badlengthage"] <- is.na(data[, "lengthcm"]) & is.na(data[, "Age"])
   # These records no longer need to be necessarily removed: the first stage
   # expansion code sets the expansion factor to 1 for records missing sampled
   # weights or trip weights (EXPANDED_SAMPLE_WEIGHT)
@@ -333,8 +334,6 @@ cleanPacFIN <- function(
 
     cli::cli_bullets(c(
       " " = "Summary of data processing and cleaning checks:",
-      "i" = "Number of records with length of NA: {nlength}.",
-      "i" = "Number of records without length and Age: {nlenage}",
       " " = "The following records would be removed if clean = TRUE. Users should inspect these records to make sure that those record should be removed from the cleaned data or if the keep arguments should be revised.",
       " " = "The number of records potentially removed for the various reasons below if clean = TRUE are not mutually exclusive.",
       "!" = "Number of records not in federal waters: {narea}",
@@ -343,6 +342,7 @@ cleanPacFIN <- function(
       "!" = "Number of records without SAMPLE_NUMBER: {nnumber}",
       "!" = "Number of records not in keep_states: {nstate}",
       "!" = "Number of records not in keep_gears: {ngear}",
+      "!" = "Number of records without length and Age: {nlenage}",
       "i" = "Number of records remaining if clean = TRUE: {nclean}",
       "i" = "Number of records removed if clean = TRUE: {nremoved}"
     ))

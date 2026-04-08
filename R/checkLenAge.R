@@ -87,19 +87,19 @@ checkLenAge <- function(
   }
   if (length(Par[[1]]) > 1) {
     if (stats::var(unlist(lapply(Par, length))) != 0) {
-      stop(
-        "Must be one named entry in each vector element of the list Par\n",
-        "for each unique sex type in the data, e.g.,\n",
-        paste(sex_vec, collapse = ", ")
+      message <- paste(sex_vec, collapse = ", ")
+      cli::cli_abort(
+        "Must be one named entry in each vector element of the list Par
+        for each unique sex type in the data, e.g.,{message}"
       )
     }
     if (!all(sex_vec %in% names(Par[[1]]))) {
-      stop(
-        "The data contains the following values for sexes,\n",
-        paste(sex_vec, collapse = ", "),
-        "\n",
-        " which must match names of the parameter vectors in the list Par, e.g.,\n",
-        paste(unique(unlist(lapply(Par, names))), collapse = ", ")
+      message_sex_vec <- paste(sex_vec, collapse = ", ")
+      message_Par <- paste(unique(unlist(lapply(Par, names))), collapse = ", ")
+      cli::cli_abort(
+        "The data contains the following values for sexes {message_sex_vec}
+        which must match names of the parameter vectors in the list Par, e.g.,
+        {message_Par}"
       )
     }
     # Ensure order of parameters within each vector are ordered by sex
@@ -200,31 +200,6 @@ checkLenAge <- function(
     )
     colnames(estsall)[-1] <- names(Par)
     estsall <- estsall[, c("Sex", "L0", "Linf", "K", "CV0", "CV1")]
-    colnames(estsall) <- c(
-      "Sex",
-      "$L_0$",
-      "$L_{Inf}$",
-      "$K$",
-      "$CV_{young}$",
-      "$CV_{old}$"
-    )
-    x <- knitr::kable(
-      estsall,
-      format = "latex",
-      label = "PacFIN_vonBpars",
-      escape = FALSE,
-      booktabs = TRUE,
-      caption = paste0(
-        "Estimates of von Bertalanffy growth parameters in terms of ",
-        "length at age-0 ($L_0$), rather than age at which growth is zero, and fit to ",
-        "fishery-dependent data provided by \\gls{pacfin}. Estimates ",
-        ifelse(all(estsall[, "Sex"] == "A"), "", "are sex-specific (row) and "),
-        "include $L_0$, length at maximum age ($L_{Inf}$), growth rate ($K$), and ",
-        "coefficients of variation at young ($CV_{young}$) and old ages ($CV_{old}$).",
-        ifelse(keepAll, " Data used to fit the model included outliers.", "")
-      )
-    )
-    writeLines(x, file.path(dir, "PacFIN_vonBpars.tex"))
     utils::write.table(
       estsall,
       file = file.path(dir, "PacFIN_vonBpars.csv"),

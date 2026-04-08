@@ -69,9 +69,8 @@ getLength <- function(Pdata, keep, verbose = TRUE) {
   )
   if (length(check.calt) > 0) {
     change_vals <- length(check.calt)
-    cli::cli_inform(
-      "Changing {change_vals} CA FISH_LENGTH_TYPE == F to T.
-      Vlada is working on getting these entries fixed in PacFIN."
+    cli::cli_alert_info(
+      "Changing {change_vals} CA FISH_LENGTH_TYPE == F to T for Pacific spiny dogfish."
     )
     Pdata[check.calt, var_fish_length_type] <- "T"
   }
@@ -89,7 +88,7 @@ getLength <- function(Pdata, keep, verbose = TRUE) {
     check.dogfish <- !is.na(Pdata[["FORK_LENGTH"]])
     if (sum(check.dogfish) > 0 & verbose) {
       total_check_dogfish <- sum(check.dogfish)
-      cli::cli_inform(
+      cli::cli_alert_info(
         "{total_check_dogfish} fork lengths were converted to total lengths using Tribuzio and Kruse (2012)."
       )
     }
@@ -101,7 +100,7 @@ getLength <- function(Pdata, keep, verbose = TRUE) {
   # Fix incorrect FISH_LENGTH_UNITS for hake
   if (length(grep("PWHT", Pdata[[var_spid]])) > 0) {
     if (verbose) {
-      cli::cli_inform("Still fixing WA FISH_LENGTH_UNITS for Pacific hake.")
+      cli::cli_alert_info("Still fixing WA FISH_LENGTH_UNITS for Pacific hake.")
     }
     Pdata[, "FISH_LENGTH_UNITS"] <- ifelse(
       tolower(Pdata[, "FISH_LENGTH_UNITS"]) == "cm" &

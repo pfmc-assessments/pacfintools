@@ -61,21 +61,23 @@ combineCalCOM <- function(Pdata, CalCOM) {
   ) |>
     all()
   if (!check_column_names) {
-    message(
-      "There are columns in CalCOM that cannot currently be ",
-      "processed by combineCalCOM(), the following are viable options\n",
-      "and the remaining columns are removed:\n",
-      glue::glue_collapse(
-        glue::single_quote(calcom_columns_example),
-        sep = ", "
-      )
+    message_out <- glue::glue_collapse(
+      glue::single_quote(calcom_columns_example),
+      sep = ", "
+    )
+    cli::cli_alert_info(
+      "There are columns in CalCOM that cannot currently be 
+      processed by combineCalCOM(), the following are viable options
+      and the remaining columns are removed: {message_out}"
     )
     CalCOM <- CalCOM[, calcom_columns_example]
   }
   if (!"AGE_METHOD" %in% colnames(CalCOM)) {
     # TODO what age method are calCOM ages
     CalCOM[, "AGE_METHOD"] <- ""
-    cli::cli_alert("Users must set AGE_METHOD for CalCOM data manually.")
+    cli::cli_alert_warning(
+      "Users must set AGE_METHOD for CalCOM data manually."
+    )
   } else {
     CalCOM[, "AGE_METHOD"] <- as.character(CalCOM[, "AGE_METHOD"])
   }

@@ -128,7 +128,7 @@ getExpansion_1 <- function(
   nwfscSurvey::check_dir(dir = savedir, verbose = verbose)
 
   Pdata <- EF1_Denominator(
-    Pdata,
+    Pdata = Pdata,
     fa = fa,
     fb = fb,
     ma = ma,
@@ -140,7 +140,11 @@ getExpansion_1 <- function(
   )
 
   # Get Trip_Sampled_Lbs
-  Pdata <- EF1_Numerator(Pdata, verbose = verbose, savedir = savedir)
+  Pdata <- EF1_Numerator(
+    Pdata = Pdata,
+    verbose = verbose,
+    savedir = savedir
+  )
 
   # Expansion_Factor_1
   Pdata$Expansion_Factor_1_L <- Pdata$Trip_Sampled_Lbs / Pdata$Wt_Sampled_L
@@ -153,25 +157,75 @@ getExpansion_1 <- function(
   if (Exp_WA != TRUE) {
     Pdata$Expansion_Factor_1_L[Pdata$state == "WA"] <- 1
     Pdata$Expansion_Factor_1_A[Pdata$state == "WA"] <- 1
-    cli::cli_bullets(c(
-      "i" = "Fish tickets do not represent whole trips in WA.",
-      "i" = "WA expansions set to 1 because {.code Exp_WA = {Exp_WA}}."
-    ))
+    cli::cli_alert_info(
+      #"i" = "Fish tickets do not represent whole trips in WA.",
+      "Washington state expansions set to 1 because {.code Exp_WA = {Exp_WA}}."
+    )
   }
 
   # Used in plotting later on
   NA_EF1 <- Pdata[is.na(Pdata$Expansion_Factor_1_L), ]
-  nNA <- NROW(NA_EF1)
+  nNA <- sum(is.na(Pdata$Expansion_Factor_1_L))
   # Counts to report
   n_na <- sum(is.na(Pdata$Expansion_Factor_1_L))
   n_inf <- sum(
     !is.na(Pdata$Expansion_Factor_1_L) &
       !is.finite(Pdata$Expansion_Factor_1_L)
   )
+  Pdata$replace_na_inf <- FALSE
+  replace <- c(
+    which(is.na(Pdata$Expansion_Factor_1_L)),
+    which(
+      !is.na(Pdata$Expansion_Factor_1_L) &
+        !is.finite(Pdata$Expansion_Factor_1_L)
+    )
+  )
+  Pdata$replace_na_inf[replace] <- TRUE
   if (verbose) {
+    na_year <- table(Pdata$fishyr[is.na(Pdata$Expansion_Factor_1_L)])
+    inf_year <- table(Pdata$fishyr[
+      !is.na(Pdata$Expansion_Factor_1_L) &
+        !is.finite(Pdata$Expansion_Factor_1_L)
+    ])
+
+    message_na <- paste0(
+      names(na_year),
+      ": ",
+      na_year
+    )
+    message_inf <- paste0(
+      names(inf_year),
+      ": ",
+      inf_year
+    )
+    if (n_na / dim(Pdata)[1] > 0.01) {
+      cli::cli_bullets(c(
+        "x" = "{n_na} {.code NA} Expansion_Factor_1 values replaced by 1. Number of samples by year:",
+        " " = "{message_na}"
+      ))
+    } else {
+      cli::cli_bullets(c(
+        "!" = "{n_na} {.code NA} Expansion_Factor_1 values replaced by 1. Number of samples by year:",
+        " " = "{message_na}"
+      ))
+    }
+    if (n_inf / dim(Pdata)[1] > 0.01) {
+      # Report the number of 1/inf per year
+      cli::cli_bullets(c(
+        "x" = "{n_inf} not finite numbers and Expansion_Factor_1 values replaced by 1. Number of samples by year:",
+        " " = "{message_inf}"
+      ))
+    } else {
+      cli::cli_bullets(c(
+        "!" = "{n_inf} not finite numbers and Expansion_Factor_1 values replaced by 1. Number of samples by year:",
+        " " = "{message_inf}"
+      ))
+    }
+    # Report the number of 1/inf per year
     cli::cli_bullets(c(
-      "x" = "{n_na} {.code NA} Expansion_Factor_1 values replaced by 1.",
-      "x" = "{n_inf} not finite numbers and Expansion_Factor_1 values replaced by 1."
+      " " = "These represent records that could not be expanded due to missing sample weight
+      or landing weight. Depending upon the magnitude and distribution across years, users may want to remove these records.",
+      " " = "These records are noted in the replace_na_inf column as TRUE."
     ))
   }
 
@@ -182,67 +236,78 @@ getExpansion_1 <- function(
   Pdata$Expansion_Factor_1_L[!is.finite(Pdata$Expansion_Factor_1_L)] <- 1
   Pdata$Expansion_Factor_1_A[!is.finite(Pdata$Expansion_Factor_1_A)] <- 1
 
+  max_quantile_length <- round(quantile(Pdata$Expansion_Factor_1_L, 1), 2)
+  max_quantile_age <- round(quantile(Pdata$Expansion_Factor_1_A, 1), 2)
   Pdata$Expansion_Factor_1_L <- capValues(Pdata$Expansion_Factor_1_L, maxExp)
   Pdata$Expansion_Factor_1_A <- capValues(Pdata$Expansion_Factor_1_A, maxExp)
   if (verbose) {
     cli::cli_bullets(c(
-      "i" = "Maximum first-stage length expansion capped at the {maxExp} quantile of {round(max(Pdata$Expansion_Factor_1_L), 2)}",
-      "i" = "Maximum first-stage age expansion capped at the {maxExp} quantile of {round(max(Pdata$Expansion_Factor_1_A), 2)}"
+      "i" = "Maximum first-stage length expansion is {max_quantile_length} and is capped at the {maxExp} quantile of {round(max(Pdata$Expansion_Factor_1_L), 2)}",
+      "i" = "Maximum first-stage age expansion is {max_quantile_age} and is capped at the {maxExp} quantile of {round(max(Pdata$Expansion_Factor_1_A), 2)}"
     ))
   }
 
   # Generate plots and save them to the disk if specified.
   # TODO: move away from {grDevices}
   if (!is.null(savedir)) {
-    grDevices::png(fs::path(savedir, "PacFIN_exp1.png"))
-
+    plot_name1 <- file.path(savedir, "PacFIN_expansion_1_NA_Inf.png")
+    plot_name2 <- file.path(savedir, "PacFIN_expansion_1.png")
     if (nNA > 0) {
-      # Plot NA values by year and state.  Early years data or CALCOM data?
-      graphics::par(
-        mfrow = c(2, 1),
-        mar = c(0, 3, 0, 0),
-        oma = c(4, 1, 3, 0),
-        mgp = c(2.0, 0.5, 0)
+      g1 <- ggplot2::ggplot(
+        Pdata |>
+          dplyr::mutate(
+            Count = dplyr::case_when(replace_na_inf == TRUE ~ 1, .default = 0)
+          ),
+        ggplot2::aes(x = as.factor(fishyr), y = Count, fill = state)
+      ) +
+        ggplot2::geom_bar(stat = "identity") +
+        ggplot2::theme_bw() +
+        ggplot2::ylab("Count") +
+        ggplot2::xlab("Year") +
+        ggplot2::scale_fill_viridis_d() +
+        ggplot2::ggtitle(
+          "First Stage Expansion that are NA of Inf"
+        ) +
+        ggplot2::theme(
+          axis.text.x = ggplot2::element_text(
+            angle = 90,
+            vjust = 0.5,
+            hjust = 0.5
+          )
+        )
+      ggplot2::ggsave(
+        filename = plot_name1,
+        plot = g1,
+        height = 9,
+        width = 9
       )
-
-      allyears <- seq(min(Pdata$fishyr), max(Pdata$fishyr), by = 1)
-      vals <- matrix(
-        0,
-        nrow = length(unique(NA_EF1$state)),
-        ncol = length(allyears)
+    }
+    g2 <- ggplot2::ggplot(
+      Pdata,
+      ggplot2::aes(x = as.factor(fishyr), y = Expansion_Factor_1_L)
+    ) +
+      ggplot2::geom_boxplot() +
+      ggplot2::theme_bw() +
+      ggplot2::ylab("Expansion Factor") +
+      ggplot2::xlab("Year") +
+      ggplot2::ggtitle(
+        "First Stage Expansion"
+      ) +
+      ggplot2::facet_grid("state", scales = "free_y") +
+      ggplot2::theme(
+        axis.text.x = ggplot2::element_text(
+          angle = 90,
+          vjust = 0.5,
+          hjust = 0.5
+        )
       )
-      rownames(vals) <- unique(NA_EF1$state)
-      colnames(vals) <- allyears
-      bad <- as.matrix(table(NA_EF1$state, NA_EF1$fishyr))
-      vals[, colnames(vals) %in% colnames(bad)] <- bad
-
-      graphics::barplot(
-        vals,
-        col = grDevices::rainbow(length(unique(NA_EF1$state))),
-        legend.text = TRUE,
-        xlab = "",
-        xaxt = "n",
-        ylab = "Replace NA in Exp_1 with 1",
-        args.legend = list(bty = "n")
-      )
-    } else {
-      graphics::par(
-        mgp = c(2, 0.5, 0),
-        mar = c(1.5, 3, 1, 0),
-        mfrow = c(1, 1)
-      )
-    } # End if
-
-    graphics::boxplot(
-      Pdata$Expansion_Factor_1_L ~ Pdata$fishyr,
-      ylab = "Expansion_Factor_1_L",
-      xlab = "",
-      frame.plot = FALSE
+    ggplot2::ggsave(
+      filename = plot_name2,
+      plot = g2,
+      height = 9,
+      width = 9
     )
-
-    graphics::mtext(side = 1, outer = TRUE, "Year", line = 2)
-    grDevices::dev.off()
   }
 
   return(Pdata)
-} # End function getExpansion_1
+}
