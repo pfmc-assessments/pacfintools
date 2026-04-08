@@ -56,12 +56,21 @@ getComps <- function(
   verbose = TRUE
 ) {
   if (length(unique(Pdata[["SEX_CODE"]])) == 3 & verbose) {
-    cli::cli_warn(
+    cli::cli_alert_info(
       "Sexed and unsexed fish are in the data and n_tows, n_fish, and n_stewart
       input sample size options will be calculated separately for sexed and unsexed
       fish. For single-sex models, it is recommended to set SEX_CODE = U for all records
       prior to running this function."
     )
+  }
+  if (Comps == "LEN") {
+    Pdata <- Pdata |> dplyr::filter(!is.na(lengthcm))
+  }
+  if (Comps == "AGE") {
+    Pdata <- Pdata |> dplyr::filter(!is.na(Age))
+  }
+  if (Comps == "AAL") {
+    Pdata <- Pdata |> dplyr::filter(!is.na(lengthcm), !is.na(Age))
   }
   # Set up stratification
   usualSuspects <- defaults
@@ -71,13 +80,15 @@ getComps <- function(
   Comps <- match.arg(Comps)
   towstrat <- c(
     strat,
-    switch(Comps,
+    switch(
+      Comps,
       LEN = usualSuspects,
       AGE = usualSuspects,
       c(usualSuspects, "lengthcm", "Age")
     )
   )
-  usualSuspects <- switch(Comps,
+  usualSuspects <- switch(
+    Comps,
     LEN = c(usualSuspects, "lengthcm"),
     AGE = c(usualSuspects, "Age"),
     c(usualSuspects, "lengthcm", "Age")
