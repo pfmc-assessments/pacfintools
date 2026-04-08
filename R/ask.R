@@ -9,7 +9,9 @@ ask_password <- function() {
       prompt = "Enter PacFIN password without quotes followed by a return\n"
     )
   } else {
-    stop("You must pass your password via the input argument `password`.")
+    cli::cli_abort(
+      "You must pass your password via the input argument `password`."
+    )
   }
   return(invisible(password))
 }

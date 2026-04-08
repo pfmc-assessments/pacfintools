@@ -50,16 +50,14 @@ age_representativeness_plot <- function(
   bio <- changecol_pacfin(bio, verbose = FALSE)
   bio <- bio[!(is.na(bio$Age) && is.na(bio$Length_cm)), ]
   if (nrow(bio) == 0) {
-    stop("Your data does not have any length or age data.")
+    cli::cli_abort("Your data does not have any length or age data.")
   }
   if (any(bio[, "Length_cm"] > max_break, na.rm = TRUE)) {
     nrows_old <- nrow(bio)
     bio <- bio[bio[, "Length_cm"] < max_break, ]
-    warning(
-      nrows_old - nrow(bio),
-      " out of ",
-      nrows_old,
-      " length values are larger than max_break and will be excluded."
+    n <- nrows_old - nrow(bio)
+    cli::cli_alert_warning(
+      "{n} out of {nrows_old} length values are larger than max_break and will be excluded."
     )
   }
   years <- sort(unique(bio$Year))
@@ -239,7 +237,9 @@ age_representativeness_plot <- function(
 changecol_pacfin <- function(data, verbose = TRUE) {
   if (!"SAMPLE_YEAR" %in% colnames(data)) {
     if (verbose) {
-      message("Returning original data because SAMPLE_YEAR wasn't a column.")
+      cli::cli_alert_info(
+        "Returning original data because SAMPLE_YEAR wasn't a column."
+      )
     }
     return(data)
   }
@@ -250,9 +250,8 @@ changecol_pacfin <- function(data, verbose = TRUE) {
     }
     # Code other options for year column here
     if (!"Year" %in% colnames(data)) {
-      stop(
-        "A year column was not found in your data\n",
-        "Year or SAMPLE_YEAR work."
+      cli::cli_abort(
+        "A year column was not found in your data: Year or SAMPLE_YEAR work."
       )
     }
   }
@@ -263,9 +262,8 @@ changecol_pacfin <- function(data, verbose = TRUE) {
       data[, "Length_cm"] <- data[, "FISH_LENGTH"] * 0.1
     }
     if (!"Length_cm" %in% colnames(data)) {
-      stop(
-        "A fish-length column was not found in your data\n",
-        "Length_cm or FISH_LENGTH work."
+      cli::cli_abort(
+        "A fish-length column was not found in your data: Length_cm or FISH_LENGTH work."
       )
     }
   }
@@ -278,9 +276,8 @@ changecol_pacfin <- function(data, verbose = TRUE) {
       data <- dplyr::rename("Age" = "AGE")
     }
     if (!"Age" %in% colnames(data)) {
-      stop(
-        "A fish-age column was not found in your data\n",
-        "Age or FINAL_FISH_AGE_IN_YEARS work."
+      cli::cli_abort(
+        "A fish-age column was not found in your data: Age or FINAL_FISH_AGE_IN_YEARS work."
       )
     }
   }

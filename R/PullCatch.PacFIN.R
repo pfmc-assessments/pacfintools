@@ -106,9 +106,13 @@ PullCatch.PacFIN <- function(
       stats::na.omit(pacfin_nominal_code)
     )
     if (verbose && length(stats::na.omit(pacfin_nominal_code))) {
-      message(
-        "The following nominal species codes were added: ",
-        glue::glue_collapse(pacfin_nominal_code, sep = ", ", last = " and ")
+      message <- glue::glue_collapse(
+        pacfin_nominal_code,
+        sep = ", ",
+        last = " and "
+      )
+      cli::cli_alert_warning(
+        "The following nominal species codes were added: {message}"
       )
     }
   }
@@ -121,16 +125,15 @@ PullCatch.PacFIN <- function(
 
   # message calls
   if (verbose) {
-    message(
-      "\nThe following PACFIN_SPECIES_CODE(s) were found:\n",
-      paste0(
-        utils::capture.output(
-          dplyr::count(catch.pacfin, PACFIN_SPECIES_CODE) |>
-            dplyr::mutate(PACFIN_SPECIES_CODE = sQuote(PACFIN_SPECIES_CODE))
-        ),
-        collapse = "\n"
+    message <- paste0(
+      utils::capture.output(
+        dplyr::count(catch.pacfin, PACFIN_SPECIES_CODE) |>
+          dplyr::mutate(PACFIN_SPECIES_CODE = sQuote(PACFIN_SPECIES_CODE))
       ),
-      "\n"
+      collapse = "\n"
+    )
+    cli::cli_alert_info(
+      "The following PACFIN_SPECIES_CODE(s) were found: {message}"
     )
   }
 

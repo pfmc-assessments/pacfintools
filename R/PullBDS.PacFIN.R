@@ -98,7 +98,9 @@ PullBDS.PacFIN <- function(
 
   # Pull from PacFIN
   if (verbose) {
-    message("Pulling BDS data from PacFIN for ", pacfin_species_code)
+    cli::cli_alert_info(
+      "Pulling BDS data from PacFIN for {pacfin_species_code}"
+    )
   }
   data_raw <- getDB(
     sql = sql_bds(pacfin_species_code),
@@ -114,16 +116,15 @@ PullBDS.PacFIN <- function(
 
   # message calls
   if (verbose) {
-    message(
-      "\nThe following PACFIN_SPECIES_CODE(s) were found:\n",
-      paste0(
-        utils::capture.output(
-          dplyr::count(data_raw, PACFIN_SPECIES_CODE) |>
-            dplyr::mutate(PACFIN_SPECIES_CODE = sQuote(PACFIN_SPECIES_CODE))
-        ),
-        collapse = "\n"
+    message <- paste0(
+      utils::capture.output(
+        dplyr::count(data_raw, PACFIN_SPECIES_CODE) |>
+          dplyr::mutate(PACFIN_SPECIES_CODE = sQuote(PACFIN_SPECIES_CODE))
       ),
-      "\n"
+      collapse = "\n"
+    )
+    cli::cli_alert_info(
+      "The following PACFIN_SPECIES_CODE(s) were found: {message}"
     )
   }
 
@@ -143,20 +144,15 @@ PullBDS.PacFIN <- function(
   rm(sample_agency)
   fish_id <- is.na(data_raw[["FISH_ID"]])
   if (verbose && sum(fish_id) > 0) {
-    warning(
-      call. = FALSE,
-      immediate. = TRUE,
-      "FISH_ID includes NULL(s) for ",
-      sum(fish_id),
-      " rows.\n",
-      "These rows have been removed from the data; but you should contact\n",
-      "state representatives for ",
-      glue::glue_collapse(
-        unique(data_raw[fish_id, "AGENCY_CODE"]),
-        sep = ", ",
-        last = " and "
-      ),
-      "to let them know.\n"
+    message <- glue::glue_collapse(
+      unique(data_raw[fish_id, "AGENCY_CODE"]),
+      sep = ", ",
+      last = " and "
+    )
+    cli::cli_alert_warning(
+      "FISH_ID includes NULL(s) for {sum(fish_id)} rows. 
+      These rows have been removed from the data; but you should contact
+      state representatives for {message} to let them know."
     )
   }
   rm(fish_id)
@@ -179,11 +175,10 @@ PullBDS.PacFIN <- function(
       ) |>
       do.call(what = "rbind")
     if (!all(check[, 2])) {
-      stop(
-        call. = FALSE,
-        "There were records for Washington sampled purposively that contain\n",
-        "unique information, beyond `FISH_WEIGHT`, per row. Please contact\n",
-        "the package maintainer to accommodate these samples."
+      cli::cli_abort(
+        "There were records for Washington sampled purposively that contain
+        unique information, beyond `FISH_WEIGHT`, per row. Please contact
+        the package maintainer to accommodate these samples."
       )
     }
   }
@@ -192,18 +187,15 @@ PullBDS.PacFIN <- function(
   fish_id <- duplicated(data_raw[, c("FISH_ID", "AGE_SEQUENCE_NUMBER")]) &
     (data_raw[["SAMPLE_METHOD_CODE"]] != "P" & data_raw[["AGENCY_CODE"]] != "W")
   if (verbose && sum(fish_id)) {
-    warning(
-      call. = FALSE,
-      immediate. = TRUE,
-      noBreaks. = FALSE,
-      "The downloaded data contains duplicated entries that will be\n",
-      "removed prior to returning the data. Please notify the agency that\n",
-      "provided the following duplicated samples:"
-    )
-    data_raw[fish_id, ] |>
+    message <- data_raw[fish_id, ] |>
       dplyr::group_by(AGENCY_CODE, SAMPLE_YEAR, SAMPLE_NUMBER) |>
       dplyr::count() |>
       print(n = sum(fish_id))
+    cli::cli_alert_warning(
+      "The downloaded data contains duplicated entries that will be
+      removed prior to returning the data. Please notify the agency that
+      provided the following duplicated samples: {message}."
+    )
   }
   rm(fish_id)
 
@@ -264,8 +256,7 @@ PullBDS.PacFIN <- function(
     )
   # Short check b/c pivot_wider can make lists
   if (!class(bds.pacfin[["age1"]]) %in% c("integer", "logical")) {
-    stop(
-      call. = FALSE,
+    cli::cli_abort(
       "pivot_wider failed to transform age reads to a wide data frame!"
     )
   } else {

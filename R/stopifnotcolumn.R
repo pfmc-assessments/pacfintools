@@ -11,7 +11,7 @@
 #'
 stopifnotcolumn <- function(data, string) {
   if (is.na(match(string, colnames(data)))) {
-    stop(string, " was not found in your data frame.")
+    cli::cli_abort("{string} was not found in your data frame.")
   }
   return(invisible(TRUE))
 }
