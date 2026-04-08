@@ -125,12 +125,12 @@ PullCatch.PacFIN <- function(
 
   # message calls
   if (verbose) {
+    n_species <- dplyr::count(catch.pacfin, PACFIN_SPECIES_CODE)
     message <- paste0(
-      utils::capture.output(
-        dplyr::count(catch.pacfin, PACFIN_SPECIES_CODE) |>
-          dplyr::mutate(PACFIN_SPECIES_CODE = sQuote(PACFIN_SPECIES_CODE))
-      ),
-      collapse = "\n"
+      unique(n_species$PACFIN_SPECIES_CODE),
+      " (",
+      n_species$n,
+      ")"
     )
     cli::cli_alert_info(
       "The following PACFIN_SPECIES_CODE(s) were found: {message}"

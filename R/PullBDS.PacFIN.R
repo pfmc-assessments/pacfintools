@@ -116,12 +116,12 @@ PullBDS.PacFIN <- function(
 
   # message calls
   if (verbose) {
+    n_species <- dplyr::count(data_raw, PACFIN_SPECIES_CODE)
     message <- paste0(
-      utils::capture.output(
-        dplyr::count(data_raw, PACFIN_SPECIES_CODE) |>
-          dplyr::mutate(PACFIN_SPECIES_CODE = sQuote(PACFIN_SPECIES_CODE))
-      ),
-      collapse = "\n"
+      unique(n_species$PACFIN_SPECIES_CODE),
+      " (",
+      n_species$n,
+      ")"
     )
     cli::cli_alert_info(
       "The following PACFIN_SPECIES_CODE(s) were found: {message}"
@@ -131,14 +131,11 @@ PullBDS.PacFIN <- function(
   # warning calls
   sample_agency <- unique(data_raw[, "SAMPLE_AGENCY"])
   if (verbose && !all(is.na(sample_agency))) {
-    warning(
-      call. = FALSE,
-      immediate. = TRUE,
-      "SAMPLE_AGENCY includes non-NULL values and should be left in the\n",
-      "pulled data frame; please contact the maintainer and note that\n",
-      "SAMPLE_AGENCY == ",
-      glue::glue_collapse(sample_agency, sep = ", ", last = " and "),
-      "\n"
+    message <- glue::glue_collapse(sample_agency, sep = ", ", last = " and ")
+    cli::cli_alert_warning(
+      "SAMPLE_AGENCY includes non-NULL values and should be left in the
+      pulled data frame; please contact the maintainer and note that
+      SAMPLE_AGENCY == {message}"
     )
   }
   rm(sample_agency)
@@ -189,8 +186,7 @@ PullBDS.PacFIN <- function(
   if (verbose && sum(fish_id)) {
     message <- data_raw[fish_id, ] |>
       dplyr::group_by(AGENCY_CODE, SAMPLE_YEAR, SAMPLE_NUMBER) |>
-      dplyr::count() |>
-      print(n = sum(fish_id))
+      dplyr::count()
     cli::cli_alert_warning(
       "The downloaded data contains duplicated entries that will be
       removed prior to returning the data. Please notify the agency that

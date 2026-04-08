@@ -7,10 +7,15 @@ test_that("Expand biological data", {
   )
   species <- "SABL"
   password <- readLines(password_file_name, warn = FALSE)
+  catch.pacfin <- PullCatch.PacFIN(
+    pacfin_species_code = species,
+    password = password,
+    verbose = TRUE
+  )
   bds.pacfin <- PullBDS.PacFIN(
     pacfin_species_code = species,
     password = password,
-    verbose = FALSE
+    verbose = TRUE
   )
 
   bds_cleaned <- cleanPacFIN(
