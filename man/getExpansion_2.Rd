@@ -7,7 +7,7 @@
 getExpansion_2(
   Pdata,
   Catch,
-  Units = "LB",
+  Units = "MT",
   Convert = lifecycle::deprecated(),
   maxExp = 0.95,
   stratification.cols,
