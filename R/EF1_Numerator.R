@@ -55,65 +55,71 @@ EF1_Numerator <- function(
     Pdata[["WEIGHT_OF_LANDING_LBS"]]
   )
 
-  if (verbose) {
-    summary <- summary(Pdata$Trip_Sampled_Lbs)
-    message_table <- paste0(
-      names(summary),
-      " (",
-      round(summary, 0),
-      ")"
-    )
-    cli::cli_inform(
-      "Summary (quantiles, mean, and NAs) of sampled pounds per trip: {message_table}"
-    )
-  }
-
   if (!is.null(savedir)) {
-    numstate <- length(unique(Pdata$state))
     plot_filename <- fs::path(
       savedir,
-      "PacFIN_exp1_numer.png"
+      "PacFIN_expansion_1_numerator.png"
     )
-    grDevices::png(plot_filename)
-    on.exit(grDevices::dev.off(), add = TRUE, after = FALSE)
-    graphics::par(
-      mgp = c(2.5, 0.5, 0),
-      mfrow = c(numstate, 1),
-      mar = rep(0, 4),
-      oma = c(4, 5, 3, 0.5)
+    g1 <- ggplot2::ggplot(
+      Pdata,
+      ggplot2::aes(x = as.factor(fishyr), y = Trip_Sampled_Lbs)
+    ) +
+      ggplot2::geom_boxplot() +
+      ggplot2::theme_bw() +
+      ggplot2::ylab("Sample weight per trip (lbs)") +
+      ggplot2::xlab("Year") +
+      ggplot2::scale_y_continuous(
+        labels = function(x) format(x, big.mark = ",", scientific = TRUE)
+      ) +
+      ggplot2::ggtitle(
+        "First Stage Expansion Numerator Before the Application of Maximum Quantile Cap"
+      ) +
+      ggplot2::theme(
+        axis.text.x = ggplot2::element_text(
+          angle = 90,
+          vjust = 0.5,
+          hjust = 0.5
+        )
+      ) +
+      ggplot2::facet_grid("state", scales = "free_y")
+    ggplot2::ggsave(
+      filename = plot_filename,
+      plot = g1,
+      height = 12,
+      width = 12
     )
-    for (st in unique(Pdata$state)) {
-      plotdata <- Pdata[
-        Pdata[, "state"] == st & !is.na(Pdata[["Trip_Sampled_Lbs"]]),
-      ]
-      if (all(is.na(plotdata$Trip_Sampled_Lbs))) {
-        next
-      }
-      graphics::boxplot(
-        plotdata$Trip_Sampled_Lbs ~ plotdata$fishyr,
-        ylab = "",
-        xlab = "",
-        xaxt = "n",
-        at = unique(plotdata$fishyr),
-        xlim = range(Pdata$fishyr)
-      )
-      graphics::legend("topleft", legend = st, bty = "n")
-    }
-    graphics::axis(1)
-    graphics::mtext(side = 1, "Year", outer = TRUE, line = 2)
-    graphics::mtext(
-      side = 3,
-      "Expansion factor 1 numerator",
-      outer = TRUE,
-      line = 1
+    plot_filename <- fs::path(
+      savedir,
+      "PacFIN_expansion_1_NA_numerator.png"
     )
-    graphics::mtext(
-      side = 2,
-      "Sample weight per trip (lbs)",
-      outer = TRUE,
-      line = 2
+    g2 <- ggplot2::ggplot(
+      Pdata |>
+        dplyr::filter(is.na(Trip_Sampled_Lbs)) |>
+        dplyr::mutate(Count = 1),
+      ggplot2::aes(x = as.factor(fishyr), y = Count)
+    ) +
+      ggplot2::geom_bar(stat = "identity") +
+      ggplot2::theme_bw() +
+      ggplot2::ylab("Count") +
+      ggplot2::xlab("Year") +
+      ggplot2::ggtitle(
+        "First Stage Expansion Numerator with NA Trip_Sampled_Lbs"
+      ) +
+      ggplot2::theme(
+        axis.text.x = ggplot2::element_text(
+          angle = 90,
+          vjust = 0.5,
+          hjust = 0.5
+        )
+      ) +
+      ggplot2::facet_grid("state")
+    ggplot2::ggsave(
+      filename = plot_filename,
+      plot = g2,
+      height = 12,
+      width = 12
     )
   }
 
   return(Pdata)
-} # End function EF1_Numerator
+}
