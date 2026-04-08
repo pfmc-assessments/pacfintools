@@ -203,12 +203,14 @@ EF1_Denominator <- function(
     # Return a data frame rather than a tibble
     data.frame()
 
-  NA_Wt_Sampled <- Pdata[Pdata$Wt_Sampled_L == 0, ]
-  nNA <- NROW(NA_Wt_Sampled)
+  nNA <- sum(Pdata$Wt_Sampled_L == 0)
   if (!is.null(savedir)) {
-    plot1 <- file.path(savedir, "PacFIN_exp1_denom.png")
+    plot1 <- file.path(
+      savedir,
+      "PacFIN_expansion_1_denominator_calculation.png"
+    )
     plot_na <- file.path(savedir, "PacFIN_expansion_1_NA_denominator.png")
-    plot2 <- file.path(savedir, "PacFIN_WL.png")
+    plot2 <- file.path(savedir, "PacFIN_weight_length.png")
     #### Summary and boxplot
     # TODO: revamp the summary and plots
     data_long <-
@@ -247,17 +249,21 @@ EF1_Denominator <- function(
       ggplot2::facet_grid("state", scales = "free_y")
     ggplot2::ggsave(
       plot = g1,
-      filename = plot2,
+      filename = plot1,
       width = 12,
       height = 12,
       units = "in"
     )
     if (nNA > 0) {
       g_na <- ggplot2::ggplot(
-        NA_Wt_Sampled |> dplyr::mutate(Count = 1),
-        ggplot2::aes(x = as.factor(fishyr), y = Count)
+        Pdata |>
+          dplyr::mutate(
+            Count = dplyr::case_when(Wt_Sampled_L == 0 ~ 1, .default = 0)
+          ),
+        ggplot2::aes(x = as.factor(fishyr), y = Count, fill = state)
       ) +
         ggplot2::geom_bar(stat = "identity") +
+        ggplot2::scale_fill_viridis_d() +
         ggplot2::theme_bw() +
         ggplot2::ylab("Count") +
         ggplot2::xlab("Year") +
@@ -270,8 +276,7 @@ EF1_Denominator <- function(
             vjust = 0.5,
             hjust = 0.5
           )
-        ) +
-        ggplot2::facet_grid("state")
+        )
       ggplot2::ggsave(
         plot = g_na,
         filename = plot_na,

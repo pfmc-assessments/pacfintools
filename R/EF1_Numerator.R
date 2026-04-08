@@ -94,12 +94,14 @@ EF1_Numerator <- function(
     )
     g2 <- ggplot2::ggplot(
       Pdata |>
-        dplyr::filter(is.na(Trip_Sampled_Lbs)) |>
-        dplyr::mutate(Count = 1),
-      ggplot2::aes(x = as.factor(fishyr), y = Count)
+        dplyr::mutate(
+          Count = dplyr::case_when(is.na(Trip_Sampled_Lbs) ~ 1, .default = 0)
+        ),
+      ggplot2::aes(x = as.factor(fishyr), y = Count, fill = state)
     ) +
       ggplot2::geom_bar(stat = "identity") +
       ggplot2::theme_bw() +
+      ggplot2::scale_fill_viridis_d() +
       ggplot2::ylab("Count") +
       ggplot2::xlab("Year") +
       ggplot2::ggtitle(
@@ -111,8 +113,7 @@ EF1_Numerator <- function(
           vjust = 0.5,
           hjust = 0.5
         )
-      ) +
-      ggplot2::facet_grid("state")
+      )
     ggplot2::ggsave(
       filename = plot_filename,
       plot = g2,
