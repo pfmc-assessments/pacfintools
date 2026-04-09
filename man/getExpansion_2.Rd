@@ -60,10 +60,7 @@ off when output indicates information that you already know. The printing
 of output to the screen does not affect any of the returned objects. The
 default is to always print to the screen, i.e., \code{verbose = TRUE}.}
 
-\item{savedir}{Deprecated. This function no longer creates plots of cleaned data,
-but you can call \code{\link[=plotCleaned]{plotCleaned()}} separately if you want to create these plots.}
-
-\item{Directory}{where plots should be saved. The default
+\item{savedir}{where plots should be saved. The default
 argument is NULL. If a directory is provided, then summary plots will be saved
 to this location. If NULL, then no plots will be created.}
 }
