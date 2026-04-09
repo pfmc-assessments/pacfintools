@@ -51,6 +51,7 @@ VignetteBuilder:
     knitr
 Remotes:
     github::pfmc-assessments/nwfscSurvey
+    github::pfmc-assessments/PEPtools
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
