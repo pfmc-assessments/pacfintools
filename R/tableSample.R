@@ -78,7 +78,7 @@ tableSample <- function(
       for either lengths or ages dependent upon the data type in the getComps() object."
     )
   }
-  nwfscSurvey:::check_dir(dir = savedir, verbose = verbose)
+  nwfscSurvey::check_dir(dir = savedir, verbose = verbose)
 
   # Evaluate whether the user wants raw samples sizes of summary of processed comps
   if ("n_stewart" %in% colnames(Pdata)) {
