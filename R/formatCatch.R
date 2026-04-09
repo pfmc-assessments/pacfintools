@@ -40,7 +40,7 @@ formatCatch <- function(
   catch,
   strat,
   yearname = "^Year|^Yr|Landing_Y|Sample_Y",
-  valuename = "ROUND_WEIGHT_|CATCH"
+  valuename = "ROUND_WEIGHT_|CATCH|LANDING|MT"
 ) {
   if ("state" %in% strat & !"state" %in% colnames(catch)) {
     catch <- getState(catch, verbose = FALSE)

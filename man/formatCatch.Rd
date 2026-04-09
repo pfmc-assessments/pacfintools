@@ -8,7 +8,7 @@ formatCatch(
   catch,
   strat,
   yearname = "^Year|^Yr|Landing_Y|Sample_Y",
-  valuename = "ROUND_WEIGHT_LBS"
+  valuename = "ROUND_WEIGHT_|CATCH|LANDING|MT"
 )
 }
 \arguments{
