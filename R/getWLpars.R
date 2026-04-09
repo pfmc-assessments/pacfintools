@@ -88,6 +88,7 @@ getWLpars <- function(
       ),
       B = purrr::map_dbl(fits, ~ .x$coefficients[2])
     ) |>
+    dplyr::rename(sex = group) |>
     data.frame()
 
   if (verbose) {
