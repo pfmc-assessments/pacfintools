@@ -55,12 +55,13 @@
 #'   for Stock Synthesis where the relationships were calculated using length in
 #'   cm and weight in kg. If a particular sex does not pertain to your data,
 #'   then just pass `NA` for that relationship.
-#' @param plot Typically, a logical is passed defining if you would like the
+#' @param plot Deprecated. Typically, a logical is passed defining if you would like the
 #'   default plots to be created but users can also pass a string providing a
 #'   path to a directory where those plots will be stored. The default is
 #'   `FALSE` and no figures will be created unless this is changed. If `TRUE` is
 #'   passed, then the figures will be saved to your current working directory.
-#' @template savedir
+#' @param savedir A file path to the directory where the results will be saved.
+#' The default is NULL.
 #'
 #' @examples
 #' \dontrun{

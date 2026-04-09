@@ -55,7 +55,8 @@
 #' in kilograms. Units are important here because kilograms will be converted
 #' to pounds to match other weight calculations.
 #' The default is `weightkg`, which is created using [cleanPacFIN].
-#' @template savedir
+#' @param savedir A file path to the directory where the results will be saved.
+#' The default is NULL.
 #' @return Additional columns are added to \code{Pdata}:
 #' * `Wt_Sampled_1`: the sum of sex-specific weights within the sample.
 #' * `Wt_Sampled_2`: the species-specific sample weight only provided by

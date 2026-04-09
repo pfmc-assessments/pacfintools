@@ -5,15 +5,20 @@
 #' columns that inform the model what time, sex, fleet, etc. that the
 #' data come from.
 #'
-#' @template data
-#' @template breaks
+#' @param data A data frame with named columns.
+#' @param breaks A vector of cut points to be passed to [cut].
 #' @param col_bins The column name that pertains the bin or group you
 #' wish to transform from long to wide, i.e., every unique value in this
 #' column will be a new column in the wide format.
 #' @param col_proportions The column name that pertains to the proportion
 #' data in the data frame. This column will be used as information for each
 #' new column in the wide format, i.e., summed across created categories.
-#' @template includeplusgroup
+#' @param includeplusgroup A logical defining if you want all values
+#' larger than the largest `break` to be included in the last bin.
+#' For example, if the largest value in `breaks` is 15 and you have
+#' age-20 fish, then you should use `includeplusgroup = TRUE` if you
+#' want to have data on this 20 year old fish. The default is to
+#' include them.
 #'
 #' @return A data frame with initial columns for each stratification present
 #' in the data, i.e., all columns not included in

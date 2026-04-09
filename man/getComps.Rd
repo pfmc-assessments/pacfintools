@@ -15,12 +15,14 @@ getComps(
 )
 }
 \arguments{
-\item{Pdata}{A data frame returned from \code{\link[=PullBDS.PacFIN]{PullBDS.PacFIN()}} containing
-biological samples. These data are stored in the Pacific Fishieries
-Information Network (PacFIN) data warehouse, which originated in 2014 and
-are pulled using sql calls.}
+\item{Pdata}{A data frame returned from \code{\link[=cleanPacFIN]{cleanPacFIN()}}, \code{\link[nwfscSurvey:get_expanded_comps]{nwfscSurvey::get_expanded_comps()}},
+\code{\link[=getExpansion_1]{getExpansion_1()}}, \link{getExpansion_2}, or \code{\link[=getComps]{getComps()}}. If a data frame returned
+from \code{\link[=getComps]{getComps()}} is provided a table of samples by year and fleet with trips,
+samples, and input sample sizes will be returned.  If a data frame returned from
+the other functions listed, a table of samples by year and \code{stratification.cols}
+for lengths and ages will be returned.}
 
-\item{strat}{A vector of column names to stratify the output over. For
+\item{strat}{Deprecated. A vector of column names to stratify the output over. For
 example, if you wish to summarize by ageing method, then the argument
 would look like \code{strat = "agemethod"} or, if you want to look at fleets
 and gear, \code{strat = c("fleet", "usegear")}.}

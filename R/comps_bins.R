@@ -4,10 +4,20 @@
 #' for grouping ages or lengths into bin categories if every year or
 #' centimeter is not its own bin.
 #'
-#' @template vector
-#' @template breaks
-#' @template includeplusgroup
-#' @template returnclass
+#' @param vector A vector of information that will be manipulated.
+#' @param breaks A vector of cut points to be passed to [cut].
+#' @param includeplusgroup A logical defining if you want all values
+#' larger than the largest `break` to be included in the last bin.
+#' For example, if the largest value in `breaks` is 15 and you have
+#' age-20 fish, then you should use `includeplusgroup = TRUE` if you
+#' want to have data on this 20 year old fish. The default is to
+#' include them.
+#' @param returnclass The `class()` of the returned object. This is helpful
+#' for those times when numeric values are characters or the opposite.
+#' Sometimes you wish to force the results to be a certain class and
+#' this argument can help define the class of the returned object. Note that
+#' not all classes are always available. The default will be the first entry
+#' in the function call.
 #'
 #' @export
 #' @author Kelli F. Johnson
@@ -37,7 +47,8 @@ comps_bins <- function(
     replacement = "\\1",
     x = cut(vector, breaks = breaks, include.lowest = FALSE, right = FALSE)
   )
-  out <- switch(returnclass,
+  out <- switch(
+    returnclass,
     character = out,
     numeric = utils::type.convert(out, as.is = TRUE)
   )

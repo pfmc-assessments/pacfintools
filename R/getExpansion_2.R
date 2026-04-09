@@ -39,7 +39,6 @@
 #' @param Directory where plots should be saved. The default
 #' argument is NULL. If a directory is provided, then summary plots will be saved
 #' to this location. If NULL, then no plots will be created.
-#' @inheritParams cleanPacFIN
 #'
 #'
 #' @seealso

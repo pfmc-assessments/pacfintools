@@ -11,7 +11,9 @@
 #' must have columns of \code{'A'} and \code{'B'}, as well as
 #' rows named \code{'U'}, at a minimum, \code{'F'}, and \code{'M'}.
 #' The output from \code{\link{getWLpars}} is formatted correctly as is.
-#' @template unit.out
+#' @param unit.out The desired units you wish the output to be in. See the
+#' function call for a list of default units available within the function.
+#' For example, `"lb"` would return the units of pounds.
 #' @param weight A vector of fish weights, where the units for each
 #' measurement are specified in `unit.in`.
 #' @param unit.in A vector of units for each measurement in `weight`.

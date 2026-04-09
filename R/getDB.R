@@ -3,7 +3,7 @@
 #' Get a connection established to a database and return the information desired
 #' in the specific query.
 #'
-#' @template sql
+#' @param sql A valid SQL statement.
 #' @param datasourcename Deprecated as of version 0.2.9. Please use the
 #'   `database` argument instead.
 #' @param database A string providing the name of the database that you wish to

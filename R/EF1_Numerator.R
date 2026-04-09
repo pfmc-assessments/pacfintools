@@ -29,9 +29,14 @@
 #' `Trip_Sampled_Lbs` is the sample weight in pounds.
 #'
 #' @inheritParams cleanPacFIN
-#' @inheritParams cleanPacFIN
-#' @template plot
-#' @template savedir
+#' @param plot Deprecated as of version 0.2.10 and replaced with savedir.
+#'   Argument takes either a logical or character value specifying the file
+#'   name if you want to write the plots to a disk rather than printing them
+#'   to the console. If \code{plot = FALSE} no plots will be generated.
+#'   If printing to the disk the character value should end in \code{.png}
+#'   as \code{png()} is used to save the plotting device.
+#' @param savedir A file path to the directory where the results will be saved.
+#' The default is NULL.
 #' @author Andi Stephens, Kelli F. Johnson, Chantel R. Wetzel
 
 EF1_Numerator <- function(

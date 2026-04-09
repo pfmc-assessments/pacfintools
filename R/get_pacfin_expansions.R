@@ -69,7 +69,8 @@
 #'   were needed between functions. You can use as many levels of stratification
 #'   as you want except year because it is already included in the call to
 #'   [stats::aggregate].
-#' @template savedir
+#' @param savedir A file path to the directory where the results will be saved.
+#'   The default is NULL.
 #'
 #' @examples
 #' \dontrun{
