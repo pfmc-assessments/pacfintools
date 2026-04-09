@@ -23,7 +23,10 @@ samples, and input sample sizes will be returned.  If a data frame returned from
 the other functions listed, a table of samples by year and \code{stratification.cols}
 for lengths and ages will be returned.}
 
-\item{stratification.cols}{description}
+\item{stratification.cols}{Columns in \code{Pdata} to summarize the data for the
+calculation of samples sizes.  These columns are not used in the data
+frame is from \code{\link[=getComps]{getComps()}} because the grouping structure is already set in
+that data frame.}
 
 \item{savedir}{A file path to the directory where the results will be saved.
 The default is NULL.}
