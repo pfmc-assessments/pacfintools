@@ -66,7 +66,7 @@ combineCalCOM <- function(Pdata, CalCOM) {
       sep = ", "
     )
     cli::cli_alert_info(
-      "There are columns in CalCOM that cannot currently be 
+      "There are columns in CalCOM that cannot currently be
       processed by combineCalCOM(), the following are viable options
       and the remaining columns are removed: {message_out}"
     )

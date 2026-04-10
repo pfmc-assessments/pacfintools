@@ -115,7 +115,11 @@ getExpansion_2 <- function(
     several.ok = FALSE,
     choices = c(measurements::conv_unit_options[["mass"]], "MT", "LB")
   )
-  Units <- switch(Units, MT = "metric_ton", LB = "lbs", Units)
+  Units <- switch(Units,
+    MT = "metric_ton",
+    LB = "lbs",
+    Units
+  )
 
   # Start clean
   Pdata$Expansion_Factor_2 <- NA
@@ -225,7 +229,7 @@ getExpansion_2 <- function(
     cli::cli_abort(
       "There are {sum(tows$catch == 0)} bds records where catch was 0 in the Catch
       file for the requested stratification. The following years and stratifications
-      have 0 catch but bds data: {missing_data}. All years in Pdata need to have 
+      have 0 catch but bds data: {missing_data}. All years in Pdata need to have
       Catch for second-stage expansion."
     )
   }

@@ -80,15 +80,13 @@ getComps <- function(
   Comps <- match.arg(Comps)
   towstrat <- c(
     strat,
-    switch(
-      Comps,
+    switch(Comps,
       LEN = usualSuspects,
       AGE = usualSuspects,
       c(usualSuspects, "lengthcm", "Age")
     )
   )
-  usualSuspects <- switch(
-    Comps,
+  usualSuspects <- switch(Comps,
     LEN = c(usualSuspects, "lengthcm"),
     AGE = c(usualSuspects, "Age"),
     c(usualSuspects, "lengthcm", "Age")
