@@ -255,16 +255,16 @@ getExpansion_2 <- function(
     "EF2"
   )[[1]]
 
-  exp_factor_range <- round(quantile(Pdata$Expansion_Factor_2, 1), 2)
+  exp_factor_range <- round(stats::quantile(Pdata$Expansion_Factor_2, 1), 2)
   length_exp_factor_range <- round(
-    quantile(
+    stats::quantile(
       Pdata$Expansion_Factor_2 * Pdata$Expansion_Factor_1_L,
       1
     ),
     2
   )
   age_exp_factor_range <- round(
-    quantile(
+    stats::quantile(
       Pdata$Expansion_Factor_2 * Pdata$Expansion_Factor_1_A,
       1
     ),

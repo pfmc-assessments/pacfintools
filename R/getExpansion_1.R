@@ -237,8 +237,11 @@ getExpansion_1 <- function(
   Pdata$Expansion_Factor_1_L[!is.finite(Pdata$Expansion_Factor_1_L)] <- 1
   Pdata$Expansion_Factor_1_A[!is.finite(Pdata$Expansion_Factor_1_A)] <- 1
 
-  max_quantile_length <- round(quantile(Pdata$Expansion_Factor_1_L, 1), 2)
-  max_quantile_age <- round(quantile(Pdata$Expansion_Factor_1_A, 1), 2)
+  max_quantile_length <- round(
+    stats::quantile(Pdata$Expansion_Factor_1_L, 1),
+    2
+  )
+  max_quantile_age <- round(stats::quantile(Pdata$Expansion_Factor_1_A, 1), 2)
   Pdata$Expansion_Factor_1_L <- capValues(Pdata$Expansion_Factor_1_L, maxExp)
   Pdata$Expansion_Factor_1_A <- capValues(Pdata$Expansion_Factor_1_A, maxExp)
   if (verbose) {
