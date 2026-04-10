@@ -33,7 +33,6 @@ Imports:
     magrittr,
     measurements,
     nwfscSurvey,
-    PEPtools,
     purrr,
     rlang,
     stats,
