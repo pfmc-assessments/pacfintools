@@ -55,12 +55,13 @@
 #'   for Stock Synthesis where the relationships were calculated using length in
 #'   cm and weight in kg. If a particular sex does not pertain to your data,
 #'   then just pass `NA` for that relationship.
-#' @param plot Typically, a logical is passed defining if you would like the
+#' @param plot Deprecated. Typically, a logical is passed defining if you would like the
 #'   default plots to be created but users can also pass a string providing a
 #'   path to a directory where those plots will be stored. The default is
 #'   `FALSE` and no figures will be created unless this is changed. If `TRUE` is
 #'   passed, then the figures will be saved to your current working directory.
-#' @template savedir
+#' @param savedir A file path to the directory where the results will be saved.
+#' The default is NULL.
 #'
 #' @examples
 #' \dontrun{
@@ -236,8 +237,11 @@ getExpansion_1 <- function(
   Pdata$Expansion_Factor_1_L[!is.finite(Pdata$Expansion_Factor_1_L)] <- 1
   Pdata$Expansion_Factor_1_A[!is.finite(Pdata$Expansion_Factor_1_A)] <- 1
 
-  max_quantile_length <- round(quantile(Pdata$Expansion_Factor_1_L, 1), 2)
-  max_quantile_age <- round(quantile(Pdata$Expansion_Factor_1_A, 1), 2)
+  max_quantile_length <- round(
+    stats::quantile(Pdata$Expansion_Factor_1_L, 1),
+    2
+  )
+  max_quantile_age <- round(stats::quantile(Pdata$Expansion_Factor_1_A, 1), 2)
   Pdata$Expansion_Factor_1_L <- capValues(Pdata$Expansion_Factor_1_L, maxExp)
   Pdata$Expansion_Factor_1_A <- capValues(Pdata$Expansion_Factor_1_A, maxExp)
   if (verbose) {

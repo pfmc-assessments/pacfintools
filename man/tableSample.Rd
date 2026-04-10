@@ -6,41 +6,56 @@
 \usage{
 tableSample(
   Pdata,
-  fname = paste0("fishery_", comps, "_samples.csv"),
-  strat = "AGENCY_CODE",
-  comps = c("LEN", "AGE"),
-  remove_yrs = NULL
+  stratification.cols = c("state", "geargroup"),
+  savedir = NULL,
+  verbose = TRUE,
+  comps = lifecycle::deprecated(),
+  remove_yrs = lifecycle::deprecated(),
+  fname = lifecycle::deprecated(),
+  strat = lifecycle::deprecated()
 )
 }
 \arguments{
-\item{Pdata}{A data frame returned from \code{\link[=PullBDS.PacFIN]{PullBDS.PacFIN()}} containing
-biological samples. These data are stored in the Pacific Fishieries
-Information Network (PacFIN) data warehouse, which originated in 2014 and
-are pulled using sql calls.}
+\item{Pdata}{A data frame returned from \code{\link[=cleanPacFIN]{cleanPacFIN()}}, \code{\link[nwfscSurvey:get_expanded_comps]{nwfscSurvey::get_expanded_comps()}},
+\code{\link[=getExpansion_1]{getExpansion_1()}}, \link{getExpansion_2}, or \code{\link[=getComps]{getComps()}}. If a data frame returned
+from \code{\link[=getComps]{getComps()}} is provided a table of samples by year and fleet with trips,
+samples, and input sample sizes will be returned.  If a data frame returned from
+the other functions listed, a table of samples by year and \code{stratification.cols}
+for lengths and ages will be returned.}
 
-\item{fname}{A filename with the appropriate extension, used to save the
-function output to the disk. For example, \code{LenComps.csv} or
-\code{file.path(getwd(), "LenComps.csv")}. Full, relative, or simple paths are
+\item{stratification.cols}{Columns in \code{Pdata} to summarize the data for the
+calculation of samples sizes.  These columns are not used in the data
+frame is from \code{\link[=getComps]{getComps()}} because the grouping structure is already set in
+that data frame.}
+
+\item{savedir}{A file path to the directory where the results will be saved.
+The default is NULL.}
+
+\item{verbose}{A logical specifying if output should be written to the
+screen or not. Good for testing and exploring your data but can be turned
+off when output indicates information that you already know. The printing
+of output to the screen does not affect any of the returned objects. The
+default is to always print to the screen, i.e., \code{verbose = TRUE}.}
+
+\item{comps}{Deprecated. Specify whether to calculate the length or Age samples.
+The default is to calculate the number of length samples.}
+
+\item{remove_yrs}{Deprecated. A vector of years to remove from the data before
+summarizing sample sizes. The default of \code{NULL} leads to no
+sub setting of the data.}
+
+\item{fname}{Deprecated. A filename with the appropriate extension, used to save the
+function output to the disk. Full, relative, or simple paths are
 allowed because the argument is used as is, i.e., not redirected to a
-directory different than \code{\link[=getwd]{getwd()}}. Note that various functions within
-pacfintools have different default values for this input argument. If
-\code{NULL} in \code{writeComps}, then no csv file will be written to disk.}
+directory different than \code{\link[=getwd]{getwd()}}.}
 
-\item{strat}{A vector of column names to stratify the output over. For
+\item{strat}{Deprecated. A vector of column names to stratify the output over. For
 example, if you wish to summarize by ageing method, then the argument
 would look like \code{strat = "agemethod"} or, if you want to look at fleets
 and gear, \code{strat = c("fleet", "usegear")}.}
-
-\item{comps}{Specify whether to calculate the length or Age samples.
-The default is to calculate the number of length samples.}
-
-\item{remove_yrs}{A vector of years to remove from the data before
-summarizing sample sizes. The default of \code{NULL} leads to no
-sub setting of the data.}
 }
 \value{
-A table is written to a csv file as specified in \code{fname} and the data frame
-is also returned as an object invisibly.
+A data frame is returned of samples by year
 }
 \description{
 Create a table of samples by fleet and year to

@@ -23,10 +23,10 @@
 #' @param comp_bins The binning structure to use for ages and lengths.
 #' @param column_with_input_n A string providing the column name with the
 #'   appropriate value for the input sample size that will be given to Stock
-#'   Synthesis as input_n (what we and {nwfscSurvey} provide as a column name)
+#'   Synthesis as input_n (what we and \pkg{nwfscSurvey} provide as a column name)
 #'   or NSamp (what Stock Synthesis wants as a name). The default is `"n_tows"`,
 #'   which is the number of tows that were performed for the given
-#'   stratifications passed to [getComps()] that created `inComps`. One might
+#'   stratification passed to [getComps()] that created `inComps`. One might
 #'   want to use `"n_fish"` or some column that you created yourself.
 #' @param month Month for all observations. Defaults to 7. If input has multiple
 #'   seasons, this must be a vector of equal length to the maximum seasons where
@@ -78,7 +78,7 @@
 #' A data frame is returned and a `.csv` is created and written to the disk with
 #' the same data frame.
 #'
-#' @author Andi Stephens, Chantel R. Wetzel, Kelli F. Johnson, Ian G. Taylor
+#' @author Chantel R. Wetzel, Kelli F. Johnson, Ian G. Taylor
 #' @seealso
 #' * `getComps()`
 #'

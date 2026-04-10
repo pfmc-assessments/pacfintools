@@ -4,7 +4,8 @@
 #'
 #' @inheritParams sql
 #' @inheritParams getDB
-#' @template savedir
+#' @param savedir A file path to the directory where the results will be saved.
+#' The default is NULL.
 #' @param addnominal A logical, where the default, `TRUE`, adds nominal
 #' PacFIN species code to `pacfin_species_code`. `FALSE`
 #' leaves `pacfin_species_code` as input by the user, which will miss

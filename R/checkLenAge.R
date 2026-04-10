@@ -80,10 +80,10 @@ checkLenAge <- function(
 
   ####  Check inputs
   if (!is.null(names(Par))) {
-    new <- Par[c("K", "Linf", "L0", "CV0", "CV1")]
-    stopifnot("Par not found" = length(new) == length(Par))
-    Par <- new
-    rm(new)
+    new_pars <- Par[c("K", "Linf", "L0", "CV0", "CV1")]
+    stopifnot("Par not found" = length(new_pars) == length(Par))
+    Par <- new_pars
+    rm(new_pars)
   }
   if (length(Par[[1]]) > 1) {
     if (stats::var(unlist(lapply(Par, length))) != 0) {

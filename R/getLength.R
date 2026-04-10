@@ -5,7 +5,6 @@
 #' Other, more standard lengths, are filtered for types in `keep`.
 #'
 #' @inheritParams cleanPacFIN
-#' @inheritParams cleanPacFIN
 #' @param keep A vector of values that represent what you want to keep. Values
 #'   of `NA`, `""`, and numeric values are acceptable. Often, it is helpful to
 #'   run `unique(, useNA = "always") on the relevant data prior to running the
@@ -31,9 +30,17 @@ getLength <- function(Pdata, keep, verbose = TRUE) {
     !(FISH_LENGTH_UNITS %in% c("MM", "CM"))
   )
   if (NROW(data_with_length)) {
+    bad_len_types <- table(
+      data_with_length[["FISH_LENGTH_UNITS"]]
+    )
+    message_bad_lengths <- paste0(
+      names(bad_len_types),
+      " (",
+      bad_len_types,
+      ")"
+    )
     cli::cli_abort(
-      "FISH_LENGTH_UNITS contains units other than 'CM' or 'MM' for fish
-        with lengths, please assign a unit like 'CM' or 'MM' to each row."
+      "FISH_LENGTH_UNITS contains units other than 'CM' or 'MM' for fish with lengths, the following records need to be removed: {message_bad_lengths}"
     )
   }
 

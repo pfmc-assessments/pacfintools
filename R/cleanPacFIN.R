@@ -215,6 +215,11 @@ cleanPacFIN <- function(
     ),
     verbose = verbose
   )
+  #### Add latitude for records
+  data <- add_latitude(
+    Pdata = data,
+    verbose = verbose
+  )
   # SAMPLE_TYPE fixes:
   # California doesn't record SAMPLE_TYPE so we assume they are all Market samples
   data[data$state == "CA" & is.na(data$SAMPLE_TYPE), "SAMPLE_TYPE"] <- "M"

@@ -4,7 +4,7 @@
 #' removed. Should you want anything different, please feel free to post an
 #' issue on GitHub, email the package maintainer, or submit a pull request.
 #'
-#' @template data
+#' @param data A data frame with named columns.
 #'
 #' @export
 #' @author Kelli F. Johnson
@@ -30,7 +30,7 @@ cleanColumns <- function(data) {
 #' Remove unnecessary columns from a data frame from PacFIN to reduce the
 #' object size.
 #'
-#' @template data
+#' @param data A data frame with named columns.
 #' @return A data frame with fewer columns
 #'
 cleanColumns.bds <- function(data) {
@@ -110,7 +110,7 @@ cleanColumns.bds <- function(data) {
 #' for catch data. Many columns are removed and only those based on
 #' the call to [dplyr::select] are kept.
 #'
-#' @template data
+#' @param data A data frame with named columns.
 #' @return A data frame with fewer columns.
 #'
 cleanColumns.catch <- function(data) {

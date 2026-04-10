@@ -36,10 +36,9 @@
 #'   were needed between functions. You can use as many levels of stratification
 #'   as you want except year because it is already included in the call to
 #'   [stats::aggregate].
-#' @param Directory where plots should be saved. The default
+#' @param savedir where plots should be saved. The default
 #' argument is NULL. If a directory is provided, then summary plots will be saved
 #' to this location. If NULL, then no plots will be created.
-#' @inheritParams cleanPacFIN
 #'
 #'
 #' @seealso
@@ -260,16 +259,16 @@ getExpansion_2 <- function(
     "EF2"
   )[[1]]
 
-  exp_factor_range <- round(quantile(Pdata$Expansion_Factor_2, 1), 2)
+  exp_factor_range <- round(stats::quantile(Pdata$Expansion_Factor_2, 1), 2)
   length_exp_factor_range <- round(
-    quantile(
+    stats::quantile(
       Pdata$Expansion_Factor_2 * Pdata$Expansion_Factor_1_L,
       1
     ),
     2
   )
   age_exp_factor_range <- round(
-    quantile(
+    stats::quantile(
       Pdata$Expansion_Factor_2 * Pdata$Expansion_Factor_1_A,
       1
     ),

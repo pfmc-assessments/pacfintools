@@ -42,10 +42,7 @@ test_that("Expand biological data", {
   expect_equal(ncol(weight_length_estimates), 5)
   expect_equal(weight_length_estimates[3, "SD"], 0.2036146, tolerance = 1e-3)
 
-  catch_formatted <- utils::read.csv(here::here(
-    "data-raw",
-    "catch_for_expansions.csv"
-  )) |>
+  catch_formatted <- catch_for_expansions |>
     formatCatch(
       strat = c("state", "geargroup"),
       valuename = "catch_mt"

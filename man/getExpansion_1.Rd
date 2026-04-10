@@ -48,7 +48,7 @@ off when output indicates information that you already know. The printing
 of output to the screen does not affect any of the returned objects. The
 default is to always print to the screen, i.e., \code{verbose = TRUE}.}
 
-\item{plot}{Typically, a logical is passed defining if you would like the
+\item{plot}{Deprecated. Typically, a logical is passed defining if you would like the
 default plots to be created but users can also pass a string providing a
 path to a directory where those plots will be stored. The default is
 \code{FALSE} and no figures will be created unless this is changed. If \code{TRUE} is

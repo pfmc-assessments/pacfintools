@@ -40,7 +40,7 @@ formatCatch <- function(
   catch,
   strat,
   yearname = "^Year|^Yr|Landing_Y|Sample_Y",
-  valuename = "ROUND_WEIGHT_LBS"
+  valuename = "ROUND_WEIGHT_|CATCH|LANDING|MT"
 ) {
   if ("state" %in% strat & !"state" %in% colnames(catch)) {
     catch <- getState(catch, verbose = FALSE)
@@ -55,7 +55,7 @@ formatCatch <- function(
       values_fn = sum,
       values_fill = 0,
       id_cols = dplyr::matches(match = yearname, ignore.case = TRUE),
-      names_from = strat,
+      names_from = tidyr::all_of(strat),
       names_sep = ".",
       values_from = dplyr::matches(match = valuename, ignore.case = TRUE)
     ) |>
