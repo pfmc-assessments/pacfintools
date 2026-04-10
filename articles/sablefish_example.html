@@ -239,7 +239,7 @@ for weighting.</p>
 <span>  clean <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span><span class="co"># Add a stratification column based upon state and gear</span></span>
+<span>  <span class="co"># Add a stratification column based upon state and gear</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
 <span>    stratification <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">state</span>, <span class="va">geargroup</span>, sep <span class="op">=</span> <span class="st">"."</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
@@ -331,19 +331,19 @@ trips, samples, and input sample size by year and fleet.</p>
 <span>  stratification.cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"state"</span>, <span class="st">"geargroup"</span><span class="op">)</span>,</span>
 <span>  savedir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span> </span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">length_trips_input_sample_sizes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tableSample.html">tableSample</a></span><span class="op">(</span></span>
 <span>  Pdata <span class="op">=</span> <span class="va">length_comps_long</span>,</span>
 <span>  savedir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span> </span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">age_trips_input_sample_sizes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tableSample.html">tableSample</a></span><span class="op">(</span></span>
 <span>  Pdata <span class="op">=</span> <span class="va">age_comps_long</span>,</span>
 <span>  savedir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span> </span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
 </div>
   </div>
 
