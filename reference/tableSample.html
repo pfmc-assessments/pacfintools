@@ -58,10 +58,13 @@ be included in an assessment document.</p>
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">tableSample</span><span class="op">(</span></span>
 <span>  <span class="va">Pdata</span>,</span>
-<span>  fname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"fishery_"</span>, <span class="va">comps</span>, <span class="st">"_samples.csv"</span><span class="op">)</span>,</span>
-<span>  strat <span class="op">=</span> <span class="st">"AGENCY_CODE"</span>,</span>
-<span>  comps <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"LEN"</span>, <span class="st">"AGE"</span><span class="op">)</span>,</span>
-<span>  remove_yrs <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  stratification.cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"state"</span>, <span class="st">"geargroup"</span><span class="op">)</span>,</span>
+<span>  savedir <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  comps <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  remove_yrs <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  fname <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  strat <span class="op">=</span> <span class="fu">lifecycle</span><span class="fu">::</span><span class="fu"><a href="https://lifecycle.r-lib.org/reference/deprecated.html" class="external-link">deprecated</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -70,44 +73,62 @@ be included in an assessment document.</p>
 
 
 <dl><dt id="arg-pdata">Pdata<a class="anchor" aria-label="anchor" href="#arg-pdata"></a></dt>
-<dd><p>A data frame returned from <code><a href="PullBDS.PacFIN.html">PullBDS.PacFIN()</a></code> containing
-biological samples. These data are stored in the Pacific Fishieries
-Information Network (PacFIN) data warehouse, which originated in 2014 and
-are pulled using sql calls.</p></dd>
+<dd><p>A data frame returned from <code><a href="cleanPacFIN.html">cleanPacFIN()</a></code>, <code><a href="https://rdrr.io/pkg/nwfscSurvey/man/get_expanded_comps.html" class="external-link">nwfscSurvey::get_expanded_comps()</a></code>,
+<code><a href="getExpansion_1.html">getExpansion_1()</a></code>, <a href="getExpansion_2.html">getExpansion_2</a>, or <code><a href="getComps.html">getComps()</a></code>. If a data frame returned
+from <code><a href="getComps.html">getComps()</a></code> is provided a table of samples by year and fleet with trips,
+samples, and input sample sizes will be returned.  If a data frame returned from
+the other functions listed, a table of samples by year and <code>stratification.cols</code>
+for lengths and ages will be returned.</p></dd>
 
 
-<dt id="arg-fname">fname<a class="anchor" aria-label="anchor" href="#arg-fname"></a></dt>
-<dd><p>A filename with the appropriate extension, used to save the
-function output to the disk. For example, <code>LenComps.csv</code> or
-<code>file.path(getwd(), "LenComps.csv")</code>. Full, relative, or simple paths are
-allowed because the argument is used as is, i.e., not redirected to a
-directory different than <code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd()</a></code>. Note that various functions within
-pacfintools have different default values for this input argument. If
-<code>NULL</code> in <code>writeComps</code>, then no csv file will be written to disk.</p></dd>
+<dt id="arg-stratification-cols">stratification.cols<a class="anchor" aria-label="anchor" href="#arg-stratification-cols"></a></dt>
+<dd><p>Columns in <code>Pdata</code> to summarize the data for the
+calculation of samples sizes.  These columns are not used in the data
+frame is from <code><a href="getComps.html">getComps()</a></code> because the grouping structure is already set in
+that data frame.</p></dd>
 
 
-<dt id="arg-strat">strat<a class="anchor" aria-label="anchor" href="#arg-strat"></a></dt>
-<dd><p>A vector of column names to stratify the output over. For
-example, if you wish to summarize by ageing method, then the argument
-would look like <code>strat = "agemethod"</code> or, if you want to look at fleets
-and gear, <code>strat = c("fleet", "usegear")</code>.</p></dd>
+<dt id="arg-savedir">savedir<a class="anchor" aria-label="anchor" href="#arg-savedir"></a></dt>
+<dd><p>A file path to the directory where the results will be saved.
+The default is NULL.</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>A logical specifying if output should be written to the
+screen or not. Good for testing and exploring your data but can be turned
+off when output indicates information that you already know. The printing
+of output to the screen does not affect any of the returned objects. The
+default is to always print to the screen, i.e., <code>verbose = TRUE</code>.</p></dd>
 
 
 <dt id="arg-comps">comps<a class="anchor" aria-label="anchor" href="#arg-comps"></a></dt>
-<dd><p>Specify whether to calculate the length or Age samples.
+<dd><p>Deprecated. Specify whether to calculate the length or Age samples.
 The default is to calculate the number of length samples.</p></dd>
 
 
 <dt id="arg-remove-yrs">remove_yrs<a class="anchor" aria-label="anchor" href="#arg-remove-yrs"></a></dt>
-<dd><p>A vector of years to remove from the data before
+<dd><p>Deprecated. A vector of years to remove from the data before
 summarizing sample sizes. The default of <code>NULL</code> leads to no
 sub setting of the data.</p></dd>
+
+
+<dt id="arg-fname">fname<a class="anchor" aria-label="anchor" href="#arg-fname"></a></dt>
+<dd><p>Deprecated. A filename with the appropriate extension, used to save the
+function output to the disk. Full, relative, or simple paths are
+allowed because the argument is used as is, i.e., not redirected to a
+directory different than <code><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd()</a></code>.</p></dd>
+
+
+<dt id="arg-strat">strat<a class="anchor" aria-label="anchor" href="#arg-strat"></a></dt>
+<dd><p>Deprecated. A vector of column names to stratify the output over. For
+example, if you wish to summarize by ageing method, then the argument
+would look like <code>strat = "agemethod"</code> or, if you want to look at fleets
+and gear, <code>strat = c("fleet", "usegear")</code>.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A table is written to a csv file as specified in <code>fname</code> and the data frame
-is also returned as an object invisibly.</p>
+    <p>A data frame is returned of samples by year</p>
     </div>
     <div id="author">
     <h2>Author</h2>

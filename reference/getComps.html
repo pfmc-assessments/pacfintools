@@ -72,14 +72,16 @@ groupings.</p>
 
 
 <dl><dt id="arg-pdata">Pdata<a class="anchor" aria-label="anchor" href="#arg-pdata"></a></dt>
-<dd><p>A data frame returned from <code><a href="PullBDS.PacFIN.html">PullBDS.PacFIN()</a></code> containing
-biological samples. These data are stored in the Pacific Fishieries
-Information Network (PacFIN) data warehouse, which originated in 2014 and
-are pulled using sql calls.</p></dd>
+<dd><p>A data frame returned from <code><a href="cleanPacFIN.html">cleanPacFIN()</a></code>, <code><a href="https://rdrr.io/pkg/nwfscSurvey/man/get_expanded_comps.html" class="external-link">nwfscSurvey::get_expanded_comps()</a></code>,
+<code><a href="getExpansion_1.html">getExpansion_1()</a></code>, <a href="getExpansion_2.html">getExpansion_2</a>, or <code>getComps()</code>. If a data frame returned
+from <code>getComps()</code> is provided a table of samples by year and fleet with trips,
+samples, and input sample sizes will be returned.  If a data frame returned from
+the other functions listed, a table of samples by year and <code>stratification.cols</code>
+for lengths and ages will be returned.</p></dd>
 
 
 <dt id="arg-strat">strat<a class="anchor" aria-label="anchor" href="#arg-strat"></a></dt>
-<dd><p>A vector of column names to stratify the output over. For
+<dd><p>Deprecated. A vector of column names to stratify the output over. For
 example, if you wish to summarize by ageing method, then the argument
 would look like <code>strat = "agemethod"</code> or, if you want to look at fleets
 and gear, <code>strat = c("fleet", "usegear")</code>.</p></dd>
