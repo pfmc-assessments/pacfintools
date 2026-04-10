@@ -43,10 +43,10 @@ the data being used, i.e., no additional binning is performed.}
 
 \item{column_with_input_n}{A string providing the column name with the
 appropriate value for the input sample size that will be given to Stock
-Synthesis as input_n (what we and {nwfscSurvey} provide as a column name)
+Synthesis as input_n (what we and \pkg{nwfscSurvey} provide as a column name)
 or NSamp (what Stock Synthesis wants as a name). The default is \code{"n_tows"},
 which is the number of tows that were performed for the given
-stratifications passed to \code{\link[=getComps]{getComps()}} that created \code{inComps}. One might
+stratification passed to \code{\link[=getComps]{getComps()}} that created \code{inComps}. One might
 want to use \code{"n_fish"} or some column that you created yourself.}
 
 \item{maxAge}{Deprecated as of 0.2.10 to reduce complication in the code and
@@ -123,5 +123,5 @@ were used in stratifying the data.
 }
 }
 \author{
-Andi Stephens, Chantel R. Wetzel, Kelli F. Johnson, Ian G. Taylor
+Chantel R. Wetzel, Kelli F. Johnson, Ian G. Taylor
 }

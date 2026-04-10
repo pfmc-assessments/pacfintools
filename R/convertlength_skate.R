@@ -7,10 +7,10 @@
 #' @inheritParams cleanPacFIN
 #' @param returntype A character value from the list supplied that specifies
 #' the data you want returned.
-#' \itemize{
+#' \describe{
 #'   \item {\code{"all"}} {all lengths with the new estimates replacing
 #' the input lengths}
-#'   \item {\code{"estimated"}} {only the estimat lengths
+#'   \item {\code{"estimated"}} {only the estimate lengths
 #' with all other lengths as NA such that the
 #' returned vector is the same length and the number of rows of the input data
 #' frame.}
@@ -51,7 +51,8 @@ convertlength_skate <- function(Pdata, returntype = c("all", "estimated")) {
     discpar[matches, "multiply"] +
     discpar[matches, "add"]
 
-  returned <- switch(returntype,
+  returned <- switch(
+    returntype,
     all = ifelse(
       Pdata[, "FISH_LENGTH_TYPE_CODE"] %in% c("A", "R"),
       est,

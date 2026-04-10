@@ -1,5 +1,5 @@
 Package: pacfintools
-Title: Generate fishery composition data from PacFIN data for the NWFSC
+Title: Generate fishery composition data from PacFIN data for West Coast groundfish assessments
 Version: 0.4.2
 Authors@R: c(
     person(c("Chantel", "R."), "Wetzel", , "chantel.wetzel@noaa.gov", role = c("aut", "cre"),
@@ -16,8 +16,7 @@ Authors@R: c(
     person(c("John", "R."), "Wallace", , "john.wallace@noaa.gov", role = "ctb",
            comment = c(ORCID = "0000-0002-2333-1262"))
   )
-Description: Manipulates data from the PacFIN database for stock
-    assessment models
+Description: Manipulates data from the PacFIN database for stock assessment models.
 License: MIT + file LICENSE
 Depends:
     R (>= 4.2)
@@ -33,7 +32,6 @@ Imports:
     lifecycle,
     magrittr,
     measurements,
-    methods,
     nwfscSurvey,
     PEPtools,
     purrr,
