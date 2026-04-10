@@ -41,7 +41,7 @@ add_latitude <- function(
     if (sum(missing_lats) > 0) {
       cli::cli_bullets(c(
         " " = "{.fn add_latitude} summary information -",
-        "!" = "A port_latitude was not availabe for the following PACFIN_PORT_CODE entries in the data: {message_missing_lats}."
+        "!" = "A port_latitude was not available for the following PACFIN_PORT_CODE entries in the data: {message_missing_lats}."
       ))
     } else {
       cli::cli_bullets(c(
