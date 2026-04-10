@@ -72,9 +72,9 @@ tableSample <- function(
     lifecycle::deprecate_warn(
       when = "0.4.3",
       what = "tableSample(comps = )",
-      details = "comp is deprecated, if passing an object from the cleanPacFIN or 
-      either of the expansion function will result in a table of lengths and ages, 
-      otherwise, a table of trips, fish, and input sample size will be created 
+      details = "comp is deprecated, if passing an object from the cleanPacFIN or
+      either of the expansion function will result in a table of lengths and ages,
+      otherwise, a table of trips, fish, and input sample size will be created
       for either lengths or ages dependent upon the data type in the getComps() object."
     )
   }

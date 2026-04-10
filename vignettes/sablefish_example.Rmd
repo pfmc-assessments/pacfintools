@@ -114,7 +114,7 @@ bds_cleaned <- cleanPacFIN(
   clean = TRUE,
   verbose = TRUE
 ) |>
-# Add a stratification column based upon state and gear
+  # Add a stratification column based upon state and gear
   dplyr::mutate(
     stratification = paste(state, geargroup, sep = ".")
   )
@@ -208,7 +208,7 @@ age_and_length_samples <- tableSample(
   stratification.cols = c("state", "geargroup"),
   savedir = getwd(),
   verbose = TRUE
-) 
+)
 ```
 
 
@@ -217,7 +217,7 @@ length_trips_input_sample_sizes <- tableSample(
   Pdata = length_comps_long,
   savedir = getwd(),
   verbose = TRUE
-) 
+)
 ```
 
 
@@ -226,5 +226,5 @@ age_trips_input_sample_sizes <- tableSample(
   Pdata = age_comps_long,
   savedir = getwd(),
   verbose = TRUE
-) 
+)
 ```
