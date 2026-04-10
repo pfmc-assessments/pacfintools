@@ -57,3 +57,18 @@
 #'   \item{catch_mt}{A numeric value for landings in metric tons}
 #' }
 "catch_for_expansions"
+
+#' Data frame of port names and latitudes
+#'
+#' @name pacfin_ports_withlatlong
+#' @docType data
+#' @format A data frame with 511 rows and 6 columns
+#' \describe{
+#'   \item{name}{U.S. West Coast port name.}
+#'   \item{pcid}{Port code used in PacFIN}
+#'   \item{agencydesc}{State agency port name.}
+#'   \item{agid}{State agency identifier where W = Washington, O = Oregon, and C = California.}
+#'   \item{longitude}{Longitude of the port location with minutes and seconds in radians.s}
+#'   \item{latitude}{Latitude of the port location with minutes and seconds in radians.}
+#' }
+"pacfin_ports_withlatlong"
