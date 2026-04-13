@@ -6,25 +6,55 @@
 #' @author Chantel Wetzel
 #' @return The data frame is returned with an additional column for latitude
 #'
-add_latitude <- function(
+get_latitude <- function(
   Pdata,
   verbose = TRUE
 ) {
-  port_lats <- PEPtools::pacfin_ports_withlatlong |>
+  pacfin_port_lats <- pacfin_ports_withlatlong |>
     dplyr::rename(
       PACFIN_PORT_CODE = pcid,
-      AGENCY_CODE = agid,
-      port_latitude = latitude
+      pacfin_port_latitude = latitude
     ) |>
     dplyr::distinct(PACFIN_PORT_CODE, .keep_all = TRUE) |>
-    dplyr::select(PACFIN_PORT_CODE, port_latitude) |>
+    dplyr::select(PACFIN_PORT_CODE, pacfin_port_latitude) |>
     tibble::tibble()
 
-  Pdata_with_latitude <- dplyr::left_join(
+  agency_port_lats <- agency_ports_withlatlong |>
+    dplyr::rename(
+      STATE_AND_AGENCY_PORT_CODE = agid_port,
+      agency_port_latitude = latitude
+    ) |>
+    dplyr::select(STATE_AND_AGENCY_PORT_CODE, agency_port_latitude) |>
+    tibble::tibble()
+
+  add_pacfin_lat <- dplyr::left_join(
     Pdata,
-    port_lats,
+    pacfin_port_lats,
     by = "PACFIN_PORT_CODE"
   )
+
+  add_agency_lat <- dplyr::left_join(
+    add_pacfin_lat |>
+      dplyr::mutate(
+        STATE_AND_AGENCY_PORT_CODE = paste0(AGENCY_CODE, AGENCY_PORT_CODE)
+      ),
+    agency_port_lats,
+    by = "STATE_AND_AGENCY_PORT_CODE"
+  )
+
+  Pdata_with_latitude <- add_agency_lat |>
+    dplyr::mutate(
+      port_latitude = dplyr::case_when(
+        !is.na(agency_port_latitude) ~ agency_port_latitude,
+        !is.na(pacfin_port_latitude) ~ pacfin_port_latitude,
+        .default = NA
+      )
+    ) |>
+    dplyr::select(
+      -pacfin_port_latitude,
+      -agency_port_latitude
+    )
+
   if (verbose) {
     missing_lats <- table(
       Pdata_with_latitude[["PACFIN_PORT_CODE"]][is.na(Pdata_with_latitude[[

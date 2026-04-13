@@ -6,19 +6,14 @@
 #'
 #' @inheritParams cleanPacFIN
 #' @param returntype A character value from the list supplied that specifies
-#' the data you want returned.
-#' \describe{
-#'   \item {\code{"all"}} {all lengths with the new estimates replacing
-#' the input lengths}
-#'   \item {\code{"estimated"}} {only the estimate lengths
-#' with all other lengths as NA such that the
-#' returned vector is the same length and the number of rows of the input data
-#' frame.}
-#' }
+#' the data you want returned:
+#' "all" = all lengths with the new estimates replacing the input lengths
+#' "estimated" = only the estimate lengths with all other lengths as NA such that the
+#' returned vector is the same length and the number of rows of the input data frame.
+#'
 #' @export
 #' @author Kelli F. Johnson and Vladlena Gertseva
 #' @return A vector of lengths.
-#' See \code{returntype} for detailed information on what can be returned.
 #'
 convertlength_skate <- function(Pdata, returntype = c("all", "estimated")) {
   matchcol <- function(data) {
@@ -51,7 +46,8 @@ convertlength_skate <- function(Pdata, returntype = c("all", "estimated")) {
     discpar[matches, "multiply"] +
     discpar[matches, "add"]
 
-  returned <- switch(returntype,
+  returned <- switch(
+    returntype,
     all = ifelse(
       Pdata[, "FISH_LENGTH_TYPE_CODE"] %in% c("A", "R"),
       est,
