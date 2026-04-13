@@ -3,7 +3,7 @@
 \docType{data}
 \name{pacfin_ports_withlatlong}
 \alias{pacfin_ports_withlatlong}
-\title{Data frame of port names and latitudes}
+\title{Data frame of pacfin port names and latitudes}
 \format{
 A data frame with 511 rows and 6 columns
 \describe{
@@ -19,6 +19,6 @@ A data frame with 511 rows and 6 columns
 pacfin_ports_withlatlong
 }
 \description{
-Data frame of port names and latitudes
+Data frame of pacfin port names and latitudes
 }
 \keyword{datasets}
