@@ -13,8 +13,8 @@
 <url><loc>/reference/PullBDS.PacFIN.html</loc></url>
 <url><loc>/reference/PullCatch.PacFIN.html</loc></url>
 <url><loc>/reference/PullNominal.PacFIN.html</loc></url>
-<url><loc>/reference/add_latitude.html</loc></url>
 <url><loc>/reference/age_representativeness_plot.html</loc></url>
+<url><loc>/reference/agency_ports_withlatlong.html</loc></url>
 <url><loc>/reference/ask_password.html</loc></url>
 <url><loc>/reference/capValues.html</loc></url>
 <url><loc>/reference/catch_for_expansions.html</loc></url>
@@ -46,6 +46,7 @@
 <url><loc>/reference/getUserName.html</loc></url>
 <url><loc>/reference/getWLpars.html</loc></url>
 <url><loc>/reference/get_codelist.html</loc></url>
+<url><loc>/reference/get_latitude.html</loc></url>
 <url><loc>/reference/get_pacfin_expansions.html</loc></url>
 <url><loc>/reference/getweight.html</loc></url>
 <url><loc>/reference/grep_final_age.html</loc></url>
