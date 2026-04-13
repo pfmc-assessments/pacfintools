@@ -216,7 +216,7 @@ cleanPacFIN <- function(
     verbose = verbose
   )
   #### Add latitude for records
-  data <- add_latitude(
+  data <- get_latitude(
     Pdata = data,
     verbose = verbose
   )

@@ -58,7 +58,7 @@
 #' }
 "catch_for_expansions"
 
-#' Data frame of port names and latitudes
+#' Data frame of pacfin port names and latitudes
 #'
 #' @name pacfin_ports_withlatlong
 #' @docType data
@@ -72,3 +72,18 @@
 #'   \item{latitude}{Latitude of the port location with minutes and seconds in radians.}
 #' }
 "pacfin_ports_withlatlong"
+
+#' Data frame of agency port names and latitudes
+#'
+#' @name agency_ports_withlatlong
+#' @docType data
+#' @format A data frame with 599 rows and 6 columns
+#' \describe{
+#'   \item{agid_port}{Agency port abbreviation}
+#'   \item{agency_portdescription}{Agency port description}
+#'   \item{latitude}{Latitude of the port location with minutes and seconds in radians}
+#'   \item{longitude}{Longitude of the port location with minutes and seconds in radians}
+#'   \item{area}{North or south of 40.10 N. latitude}
+#'   \item{ifq_area}{IFQ area code used by the West Coast Groundfish Observer Program}
+#' }
+"agency_ports_withlatlong"
