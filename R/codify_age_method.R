@@ -70,7 +70,7 @@ codify_age_method <- function(x) {
   error_message <- glue::glue("'{names(unknowns)}' (n = {unknowns})")
   if (length(unknowns) > 0) {
     message <- glue::glue_collapse(error_message)
-    cli::cli_inform(
+    cli::cli_alert_info(
       "The following unmatched values were found n times in codify_age_method(): {message}."
     )
   }
