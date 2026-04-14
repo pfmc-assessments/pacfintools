@@ -37,6 +37,8 @@ getGearGroup <- function(Pdata, keep_gears = NULL, spp = NULL, verbose = TRUE) {
   if (is.factor(Pdata[, "PACFIN_GEAR_CODE"])) {
     Pdata[, "PACFIN_GEAR_CODE"] <- as.character(Pdata[, "PACFIN_GEAR_CODE"])
   }
+  #gear_table <- pacfintools::GearTable
+  gear_table <- GearTable
 
   # Species-specific code to alter the PacFIN gear table
   if (!is.null(spp)) {
@@ -81,38 +83,40 @@ getGearGroup <- function(Pdata, keep_gears = NULL, spp = NULL, verbose = TRUE) {
           )
         )
       }
-      GearTable[, "GROUP"][
-        GearTable$PACFIN_GEAR_CODE %in% change_to_trawl
+      gear_table[, "GROUP"][
+        gear_table$PACFIN_GEAR_CODE %in% change_to_trawl
       ] <- "TWL"
       # Trolling gear and non-trawl
-      GearTable[, "GROUP"][
-        GearTable$PACFIN_GEAR_CODE %in% change_to_hkl
+      gear_table[, "GROUP"][
+        gear_table$PACFIN_GEAR_CODE %in% change_to_hkl
       ] <- "HKL"
     } # end if spp == sablefish
     if (any(grepl("dogfish|dsrk", spp, ignore.case = TRUE))) {
       if (verbose) {
-        cli::cli_bullets(c(
-          "i" = "Dogfish uses a mid-water trawl (MID), TWL (including shrimp), and HKL fleets. Everything else is assigned to MSC."
-        ))
+        cli::cli_alert_info(
+          "Dogfish uses a mid-water trawl (MID), TWL (including shrimp), and HKL fleets. Everything else is assigned to MSC."
+        )
       }
-      GearTable[grepl("MIDWATER", GearTable[["DESCRIPTION"]]), "GROUP"] <- "MID"
-      GearTable[grepl("TWS", GearTable[["GROUP"]]), "GROUP"] <- "TWL"
+      gear_table[
+        grepl("MIDWATER", gear_table[["DESCRIPTION"]]),
+        "GROUP"
+      ] <- "MID"
+      gear_table[grepl("TWS", gear_table[["GROUP"]]), "GROUP"] <- "TWL"
       # Assign everything else to MSC
-      GearTable[!GearTable[["GROUP"]] %in% c("MID", "TWL"), "GROUP"] <- "MSC"
+      gear_table[!gear_table[["GROUP"]] %in% c("MID", "TWL"), "GROUP"] <- "MSC"
     } # end if spp == dogfish
   }
 
   #### Create geargroup
-  Pdata[, "geargroup"] <- GearTable[
-    match(Pdata[, "PACFIN_GEAR_CODE"], GearTable[, "GRID"]),
+  Pdata[, "geargroup"] <- gear_table[
+    match(Pdata[, "PACFIN_GEAR_CODE"], gear_table[, "GRID"]),
     "GROUP"
   ]
   Pdata[, "geargroup"] <- ifelse(
     test = is.na(Pdata[, "geargroup"]),
-    Pdata[, "PACFIN_GEAR_CODE"],
-    Pdata[, "geargroup"]
+    yes = Pdata[, "PACFIN_GEAR_CODE"],
+    no = Pdata[, "geargroup"]
   )
-
   if (verbose) {
     table_gears <- table(Pdata[, "geargroup"])
     message_table <- paste0(
