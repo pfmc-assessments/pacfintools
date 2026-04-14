@@ -20,10 +20,18 @@ test_that("Expand biological data", {
 
   bds_cleaned <- cleanPacFIN(
     Pdata = bds.pacfin |> dplyr::filter(SAMPLE_YEAR %in% c(2007:2010)),
-    keep_gears = c("HKL", "POT", "TWL"),
+    keep_gears = c("HKL", "POT", "TWL", "MID"),
     verbose = FALSE
   ) |>
     dplyr::mutate(
+      geargroup = dplyr::case_when(
+        geargroup %in% c("TWL", "MID") ~ "TWL",
+        .default = geargroup
+      ),
+      fleet = dplyr::case_when(
+        fleet %in% c("TWL", "MID") ~ "TWL",
+        .default = fleet
+      ),
       stratification = paste(state, geargroup, sep = ".")
     )
   expect_equal(nrow(bds_cleaned), 40102)
@@ -35,8 +43,7 @@ test_that("Expand biological data", {
   weight_length_estimates <- getWLpars(
     data = bds_cleaned,
     verbose = FALSE
-  ) |>
-    dplyr::rename(sex = group)
+  )
 
   expect_equal(nrow(weight_length_estimates), 3)
   expect_equal(ncol(weight_length_estimates), 5)
