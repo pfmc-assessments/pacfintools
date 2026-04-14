@@ -2,6 +2,7 @@ GearTable <- get_codelist("GEAR") |>
   dplyr::mutate(
     GROUP = dplyr::case_when(
       GROUP == "ALL" ~ PACFIN_GEAR_CODE,
+      GRID %in% c("MDT", "MPT") ~ "MID",
       .default = GROUP
     )
   )

@@ -10,7 +10,7 @@ get_latitude <- function(
   Pdata,
   verbose = TRUE
 ) {
-  pacfin_port_lats <- pacfin_ports_withlatlong |>
+  pacfin_port_lats <- pacfintools::pacfin_ports_withlatlong |>
     dplyr::rename(
       PACFIN_PORT_CODE = pcid,
       pacfin_port_latitude = latitude
@@ -19,7 +19,7 @@ get_latitude <- function(
     dplyr::select(PACFIN_PORT_CODE, pacfin_port_latitude) |>
     tibble::tibble()
 
-  agency_port_lats <- agency_ports_withlatlong |>
+  agency_port_lats <- pacfintools::agency_ports_withlatlong |>
     dplyr::rename(
       STATE_AND_AGENCY_PORT_CODE = agid_port,
       agency_port_latitude = latitude
