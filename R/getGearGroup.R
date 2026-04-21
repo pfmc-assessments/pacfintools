@@ -118,17 +118,20 @@ getGearGroup <- function(Pdata, keep_gears = NULL, spp = NULL, verbose = TRUE) {
     no = Pdata[, "geargroup"]
   )
   if (verbose) {
-    table_gears <- table(Pdata[, "geargroup"])
+    table_gears <- table(Pdata[, "geargroup"], useNA = "ifany")
     message_table <- paste0(
       names(table_gears),
       " (",
       table_gears,
       ")"
     )
-    other_gears <- table(Pdata[
-      which(!Pdata$geargroup %in% keep_gears),
-      "geargroup"
-    ])
+    other_gears <- table(
+      Pdata[
+        which(!Pdata$geargroup %in% c(keep_gears)),
+        "geargroup"
+      ],
+      useNA = "ifany"
+    )
     if (length(other_gears) > 0) {
       other_gear_message_table <- paste0(
         names(other_gears),
