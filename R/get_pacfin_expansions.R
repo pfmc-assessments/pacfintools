@@ -148,7 +148,7 @@ get_pacfin_expansions <- function(
     dplyr::filter(sex == "male") |>
     dplyr::pull("A")
   mb <- weight_length_estimates |>
-    dplyr::filter(sex == "female") |>
+    dplyr::filter(sex == "male") |>
     dplyr::pull("B")
   ua <- weight_length_estimates |>
     dplyr::filter(sex == "all") |>
