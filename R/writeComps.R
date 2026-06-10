@@ -259,14 +259,13 @@ writeComps <- function(
     "F" %in% inComps[["SEX_CODE"]] ~ "f",
     "U" %in% inComps[["SEX_CODE"]] ~ "u"
   )
-
+  vars <- c(key_names, column_with_input_n, "SEX_CODE", target)
+  wider_cols <- c(key_names, column_with_input_n, "SEX_CODE")
   wide_composition_data <- expanded_comps |>
-    dplyr::group_by(
-      dplyr::across(dplyr::all_of(
-        c(key_names, column_with_input_n, "SEX_CODE", target)
-      ))
+    dplyr::summarize(
+      .by = tidyr::all_of(vars),
+      comp = round(sum(comp), digits = digits)
     ) |>
-    dplyr::summarize(comp = round(sum(comp), digits = digits)) |>
     dplyr::ungroup() |>
     dplyr::mutate(
       # Create the f1 f2 ... m1 m2 ... or u1 u2 ... labels to move to wide
@@ -286,7 +285,7 @@ writeComps <- function(
     ) |>
     dplyr::arrange(fleet, sex_length) |>
     tidyr::pivot_wider(
-      id_cols = c(key_names, column_with_input_n, "SEX_CODE"),
+      id_cols = tidyr::all_of(wider_cols),
       names_from = "sex_length",
       values_from = "comp",
       names_sort = TRUE,
