@@ -15,7 +15,7 @@ getComps(
 )
 }
 \arguments{
-\item{Pdata}{A data frame returned from \code{\link[=cleanPacFIN]{cleanPacFIN()}}, \code{\link[nwfscSurvey:get_expanded_comps]{nwfscSurvey::get_expanded_comps()}},
+\item{Pdata}{A data frame returned from \code{\link[=cleanPacFIN]{cleanPacFIN()}}, \code{\link[nwfscSurvey:get_expanded_comps]{get_expanded_comps()}},
 \code{\link[=getExpansion_1]{getExpansion_1()}}, \link{getExpansion_2}, or \code{\link[=getComps]{getComps()}}. If a data frame returned
 from \code{\link[=getComps]{getComps()}} is provided a table of samples by year and fleet with trips,
 samples, and input sample sizes will be returned.  If a data frame returned from
@@ -73,7 +73,7 @@ This function uses the expansions created in \code{\link[=getExpansion_1]{getExp
 \code{\link[=getExpansion_2]{getExpansion_2()}} using \code{"weightid"}. Thus, whatever column name is passed
 to \code{weightid} will be used as the weight for each group. See the
 documentation for the pass-through arguments, i.e., \code{...}. If you are
-interested in generating unexpanded comps, then use the \code{\link[nwfscSurvey:get_raw_comps]{nwfscSurvey::get_raw_comps()}}
+interested in generating unexpanded comps, then use the \code{\link[nwfscSurvey:get_raw_comps]{get_raw_comps()}}
 function from the nwfscSurvey package.
 }
 \seealso{

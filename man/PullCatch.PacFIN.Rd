@@ -57,7 +57,7 @@ The default is NULL.}
 \item{addnominal}{A logical, where the default, \code{TRUE}, adds nominal
 PacFIN species code to \code{pacfin_species_code}. \code{FALSE}
 leaves \code{pacfin_species_code} as input by the user, which will miss
-catch for species such as dover sole that have more than one species
+catch for species such as Dover sole that have more than one species
 code within PacFIN, e.g., \code{pacfin_species_code = c("DOVR", "DVR1")}.
 Users can also input a vector to pacfin_species_code if you want to
 specify the species and the nominal species code without searching for

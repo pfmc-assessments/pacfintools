@@ -20,7 +20,7 @@ EF1_Denominator(
 }
 \arguments{
 \item{Pdata}{A data frame returned from \code{\link[=PullBDS.PacFIN]{PullBDS.PacFIN()}} containing
-biological samples. These data are stored in the Pacific Fishieries
+biological samples. These data are stored in the Pacific Fisheries
 Information Network (PacFIN) data warehouse, which originated in 2014 and
 are pulled using sql calls.}
 
@@ -92,7 +92,7 @@ California sample weights were previously based on the column labeled
 \code{SPECIES_WEIGHT}. Now, California data is parsed by PacFIN to furnish
 species-specific cluster weights. Prior, cluster weights included the weight
 of all species in the sample. Now, \code{CLUSTER_WEIGHT_LBS} is the weight in that
-cluster for the species of interest. This was verified for dover sole by
+cluster for the species of interest. This was verified for Dover sole by
 Kelli F. Johnson in February of 2021. Thus, the code uses \code{CLUSTER_WEIGHT_LBS}
 rather than \code{SPECIES_WEIGHT} now.
 \strong{todo}: determine if this should be the only cluster-specific value going forward?

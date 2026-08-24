@@ -49,7 +49,7 @@ Compare length histogram of aged samples to all lengthed samples
 \details{
 Output on figures include K-S p-value, which is the p-value output from
 \code{\link{ks.test}} and is colored red if <.05 and green if >=.05, and
-\code{expression(hat(b))}, which is the bhattacharyya coefficient calculated
+\code{expression(hat(b))}, which is the Bhattacharyya coefficient calculated
 as \code{sum(sqrt(pi1*pi2))} where pi1 and pi2 are the proportion of data in
 bin i for each of the two distributions.
 }
