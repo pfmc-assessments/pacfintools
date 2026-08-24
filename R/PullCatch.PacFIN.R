@@ -9,7 +9,7 @@
 #' @param addnominal A logical, where the default, `TRUE`, adds nominal
 #' PacFIN species code to `pacfin_species_code`. `FALSE`
 #' leaves `pacfin_species_code` as input by the user, which will miss
-#' catch for species such as dover sole that have more than one species
+#' catch for species such as Dover sole that have more than one species
 #' code within PacFIN, e.g., `pacfin_species_code = c("DOVR", "DVR1")`.
 #' Users can also input a vector to pacfin_species_code if you want to
 #' specify the species and the nominal species code without searching for

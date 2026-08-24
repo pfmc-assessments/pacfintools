@@ -1,6 +1,6 @@
 #' Calculate von Bertalanffy Growth Parameters
 #'
-#' Calaculate the von Bertalanffy growth parameters and compare them to
+#' Calculate the von Bertalanffy growth parameters and compare them to
 #' parameters estimated when outliers are removed from the data set.
 #' Outliers are determined using standard deviations
 #' (i.e., \code{sdFactor} input parameter).
