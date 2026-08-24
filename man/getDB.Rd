@@ -40,9 +40,9 @@ password with anyone or push code to a repository that has your password
 saved in it.}
 
 \item{asis}{A logical, specifying whether or not to leave columns as is
-rather than convert them to factors, as defined in \code{\link[RODBC:sqlQuery]{RODBC::sqlGetResults()}}
+rather than convert them to factors, as defined in \code{\link[RODBC:sqlGetResults]{RODBC::sqlGetResults()}}
 and \code{\link[utils:read.table]{utils::read.table()}}. This logical is first passed to
-\code{\link[RODBC:sqlQuery]{RODBC::sqlQuery()}}, then to \code{\link[RODBC:sqlQuery]{RODBC::sqlGetResults()}}, and finally to
+\code{\link[RODBC:sqlQuery]{RODBC::sqlQuery()}}, then to \code{\link[RODBC:sqlGetResults]{RODBC::sqlGetResults()}}, and finally to
 \code{\link[utils:read.table]{utils::read.table()}}, where inside of \code{\link[utils:read.table]{utils::read.table()}}, if the
 logical is a single value, it is repeated for every column present, and
 thus, you do not need to know how many columns the resulting data set is.

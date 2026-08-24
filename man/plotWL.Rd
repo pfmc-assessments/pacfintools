@@ -24,7 +24,7 @@ Entries must be one of the following: 'U', 'F', 'M', or 'H'.}
 \item{weight.calc}{A vector of estimated weights output from \link{getweight}.}
 
 \item{xlab, ylab}{A character value specifying the label for an axes of
-a figure. This is typically passed to \link[ggplot2:labs]{ggplot2::xlab} or \link[ggplot2:labs]{ggplot2::ylab}
+a figure. This is typically passed to \link[ggplot2:xlab]{ggplot2::xlab} or \link[ggplot2:ylab]{ggplot2::ylab}
 but it can also be passed to the \code{xlab} or \code{ylab} arguments of \link{plot}.
 No additional formatting will take place.}
 }
