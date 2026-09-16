@@ -38,7 +38,11 @@ getGearGroup <- function(Pdata, keep_gears = NULL, spp = NULL, verbose = TRUE) {
     Pdata[, "PACFIN_GEAR_CODE"] <- as.character(Pdata[, "PACFIN_GEAR_CODE"])
   }
   # gear_table <- pacfintools::GearTable
-  gear_table <- GearTable
+  gear_table <- get(utils::data(
+    "GearTable",
+    overwrite = TRUE,
+    package = "pacfintools"
+  ))
 
   # Species-specific code to alter the PacFIN gear table
   if (!is.null(spp)) {
