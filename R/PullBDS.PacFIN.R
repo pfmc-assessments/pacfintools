@@ -253,9 +253,10 @@ PullBDS.PacFIN <- function(
     )
   # Short check b/c pivot_wider can make lists
   if (!class(bds.pacfin[["age1"]]) %in% c("integer", "logical")) {
-    duplicates <- {
-      data
-    } |>
+    duplicates <-
+      {
+        data
+      } |>
       dplyr::summarise(
         n = dplyr::n(),
         .by = c(
