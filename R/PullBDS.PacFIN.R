@@ -253,13 +253,25 @@ PullBDS.PacFIN <- function(
     )
   # Short check b/c pivot_wider can make lists
   if (!class(bds.pacfin[["age1"]]) %in% c("integer", "logical")) {
-    duplicates <- {data} |>
+    duplicates <- {
+      data
+    } |>
       dplyr::summarise(
-        n = dplyr::n(), 
-        .by = c(PACFIN_SPECIES_COMMON_NAME, AGENCY_CODE, SAMPLE_ID, SAMPLE_NUMBER, FISH_ID)
-        ) |>
-      dplyr::filter(n > 1L) 
-    write.csv(dupliates, file.path(savedir, "duplicate_fish_id_recrods.csv"), row.names = FALSE)
+        n = dplyr::n(),
+        .by = c(
+          PACFIN_SPECIES_COMMON_NAME,
+          AGENCY_CODE,
+          SAMPLE_ID,
+          SAMPLE_NUMBER,
+          FISH_ID
+        )
+      ) |>
+      dplyr::filter(n > 1L)
+    write.csv(
+      duplicates,
+      file.path(savedir, "duplicate_fish_id_recrods.csv"),
+      row.names = FALSE
+    )
     cli::cli_abort(
       "pivot_wider failed to transform age reads to a wide data frame!"
     )
