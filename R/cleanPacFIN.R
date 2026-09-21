@@ -184,7 +184,12 @@ cleanPacFIN <- function(
   # If the user has not specified which gears to keep, set keep_gears to
   # all present gear groups
   if (is.null(keep_gears)) {
-    keep_gears <- unique(GearTable$GROUP)
+    gear_table <- get(utils::data(
+      "GearTable",
+      overwrite = TRUE,
+      package = "pacfintools"
+    ))
+    keep_gears <- unique(gear_table)
   }
   #### Fill in missing input arguments
   data <- getGearGroup(
