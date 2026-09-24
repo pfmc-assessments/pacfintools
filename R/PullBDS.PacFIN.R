@@ -149,8 +149,7 @@ PullBDS.PacFIN <- function(
     )
     cli::cli_alert_warning(
       "FISH_ID includes NULL(s) for {sum(fish_id)} rows.
-      These rows have been removed from the data; but you should contact
-      state representatives for {message} to let them know."
+      You should contact state representatives for {message} to let them know."
     )
   }
   rm(fish_id)
@@ -263,18 +262,46 @@ PullBDS.PacFIN <- function(
           AGENCY_CODE,
           SAMPLE_ID,
           SAMPLE_NUMBER,
-          FISH_ID
+          FISH_ID,
+          AGE_ID,
+          AGE_SEQUENCE_NUMBER
         )
       ) |>
       dplyr::filter(n > 1L)
+
+    message <- glue::glue_collapse(
+      unique(duplicates[["AGENCY_CODE"]]),
+      sep = ", ",
+      last = " and "
+    )
     write.csv(
       duplicates,
       file.path(savedir, "duplicate_fish_id_recrods.csv"),
       row.names = FALSE
     )
-    cli::cli_abort(
-      "pivot_wider failed to transform age reads to a wide data frame!"
+    cli::cli_alert_warning(
+      "There are {nrow(duplicates)} duplicate records from data in {message} that 
+      have been removed from the final data. Duplicate records are most often 
+      due to multiple age reads having the same AGE_ID and AGE_SEQUENCE_NUMBER.
+      A csv file with information of the duplicate records has been saved to {savedir}."
     )
+
+    bds.pacfin <- data |>
+      dplyr::filter(
+        !(AGE_ID %in% duplicates$AGE_ID & FISH_ID %in% duplicates$FISH_ID)
+      ) |>
+      tidyr::pivot_wider(
+        id_cols = !dplyr::matches("BDS_ID"),
+        names_from = AGE_SEQUENCE_NUMBER,
+        values_from = c(
+          AGE_ID,
+          AGE_METHOD:AGENCY_AGE_STRUCTURE_CODE
+        ),
+        names_sort = TRUE,
+        names_glue = "{.value}{AGE_SEQUENCE_NUMBER}",
+        values_fill = NA
+      ) |>
+      as.data.frame()
   } else {
     # TODO: Think about returning a tibble rather than a data frame
     bds.pacfin <- data.frame(bds.pacfin)
