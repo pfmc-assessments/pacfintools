@@ -11,8 +11,9 @@ get_latitude <- function(
   verbose = TRUE
 ) {
   pacfin_ports_withlatlong <- get(utils::data(
-    "pacfin_ports_withlatlong",   overwrite = TRUE,
-  package = "pacfintools"
+    "pacfin_ports_withlatlong",
+    overwrite = TRUE,
+    package = "pacfintools"
   ))
   pacfin_port_lats <- pacfintools::pacfin_ports_withlatlong |>
     dplyr::rename(
