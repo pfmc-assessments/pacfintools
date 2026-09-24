@@ -21,7 +21,7 @@ getExpansion_1(
 }
 \arguments{
 \item{Pdata}{A data frame returned from \code{\link[=PullBDS.PacFIN]{PullBDS.PacFIN()}} containing
-biological samples. These data are stored in the Pacific Fishieries
+biological samples. These data are stored in the Pacific Fisheries
 Information Network (PacFIN) data warehouse, which originated in 2014 and
 are pulled using sql calls.}
 
@@ -40,7 +40,7 @@ then just pass \code{NA} for that relationship.}
 for building expansions. Typically, the default is 0.95. Set \code{maxExp = Inf} to see largest values.}
 
 \item{Exp_WA}{A logical values specifying if the samples from Washington
-should be exanded. The default is \code{FALSE}.}
+should be expanded. The default is \code{FALSE}.}
 
 \item{verbose}{A logical specifying if output should be written to the
 screen or not. Good for testing and exploring your data but can be turned

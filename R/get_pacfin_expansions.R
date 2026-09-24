@@ -7,7 +7,7 @@
 #' in survey data the smallest measured unit is typically a tow. Tow would be
 #' the smallest if we had samples from onboard observers rather than from
 #' dockside samplers. The second-stage expansion expands data up to the state
-#' or area catch level for that year and stratificiation.
+#' or area catch level for that year and stratification.
 #' Find the catch for each year and grouping in `Catch` and divide by the
 #' pounds of fish that were collected for sampling for that same year and
 #' grouping. Sampled biomass is stored in `All_Trips_Sampled_Lbs`, which is

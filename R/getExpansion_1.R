@@ -45,7 +45,7 @@
 #'   for building expansions. Typically, the default is 0.95. Set `maxExp =
 #'   Inf` to see largest values.
 #' @param Exp_WA A logical values specifying if the samples from Washington
-#'   should be exanded. The default is `FALSE`.
+#'   should be expanded. The default is `FALSE`.
 #' @param fa,ma,ua Female-, male-, and unsexed-specific weight--length
 #'   coefficients for Stock Synthesis where the relationships were calculated
 #'   using length in cm and weight in kg. There are no default values. You must
