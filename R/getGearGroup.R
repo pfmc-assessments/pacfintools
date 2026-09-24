@@ -37,7 +37,6 @@ getGearGroup <- function(Pdata, keep_gears = NULL, spp = NULL, verbose = TRUE) {
   if (is.factor(Pdata[, "PACFIN_GEAR_CODE"])) {
     Pdata[, "PACFIN_GEAR_CODE"] <- as.character(Pdata[, "PACFIN_GEAR_CODE"])
   }
-  # gear_table <- pacfintools::GearTable
   gear_table <- get(utils::data(
     "GearTable",
     overwrite = TRUE,

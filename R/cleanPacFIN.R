@@ -189,7 +189,7 @@ cleanPacFIN <- function(
       overwrite = TRUE,
       package = "pacfintools"
     ))
-    keep_gears <- unique(gear_table)
+    keep_gears <- unique(gear_table$GROUP)
   }
   #### Fill in missing input arguments
   data <- getGearGroup(
