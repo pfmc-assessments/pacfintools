@@ -196,42 +196,63 @@ PullBDS.PacFIN <- function(
   rm(fish_id)
 
   # todo: think about not changing column names
-  data <- data_raw |>
-    # Fix the data
-    dplyr::filter(!is.na(FISH_ID)) |>
-    # Move duplicated FISH_WEIGHT to FISH_WEIGHT_GUTTED from WA and remove
-    # FISH_IDs that are duplicated for CA
-    dplyr::group_by(FISH_ID) |>
-    dplyr::mutate(
-      weight_type = ifelse(
-        test = FISH_WEIGHT == max(FISH_WEIGHT),
-        yes = "FISH_WEIGHT",
-        no = "FISH_WEIGHT_GUTTED"
-      )
-    ) |>
-    tidyr::pivot_wider(
-      id_cols = !dplyr::matches("BDS_ID"),
-      names_from = "weight_type",
-      values_from = "FISH_WEIGHT",
-      values_fn = list(FISH_WEIGHT = unique)
-    ) |>
-    dplyr::ungroup() |>
-    dplyr::relocate(FISH_WEIGHT, .after = FORK_LENGTH_IS_ESTIMATED) |>
-    dplyr::select(-"NA") |>
-    # Continue fixing the data
-    dplyr::select(-SAMPLE_AGENCY) |>
-    dplyr::mutate(
-      FISH_LENGTH_TYPE_CODE = ifelse(
-        test = FISH_LENGTH_TYPE_CODE != FALSE,
-        as.character(FISH_LENGTH_TYPE_CODE),
-        "F"
-      ),
-      AGE_SEQUENCE_NUMBER = tidyr::replace_na(AGE_SEQUENCE_NUMBER, 1)
-    ) |>
-    # Do some renaming of columns
-    dplyr::rename(age = dplyr::matches("^AGE_IN_YEARS")) |>
-    dplyr::rename(agedby = dplyr::matches("PERSON_WHO_AGED")) |>
-    dplyr::rename(AGE_METHOD = dplyr::matches("AGE_METHOD_CODE"))
+  if (sum(is.na(data_raw[["FISH_WEIGHT"]])) != nrow(data_raw)) {
+    data <- data_raw |>
+      # Fix the data
+      dplyr::filter(!is.na(FISH_ID)) |>
+      # Move duplicated FISH_WEIGHT to FISH_WEIGHT_GUTTED from WA and remove
+      # FISH_IDs that are duplicated for CA
+      dplyr::group_by(FISH_ID) |>
+      dplyr::mutate(
+        weight_type = ifelse(
+          test = FISH_WEIGHT == max(FISH_WEIGHT),
+          yes = "FISH_WEIGHT",
+          no = "FISH_WEIGHT_GUTTED"
+        )
+      ) |>
+      tidyr::pivot_wider(
+        id_cols = !dplyr::matches("BDS_ID"),
+        names_from = "weight_type",
+        values_from = "FISH_WEIGHT",
+        values_fn = list(FISH_WEIGHT = unique)
+      ) |>
+      dplyr::ungroup() |>
+      dplyr::relocate(FISH_WEIGHT, .after = FORK_LENGTH_IS_ESTIMATED) |>
+      dplyr::select(-"NA") |>
+      # Continue fixing the data
+      dplyr::select(-SAMPLE_AGENCY) |>
+      dplyr::mutate(
+        FISH_LENGTH_TYPE_CODE = ifelse(
+          test = FISH_LENGTH_TYPE_CODE != FALSE,
+          as.character(FISH_LENGTH_TYPE_CODE),
+          "F"
+        ),
+        AGE_SEQUENCE_NUMBER = tidyr::replace_na(AGE_SEQUENCE_NUMBER, 1)
+      ) |>
+      # Do some renaming of columns
+      dplyr::rename(age = dplyr::matches("^AGE_IN_YEARS")) |>
+      dplyr::rename(agedby = dplyr::matches("PERSON_WHO_AGED")) |>
+      dplyr::rename(AGE_METHOD = dplyr::matches("AGE_METHOD_CODE"))
+  } else {
+    data <- data_raw |>
+      # Fix the data
+      dplyr::filter(!is.na(FISH_ID)) |>
+      dplyr::relocate(FISH_WEIGHT, .after = FORK_LENGTH_IS_ESTIMATED) |>
+      # Continue fixing the data
+      dplyr::select(-SAMPLE_AGENCY) |>
+      dplyr::mutate(
+        FISH_LENGTH_TYPE_CODE = ifelse(
+          test = FISH_LENGTH_TYPE_CODE != FALSE,
+          as.character(FISH_LENGTH_TYPE_CODE),
+          "F"
+        ),
+        AGE_SEQUENCE_NUMBER = tidyr::replace_na(AGE_SEQUENCE_NUMBER, 1)
+      ) |>
+      # Do some renaming of columns
+      dplyr::rename(age = dplyr::matches("^AGE_IN_YEARS")) |>
+      dplyr::rename(agedby = dplyr::matches("PERSON_WHO_AGED")) |>
+      dplyr::rename(AGE_METHOD = dplyr::matches("AGE_METHOD_CODE"))
+  }
 
   # Long to wide to facilitate estimating ageing error
   # Multiple BDS_IDs can pertain to a single FISH_ID
@@ -250,6 +271,21 @@ PullBDS.PacFIN <- function(
       names_glue = "{.value}{AGE_SEQUENCE_NUMBER}",
       values_fill = NA
     )
+  # check to see if an age1 column was created
+  if (!any(colnames(bds.pacfin) == "age1")) {
+    bds.pacfin <- data |>
+      dplyr::rename(
+        age1 = age,
+        AGE_METHOD1 = AGE_METHOD,
+        AGE_READABILITY1 = AGE_READABILITY,
+        agedby1 = agedby,
+        DATE_AGE_RECORDED1 = DATE_AGE_RECORDED,
+        AGE_STRUCTURE_CODE1 = AGE_STRUCTURE_CODE,
+        AGE_STRUCTURE_DESC1 = AGE_STRUCTURE_DESC,
+        AGENCY_AGE_STRUCTURE_CODE1 = AGENCY_AGE_STRUCTURE_CODE
+      )
+  }
+
   # Short check b/c pivot_wider can make lists
   if (!class(bds.pacfin[["age1"]]) %in% c("integer", "logical")) {
     duplicates <- {
