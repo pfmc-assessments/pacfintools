@@ -6,3 +6,4 @@ password.txt
 inst/extdata/*
 vignettes/*.html
 vignettes/*.md
+.positai

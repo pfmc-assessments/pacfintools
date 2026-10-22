@@ -154,7 +154,7 @@ getExpansion_1 <- function(
   Pdata$Expansion_Factor_1_L[Pdata$Expansion_Factor_1_L < 1] <- 1
   Pdata$Expansion_Factor_1_A[Pdata$Expansion_Factor_1_A < 1] <- 1
 
-  # In most cases, WA data can't be expanded.
+  # In some cases, expanding WA can be challenging due to missing trip weights
   if (Exp_WA != TRUE) {
     Pdata$Expansion_Factor_1_L[Pdata$state == "WA"] <- 1
     Pdata$Expansion_Factor_1_A[Pdata$state == "WA"] <- 1
@@ -164,69 +164,37 @@ getExpansion_1 <- function(
     )
   }
 
-  # Used in plotting later on
-  NA_EF1 <- Pdata[is.na(Pdata$Expansion_Factor_1_L), ]
-  nNA <- sum(is.na(Pdata$Expansion_Factor_1_L))
   # Counts to report
-  n_na <- sum(is.na(Pdata$Expansion_Factor_1_L))
-  n_inf <- sum(
-    !is.na(Pdata$Expansion_Factor_1_L) &
-      !is.finite(Pdata$Expansion_Factor_1_L)
-  )
-  Pdata$replace_na_inf <- FALSE
-  replace <- c(
-    which(is.na(Pdata$Expansion_Factor_1_L)),
-    which(
-      !is.na(Pdata$Expansion_Factor_1_L) &
-        !is.finite(Pdata$Expansion_Factor_1_L)
-    )
-  )
-  Pdata$replace_na_inf[replace] <- TRUE
+  n_na_len <- nrow(Pdata[
+    which(is.na(Pdata$Expansion_Factor_1_L) & !is.na(Pdata$lengthcm)),
+  ])
+  Pdata$replace_na <- FALSE
+  replace <- which(is.na(Pdata$Expansion_Factor_1_L))
+  Pdata$replace_na[replace] <- TRUE
   if (verbose) {
-    na_year <- table(Pdata$fishyr[is.na(Pdata$Expansion_Factor_1_L)])
-    inf_year <- table(Pdata$fishyr[
-      !is.na(Pdata$Expansion_Factor_1_L) &
-        !is.finite(Pdata$Expansion_Factor_1_L)
-    ])
-
+    na_year <- table(Pdata$fishyr[which(
+      !is.na(Pdata$lengthcm) & is.na(Pdata$Expansion_Factor_1_L)
+    )])
     message_na <- paste0(
       names(na_year),
       ": ",
       na_year
     )
-    message_inf <- paste0(
-      names(inf_year),
-      ": ",
-      inf_year
-    )
-    if (n_na / dim(Pdata)[1] > 0.01) {
+    if (n_na_len / dim(Pdata)[1] > 0.01) {
       cli::cli_bullets(c(
-        "x" = "{n_na} {.code NA} Expansion_Factor_1 values replaced by 1. Number of samples by year:",
+        "x" = "{n_na_len} {.code NA} Expansion_Factor_1 values replaced by 1. Number of samples by year:",
         " " = "{message_na}"
       ))
     } else {
       cli::cli_bullets(c(
-        "!" = "{n_na} {.code NA} Expansion_Factor_1 values replaced by 1. Number of samples by year:",
+        "!" = "{n_na_len} {.code NA} Expansion_Factor_1 values replaced by 1. Number of samples by year:",
         " " = "{message_na}"
       ))
     }
-    if (n_inf / dim(Pdata)[1] > 0.01) {
-      # Report the number of 1/inf per year
-      cli::cli_bullets(c(
-        "x" = "{n_inf} not finite numbers and Expansion_Factor_1 values replaced by 1. Number of samples by year:",
-        " " = "{message_inf}"
-      ))
-    } else {
-      cli::cli_bullets(c(
-        "!" = "{n_inf} not finite numbers and Expansion_Factor_1 values replaced by 1. Number of samples by year:",
-        " " = "{message_inf}"
-      ))
-    }
-    # Report the number of 1/inf per year
     cli::cli_bullets(c(
-      " " = "These represent records that could not be expanded due to missing sample weight
-      or landing weight. Depending upon the magnitude and distribution across years, users may want to remove these records.",
-      " " = "These records are noted in the replace_na_inf column as TRUE."
+      " " = "These represent records that could not be expanded due to missing landing weight. 
+      Depending upon the magnitude and distribution across years, users may want to remove these records.",
+      " " = "These records are noted in the replace_na column as TRUE."
     ))
   }
 
@@ -254,40 +222,9 @@ getExpansion_1 <- function(
   # Generate plots and save them to the disk if specified.
   # TODO: move away from {grDevices}
   if (!is.null(savedir)) {
-    plot_name1 <- file.path(savedir, "PacFIN_expansion_1_NA_Inf.png")
-    plot_name2 <- file.path(savedir, "PacFIN_expansion_1.png")
-    if (nNA > 0) {
-      g1 <- ggplot2::ggplot(
-        Pdata |>
-          dplyr::mutate(
-            Count = dplyr::case_when(replace_na_inf == TRUE ~ 1, .default = 0)
-          ),
-        ggplot2::aes(x = as.factor(fishyr), y = Count, fill = state)
-      ) +
-        ggplot2::geom_bar(stat = "identity") +
-        ggplot2::theme_bw() +
-        ggplot2::ylab("Count") +
-        ggplot2::xlab("Year") +
-        ggplot2::scale_fill_viridis_d() +
-        ggplot2::ggtitle(
-          "First Stage Expansion that are NA of Inf"
-        ) +
-        ggplot2::theme(
-          axis.text.x = ggplot2::element_text(
-            angle = 90,
-            vjust = 0.5,
-            hjust = 0.5
-          )
-        )
-      ggplot2::ggsave(
-        filename = plot_name1,
-        plot = g1,
-        height = 9,
-        width = 9
-      )
-    }
+    plot_name2 <- file.path(savedir, "PacFIN_expansion_1_lengths.png")
     g2 <- ggplot2::ggplot(
-      Pdata,
+      Pdata |> dplyr::filter(!is.na(lengthcm)),
       ggplot2::aes(x = as.factor(fishyr), y = Expansion_Factor_1_L)
     ) +
       ggplot2::geom_boxplot() +
@@ -295,16 +232,42 @@ getExpansion_1 <- function(
       ggplot2::ylab("Expansion Factor") +
       ggplot2::xlab("Year") +
       ggplot2::ggtitle(
-        "First Stage Expansion"
+        "First Stage Expansion - Lengths"
       ) +
-      ggplot2::facet_grid("state", scales = "free_y") +
       ggplot2::theme(
         axis.text.x = ggplot2::element_text(
           angle = 90,
           vjust = 0.5,
           hjust = 0.5
         )
-      )
+      ) +
+      ggplot2::facet_grid("state", scales = "free_y")
+    ggplot2::ggsave(
+      filename = plot_name2,
+      plot = g2,
+      height = 9,
+      width = 9
+    )
+    plot_name2 <- file.path(savedir, "PacFIN_expansion_1_ages.png")
+    g2 <- ggplot2::ggplot(
+      Pdata |> dplyr::filter(!is.na(Age)),
+      ggplot2::aes(x = as.factor(fishyr), y = Expansion_Factor_1_A)
+    ) +
+      ggplot2::geom_boxplot() +
+      ggplot2::theme_bw() +
+      ggplot2::ylab("Expansion Factor") +
+      ggplot2::xlab("Year") +
+      ggplot2::ggtitle(
+        "First Stage Expansion -  Ages"
+      ) +
+      ggplot2::theme(
+        axis.text.x = ggplot2::element_text(
+          angle = 90,
+          vjust = 0.5,
+          hjust = 0.5
+        )
+      ) +
+      ggplot2::facet_grid("state", scales = "free_y")
     ggplot2::ggsave(
       filename = plot_name2,
       plot = g2,
