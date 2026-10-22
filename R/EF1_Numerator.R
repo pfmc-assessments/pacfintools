@@ -111,7 +111,7 @@ EF1_Numerator <- function(
       ggplot2::ylim(c(0, 1)) +
       ggplot2::theme_bw() +
       ggplot2::scale_fill_viridis_d() +
-      ggplot2::ylab("Proportion of Total Samples by and Year") +
+      ggplot2::ylab("Proportion of samples with NA Trip_Sampled_Lbs"),
       ggplot2::xlab("Year") +
       ggplot2::ggtitle(
         "First Stage Expansion Numerator with NA Trip_Sampled_Lbs"
