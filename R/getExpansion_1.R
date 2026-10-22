@@ -183,7 +183,7 @@ getExpansion_1 <- function(
       ": ",
       na_year
     )
-    if (n_na / dim(Pdata)[1] > 0.01) {
+    if (n_na_len / dim(Pdata)[1] > 0.01) {
       cli::cli_bullets(c(
         "x" = "{n_na_len} {.code NA} Expansion_Factor_1 values replaced by 1. Number of samples by year:",
         " " = "{message_na}"
