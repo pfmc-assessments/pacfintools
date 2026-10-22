@@ -101,17 +101,17 @@ EF1_Numerator <- function(
           Count = dplyr::case_when(is.na(Trip_Sampled_Lbs) ~ 1, .default = 0)
         ) |>
         dplyr::summarise(
-          .by = c(fishyr, state, geargroup),
+          .by = c(fishyr, state),
           samples = sum(n),
           proportion = sum(Count) / samples
         ),
-      ggplot2::aes(x = as.factor(fishyr), y = proportion, fill = state)
+      ggplot2::aes(x = as.factor(fishyr), y = proportion)
     ) +
       ggplot2::geom_bar(stat = "identity") +
       ggplot2::ylim(c(0, 1)) +
       ggplot2::theme_bw() +
       ggplot2::scale_fill_viridis_d() +
-      ggplot2::ylab("Proportion of Total Samples by Gear and Year") +
+      ggplot2::ylab("Proportion of Total Samples by and Year") +
       ggplot2::xlab("Year") +
       ggplot2::ggtitle(
         "First Stage Expansion Numerator with NA Trip_Sampled_Lbs"
@@ -127,7 +127,7 @@ EF1_Numerator <- function(
           hjust = 0.5
         )
       ) +
-      ggplot2::facet_wrap("geargroup")
+      ggplot2::facet_grid("state")
     ggplot2::ggsave(
       filename = plot_filename,
       plot = g3,
