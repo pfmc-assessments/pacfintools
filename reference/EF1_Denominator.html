@@ -81,7 +81,7 @@ is the weight of all fish in the sample.
 
 <dl><dt id="arg-pdata">Pdata<a class="anchor" aria-label="anchor" href="#arg-pdata"></a></dt>
 <dd><p>A data frame returned from <code><a href="PullBDS.PacFIN.html">PullBDS.PacFIN()</a></code> containing
-biological samples. These data are stored in the Pacific Fishieries
+biological samples. These data are stored in the Pacific Fisheries
 Information Network (PacFIN) data warehouse, which originated in 2014 and
 are pulled using sql calls.</p></dd>
 
@@ -157,7 +157,7 @@ to provide WEIGHT_OF_UNKNOWN_LBS.</p>
 <code>SPECIES_WEIGHT</code>. Now, California data is parsed by PacFIN to furnish
 species-specific cluster weights. Prior, cluster weights included the weight
 of all species in the sample. Now, <code>CLUSTER_WEIGHT_LBS</code> is the weight in that
-cluster for the species of interest. This was verified for dover sole by
+cluster for the species of interest. This was verified for Dover sole by
 Kelli F. Johnson in February of 2021. Thus, the code uses <code>CLUSTER_WEIGHT_LBS</code>
 rather than <code>SPECIES_WEIGHT</code> now.
 <strong>todo</strong>: determine if this should be the only cluster-specific value going forward?</p>
