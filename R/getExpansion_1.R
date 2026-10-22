@@ -154,7 +154,7 @@ getExpansion_1 <- function(
   Pdata$Expansion_Factor_1_L[Pdata$Expansion_Factor_1_L < 1] <- 1
   Pdata$Expansion_Factor_1_A[Pdata$Expansion_Factor_1_A < 1] <- 1
 
-  # In some cases, expanding WA can be challanging due to missing trip weights
+  # In some cases, expanding WA can be challenging due to missing trip weights
   if (Exp_WA != TRUE) {
     Pdata$Expansion_Factor_1_L[Pdata$state == "WA"] <- 1
     Pdata$Expansion_Factor_1_A[Pdata$state == "WA"] <- 1
@@ -167,9 +167,6 @@ getExpansion_1 <- function(
   # Counts to report
   n_na_len <- nrow(Pdata[
     which(is.na(Pdata$Expansion_Factor_1_L) & !is.na(Pdata$lengthcm)),
-  ])
-  n_na_age <- nrow(Pdata[
-    which(is.na(Pdata$Expansion_Factor_1_L) & !is.na(Pdata$Age)),
   ])
   Pdata$replace_na <- FALSE
   replace <- which(is.na(Pdata$Expansion_Factor_1_L))
