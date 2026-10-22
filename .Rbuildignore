@@ -9,3 +9,5 @@
 ^\.github$
 \.gitattributes$
 \.gitignore$
+^\.positai$
+^\.claude$

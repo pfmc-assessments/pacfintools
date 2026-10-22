@@ -61,41 +61,82 @@ EF1_Numerator <- function(
   )
 
   if (!is.null(savedir)) {
+    # plot_filename <- fs::path(
+    #   savedir,
+    #   "PacFIN_expansion_1_numerator.png"
+    # )
+    # g1 <- ggplot2::ggplot(
+    #   Pdata,
+    #   ggplot2::aes(x = as.factor(fishyr), y = Trip_Sampled_Lbs)
+    # ) +
+    #   ggplot2::geom_boxplot() +
+    #   ggplot2::theme_bw() +
+    #   ggplot2::ylab("Sample weight per trip (lbs)") +
+    #   ggplot2::xlab("Year") +
+    #   ggplot2::scale_y_continuous(
+    #     labels = function(x) format(x, big.mark = ",", scientific = TRUE)
+    #   ) +
+    #   ggplot2::theme(
+    #     axis.text.x = ggplot2::element_text(
+    #       angle = 90,
+    #       vjust = 0.5,
+    #       hjust = 0.5
+    #     )
+    #   ) +
+    #   ggplot2::facet_grid("state", scales = "free_y")
+    # ggplot2::ggsave(
+    #   filename = plot_filename,
+    #   plot = g1,
+    #   height = 12,
+    #   width = 12
+    # )
     plot_filename <- fs::path(
       savedir,
-      "PacFIN_expansion_1_numerator.png"
+      "PacFIN_expansion_1_NA_numerator_proportion.png"
     )
-    g1 <- ggplot2::ggplot(
-      Pdata,
-      ggplot2::aes(x = as.factor(fishyr), y = Trip_Sampled_Lbs)
+    g3 <- ggplot2::ggplot(
+      Pdata |>
+        dplyr::mutate(
+          n = 1,
+          Count = dplyr::case_when(is.na(Trip_Sampled_Lbs) ~ 1, .default = 0)
+        ) |>
+        dplyr::summarise(
+          .by = c(fishyr, state, geargroup),
+          samples = sum(n),
+          proportion = sum(Count) / samples
+        ),
+      ggplot2::aes(x = as.factor(fishyr), y = proportion, fill = state)
     ) +
-      ggplot2::geom_boxplot() +
+      ggplot2::geom_bar(stat = "identity") +
+      ggplot2::ylim(c(0, 1)) +
       ggplot2::theme_bw() +
-      ggplot2::ylab("Sample weight per trip (lbs)") +
+      ggplot2::scale_fill_viridis_d() +
+      ggplot2::ylab("Proportion of Total Samples by Gear and Year") +
       ggplot2::xlab("Year") +
-      ggplot2::scale_y_continuous(
-        labels = function(x) format(x, big.mark = ",", scientific = TRUE)
-      ) +
       ggplot2::ggtitle(
-        "First Stage Expansion Numerator Before the Application of Maximum Quantile Cap"
+        "First Stage Expansion Numerator with NA Trip_Sampled_Lbs"
       ) +
+      ggplot2::scale_x_discrete(breaks = function(x) {
+        x[seq(1, length(x), by = 5)]
+      }) +
       ggplot2::theme(
+        text = ggplot2::element_text(size = 30),
         axis.text.x = ggplot2::element_text(
           angle = 90,
           vjust = 0.5,
           hjust = 0.5
         )
       ) +
-      ggplot2::facet_grid("state", scales = "free_y")
+      ggplot2::facet_wrap("geargroup")
     ggplot2::ggsave(
       filename = plot_filename,
-      plot = g1,
-      height = 12,
-      width = 12
+      plot = g3,
+      height = 20,
+      width = 20
     )
     plot_filename <- fs::path(
       savedir,
-      "PacFIN_expansion_1_NA_numerator.png"
+      "PacFIN_expansion_1_NA_numerator_count.png"
     )
     g2 <- ggplot2::ggplot(
       Pdata |>
@@ -107,23 +148,28 @@ EF1_Numerator <- function(
       ggplot2::geom_bar(stat = "identity") +
       ggplot2::theme_bw() +
       ggplot2::scale_fill_viridis_d() +
-      ggplot2::ylab("Count") +
+      ggplot2::ylab("Count by Gear and Year") +
       ggplot2::xlab("Year") +
       ggplot2::ggtitle(
         "First Stage Expansion Numerator with NA Trip_Sampled_Lbs"
       ) +
       ggplot2::theme(
+        text = ggplot2::element_text(size = 30),
         axis.text.x = ggplot2::element_text(
           angle = 90,
           vjust = 0.5,
           hjust = 0.5
         )
-      )
+      ) +
+      ggplot2::scale_x_discrete(breaks = function(x) {
+        x[seq(1, length(x), by = 5)]
+      }) +
+      ggplot2::facet_wrap("geargroup")
     ggplot2::ggsave(
       filename = plot_filename,
       plot = g2,
-      height = 12,
-      width = 12
+      height = 20,
+      width = 20
     )
   }
 
