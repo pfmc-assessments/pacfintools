@@ -24,7 +24,7 @@
 #'   \item{ARID}{A character string}
 #'   \item{INPFC}{A three letter character string denoting the INPFC area}
 #'   \item{TYPE}{A character string denoting the INPFC type}
-#'   \item{COUNCIL}{A character string denoting the Fishery Managment Council}
+#'   \item{COUNCIL}{A character string denoting the Fishery Management Council}
 #'   \item{SHORT}{Character string describing the area}
 #'   \item{DESCRIPTION}{Character string describing the area}
 #' }
@@ -40,7 +40,7 @@
 #'   \item{PACFIN_PORT_CODE}{A character string of port codes}
 #'   \item{AGENCY_CODE}{Character denoting the collection agency}
 #'   \item{AGENCY_PORT_CODE}{A string denoting the sampling agency port code}
-#'   \item{DESCRIPTION}{A character string denoting the full port anme}
+#'   \item{DESCRIPTION}{A character string denoting the full port name}
 #' }
 #' @source <https://pacfin.psmfc.org/pacfin_pub/data_rpts_pub/code_lists/agency_ports_pcid.txt>
 "PortTable"
