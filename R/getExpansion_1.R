@@ -227,7 +227,7 @@ getExpansion_1 <- function(
   if (!is.null(savedir)) {
     plot_name2 <- file.path(savedir, "PacFIN_expansion_1_lengths.png")
     g2 <- ggplot2::ggplot(
-      Pdata,
+      Pdata |> dplyr::filter(!is.na(lengthcm)),
       ggplot2::aes(x = as.factor(fishyr), y = Expansion_Factor_1_L)
     ) +
       ggplot2::geom_boxplot() +
@@ -253,7 +253,7 @@ getExpansion_1 <- function(
     )
     plot_name2 <- file.path(savedir, "PacFIN_expansion_1_ages.png")
     g2 <- ggplot2::ggplot(
-      Pdata,
+      Pdata |> dplyr::filter(!is.na(Age)),
       ggplot2::aes(x = as.factor(fishyr), y = Expansion_Factor_1_A)
     ) +
       ggplot2::geom_boxplot() +
