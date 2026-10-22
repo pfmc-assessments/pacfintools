@@ -288,9 +288,10 @@ PullBDS.PacFIN <- function(
 
   # Short check b/c pivot_wider can make lists
   if (!class(bds.pacfin[["age1"]]) %in% c("integer", "logical")) {
-    duplicates <- {
-      data
-    } |>
+    duplicates <-
+      {
+        data
+      } |>
       dplyr::summarise(
         n = dplyr::n(),
         .by = c(
@@ -316,8 +317,8 @@ PullBDS.PacFIN <- function(
       row.names = FALSE
     )
     cli::cli_alert_warning(
-      "There are {nrow(duplicates)} duplicate records from data in {message} that 
-      have been removed from the final data. Duplicate records are most often 
+      "There are {nrow(duplicates)} duplicate records from data in {message} that
+      have been removed from the final data. Duplicate records are most often
       due to multiple age reads having the same AGE_ID and AGE_SEQUENCE_NUMBER.
       A csv file with information of the duplicate records has been saved to {savedir}."
     )

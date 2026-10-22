@@ -192,7 +192,7 @@ getExpansion_1 <- function(
       ))
     }
     cli::cli_bullets(c(
-      " " = "These represent records that could not be expanded due to missing landing weight. 
+      " " = "These represent records that could not be expanded due to missing landing weight.
       Depending upon the magnitude and distribution across years, users may want to remove these records.",
       " " = "These records are noted in the replace_na column as TRUE."
     ))
