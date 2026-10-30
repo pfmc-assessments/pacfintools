@@ -25,7 +25,7 @@
 #' `SPECIES_WEIGHT`. Now, California data is parsed by PacFIN to furnish
 #' species-specific cluster weights. Prior, cluster weights included the weight
 #' of all species in the sample. Now, `CLUSTER_WEIGHT_LBS` is the weight in that
-#' cluster for the species of interest. This was verified for dover sole by
+#' cluster for the species of interest. This was verified for Dover sole by
 #' Kelli F. Johnson in February of 2021. Thus, the code uses `CLUSTER_WEIGHT_LBS`
 #' rather than `SPECIES_WEIGHT` now.
 #' **todo**: determine if this should be the only cluster-specific value going forward?
@@ -204,13 +204,11 @@ EF1_Denominator <- function(
     # Return a data frame rather than a tibble
     data.frame()
 
-  nNA <- sum(Pdata$Wt_Sampled_L == 0)
   if (!is.null(savedir)) {
     plot1 <- file.path(
       savedir,
       "PacFIN_expansion_1_denominator_calculation.png"
     )
-    plot_na <- file.path(savedir, "PacFIN_expansion_1_NA_denominator.png")
     plot2 <- file.path(savedir, "PacFIN_weight_length.png")
     #### Summary and boxplot
     # TODO: revamp the summary and plots
@@ -255,42 +253,11 @@ EF1_Denominator <- function(
       height = 12,
       units = "in"
     )
-    if (nNA > 0) {
-      g_na <- ggplot2::ggplot(
-        Pdata |>
-          dplyr::mutate(
-            Count = dplyr::case_when(Wt_Sampled_L == 0 ~ 1, .default = 0)
-          ),
-        ggplot2::aes(x = as.factor(fishyr), y = Count, fill = state)
-      ) +
-        ggplot2::geom_bar(stat = "identity") +
-        ggplot2::scale_fill_viridis_d() +
-        ggplot2::theme_bw() +
-        ggplot2::ylab("Count") +
-        ggplot2::xlab("Year") +
-        ggplot2::ggtitle(
-          "First Stage Expansion Denomintor with NA Wt_Sampled_L"
-        ) +
-        ggplot2::theme(
-          axis.text.x = ggplot2::element_text(
-            angle = 90,
-            vjust = 0.5,
-            hjust = 0.5
-          )
-        )
-      ggplot2::ggsave(
-        plot = g_na,
-        filename = plot_na,
-        width = 12,
-        height = 12,
-        units = "in"
-      )
-    }
     gg <- plotWL(
-      Pdata[, "lengthcm"],
-      Pdata[, "SEX_CODE"],
-      Pdata[, "weightkg"],
-      Pdata[, "LW_Calc_Wt"] * 0.453592
+      length = Pdata[, "lengthcm"],
+      sex = Pdata[, "SEX_CODE"],
+      weight = Pdata[, "weightkg"],
+      weight.calc = Pdata[, "LW_Calc_Wt"] * 0.453592
     )
     ggplot2::ggsave(
       gg,
@@ -299,18 +266,6 @@ EF1_Denominator <- function(
       height = 9,
       units = "in"
     )
-  }
-  if (verbose) {
-    if (nNA == 0) {
-      cli::cli_alert_success(
-        "Sample weights were able to be determined for all samples."
-      )
-    }
-    if (nNA != 0) {
-      cli::cli_alert_warning(
-        "Sample weights were not available for {nNA} samples (sampled weightkg and lengthmm may be NA)."
-      )
-    }
   }
   return(Pdata)
 }

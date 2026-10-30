@@ -10,7 +10,7 @@ A data frame with 567 rows and 4 columns
 \item{PACFIN_PORT_CODE}{A character string of port codes}
 \item{AGENCY_CODE}{Character denoting the collection agency}
 \item{AGENCY_PORT_CODE}{A string denoting the sampling agency port code}
-\item{DESCRIPTION}{A character string denoting the full port anme}
+\item{DESCRIPTION}{A character string denoting the full port name}
 }
 }
 \source{

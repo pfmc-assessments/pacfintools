@@ -11,7 +11,7 @@ A data frame with 69 rows and 7 columns
 \item{ARID}{A character string}
 \item{INPFC}{A three letter character string denoting the INPFC area}
 \item{TYPE}{A character string denoting the INPFC type}
-\item{COUNCIL}{A character string denoting the Fishery Managment Council}
+\item{COUNCIL}{A character string denoting the Fishery Management Council}
 \item{SHORT}{Character string describing the area}
 \item{DESCRIPTION}{Character string describing the area}
 }

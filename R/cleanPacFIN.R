@@ -8,7 +8,7 @@
 #' US West Coast stock assessments.
 #'
 #' @param Pdata A data frame returned from [PullBDS.PacFIN()] containing
-#'   biological samples. These data are stored in the Pacific Fishieries
+#'   biological samples. These data are stored in the Pacific Fisheries
 #'   Information Network (PacFIN) data warehouse, which originated in 2014 and
 #'   are pulled using sql calls.
 #' @param keep_INPFC *Deprecated*. Areas are now defined using different methods.
