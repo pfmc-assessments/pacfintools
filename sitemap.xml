@@ -59,7 +59,11 @@
 <url><loc>/reference/plotRawData.html</loc></url>
 <url><loc>/reference/plotStrat.html</loc></url>
 <url><loc>/reference/plotWL.html</loc></url>
-<url><loc>/reference/sql.html</loc></url>
+<url><loc>/reference/sql_area.html</loc></url>
+<url><loc>/reference/sql_bds.html</loc></url>
+<url><loc>/reference/sql_catch.html</loc></url>
+<url><loc>/reference/sql_check_FINAL_FISH_AGE_IN_YEARS.html</loc></url>
+<url><loc>/reference/sql_species.html</loc></url>
 <url><loc>/reference/stopifnotcolumn.html</loc></url>
 <url><loc>/reference/summaryAgeMethod.html</loc></url>
 <url><loc>/reference/tableSample.html</loc></url>
