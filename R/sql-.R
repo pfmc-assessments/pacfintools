@@ -29,10 +29,7 @@
 #' @return A single character string formatted as an sql call.
 #' @author Kelli F. Johnson and John R. Wallace
 #' @export
-#' @name sql
-NULL
 #'
-#' @rdname sql
 #' @details `sql_area()` results in area data
 sql_area <- function() {
   sqlcall <- glue::glue(
@@ -44,8 +41,11 @@ sql_area <- function() {
   sqlcall <- gsub("\\n", " ", sqlcall)
   return(sqlcall)
 }
+#' Pull PacFIN bds data
 #'
-#' @rdname sql
+#' @inheritParams sql_area
+#'
+#' @export
 #' @details `sql_bds()` results in biological data
 sql_bds <- function(pacfin_species_code) {
   # todo: think about changing
@@ -70,9 +70,12 @@ sql_bds <- function(pacfin_species_code) {
   sqlcall <- gsub("\\n", " ", sqlcall)
   return(sqlcall)
 }
+#' Pull PacFIN catch data
 #'
-#' @rdname sql
-#' @details `sql_bds()` results in catch data
+#' @inheritParams sql_area
+#'
+#' @export
+#' @details `sql_catch()` results in catch data
 sql_catch <- function(pacfin_species_code, council_code = "P") {
   species <- paste(sQuote(pacfin_species_code, q = FALSE), collapse = ", ")
   stopifnot(length(species) == 1)
@@ -96,8 +99,9 @@ sql_catch <- function(pacfin_species_code, council_code = "P") {
   sqlcall <- gsub("\\n", " ", sqlcall)
   return(sqlcall)
 }
+#' Define PacFIN species name column
 #'
-#' @rdname sql
+#' @export
 #' @details `sql_species()` results in data frame of species names
 sql_species <- function() {
   sqlcall <- glue::glue(
@@ -110,8 +114,9 @@ sql_species <- function() {
   sqlcall <- gsub("\\n", " ", sqlcall)
   return(sqlcall)
 }
+#' Apply check for final ages
 #'
-#' @rdname sql
+#' @export
 #' @details
 #' `sql_check_FINAL_FISH_AGE_IN_YEARS()` results in a data frame of number of
 #' unique `FISH_ID`s present in PacFIN per `PACFIN_SPECIES_CODE` and

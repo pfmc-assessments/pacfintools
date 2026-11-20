@@ -2,7 +2,7 @@
 #'
 #' Pull catch data from the Comprehensive Fish Ticket table in PacFIN.
 #'
-#' @inheritParams sql
+#' @inheritParams sql_area
 #' @inheritParams getDB
 #' @param savedir A file path to the directory where the results will be saved.
 #' The default is NULL.

@@ -2,7 +2,7 @@
 #'
 #' Pull biological data from PacFIN (`PACFIN_MARTS.comprehensive_bds_comm`).
 #'
-#' @inheritParams sql
+#' @inheritParams sql_area
 #' @inheritParams getDB
 #' @param savedir A file path to the directory where the results will be saved.
 #' The default is NULL.

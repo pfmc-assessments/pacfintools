@@ -3,7 +3,7 @@
 #' Pull the species information table and attempt to determine which
 #' nominal codes pertain to the desired species codes.
 #'
-#' @inheritParams sql
+#' @inheritParams sql_area
 #' @inheritParams getDB
 #' @return
 #' A unique vector of character entries, where entries are valid
