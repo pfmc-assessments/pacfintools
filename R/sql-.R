@@ -28,6 +28,7 @@
 #'
 #' @return A single character string formatted as an sql call.
 #' @author Kelli F. Johnson and John R. Wallace
+#' @export
 #' @name sql
 NULL
 #'
