@@ -245,7 +245,8 @@ cleanPacFIN <- function(
     )
   }
   data[, "SEX_CODE"] <- nwfscSurvey::codify_sex(
-    data[, "SEX_CODE"]
+    x = data[, "SEX_CODE"],
+    verbose = verbose
   )
 
   #### Lengths
