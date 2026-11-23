@@ -104,19 +104,6 @@ getLength <- function(Pdata, keep, verbose = TRUE) {
       1.07 * Pdata[check.dogfish, "FORK_LENGTH"]
   }
 
-  # Fix incorrect FISH_LENGTH_UNITS for hake
-  if (length(grep("PWHT", Pdata[[var_spid]])) > 0) {
-    if (verbose) {
-      cli::cli_alert_info("Still fixing WA FISH_LENGTH_UNITS for Pacific hake.")
-    }
-    Pdata[, "FISH_LENGTH_UNITS"] <- ifelse(
-      tolower(Pdata[, "FISH_LENGTH_UNITS"]) == "cm" &
-        Pdata[, "FISH_LENGTH"] > 90,
-      "MM",
-      Pdata[, "FISH_LENGTH_UNITS"]
-    )
-  }
-
   # Make "length" column in mm
   # Start with fork lengths for those that are available and if "F" in keep
   keep_list <- keep[keep %in% c("", "A", "F", NA)]
