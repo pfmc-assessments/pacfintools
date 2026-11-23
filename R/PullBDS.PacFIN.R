@@ -345,18 +345,20 @@ PullBDS.PacFIN <- function(
   }
 
   # Save appropriate summaries
-  savefn <- file.path(
-    savedir,
-    paste(
-      sep = ".",
-      "PacFIN",
-      file_species_code,
-      "bds",
-      format(Sys.Date(), "%d.%b.%Y"),
-      "RData"
-    )
-  )
-  save(bds.pacfin, file = savefn)
-
-  return(invisible(bds.pacfin))
+  if (!is.null(savedir)) {
+    savefn <- file.path(
+      savedir,
+      paste(
+        sep = ".",
+        "PacFIN",
+        file_species_code,
+        "bds",
+        format(Sys.Date(), "%d.%b.%Y"),
+        "RData"
+      ))
+    save(bds.pacfin, file = savefn)
+    return(bds.pacfin)
+  } else {
+    return(invisible(bds.pacfin))
+  }
 }
