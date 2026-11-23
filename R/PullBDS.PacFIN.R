@@ -357,8 +357,8 @@ PullBDS.PacFIN <- function(
         "RData"
       ))
     save(bds.pacfin, file = savefn)
-    return(bds.pacfin)
-  } else {
     return(invisible(bds.pacfin))
+  } else {
+    return(bds.pacfin)
   }
 }
